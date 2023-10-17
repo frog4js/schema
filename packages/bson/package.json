@@ -1,0 +1,20 @@
+{
+  "name": "@frog4js/bson-schema",
+  "version": "0.0.1",
+  "main": "index.js",
+  "description": "Fast and hook-base web framework, for Node.js bson schema package",
+  "engines": {
+    "node": ">= 16.0.0"
+  },
+  "scripts": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:frog4js/schema.git"
+  },
+  "author": "frogjs@126.com",
+  "license": "ISC",
+  "devDependencies": {
+  },
+
+}
