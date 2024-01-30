@@ -1,39 +1,43 @@
 {
-  "name": "@frog4js/schema",
-  "version": "1.0.0",
-  "main": "index.js",
-  "description": "Fast and hook-base web framework, for Node.js schema package",
-  "engines": {
-    "node": ">= 16.0.0"
-  },
-  "scripts": {
-    "lint:eslint": "eslint --fix --ext .js,.ts ./src",
-    "lint:prettier": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\"",
-    "lint:lint-staged": "lint-staged",
-    "release": "standard-version",
-    "commit": "git -cz"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:frog4js/core.git"
-  },
-  "author": "frogjs@126.com1",
-  "license": "ISC",
-  "devDependencies": {
-    "@frog4js/devkit-cli": "^1.0.0",
-    "@frog4js/devkit-commitlint": "^1.0.0",
-    "@frog4js/eslint-config": "^1.0.0",
-    "@frog4js/devkit-prettier": "^1.0.0"
-  },
-  "commitlint": {
-    "extends": [
-      "@frog4js/devkit-commitlint"
-    ]
-  },
-  "eslintConfig": {
-    "extends": [
-      "@frog4js"
-    ]
-  },
-  "prettier": "@frog4js/devkit-prettier"
+    "name": "@frog4js/schema",
+    "version": "1.0.0",
+    "main": "index.js",
+    "description": "Fast and hook-base web framework, for Node.js schema package",
+    "engines": {
+        "node": ">= 16.0.0"
+    },
+    "scripts": {
+        "lint:eslint": "eslint --fix --ext .js,.ts ./src",
+        "lint:prettier": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,vue,html,md}\"",
+        "lint:lint-staged": "lint-staged",
+        "release": "standard-version",
+        "commit": "git -cz",
+        "test": "node --test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:frog4js/core.git"
+    },
+    "author": "frogjs@126.com1",
+    "license": "ISC",
+    "devDependencies": {
+        "@frog4js/devkit-cli": "^1.0.0",
+        "@frog4js/devkit-commitlint": "^1.0.0",
+        "@frog4js/eslint-config": "^1.0.0",
+        "@frog4js/devkit-prettier": "^1.0.0",
+        "ajv": "^8.12.0",
+        "ajv-formats": "^2.1.1",
+        "ajv-keywords": "^5.1.0"
+    },
+    "commitlint": {
+        "extends": [
+            "@frog4js/devkit-commitlint"
+        ]
+    },
+    "eslintConfig": {
+        "extends": [
+            "@frog4js"
+        ]
+    },
+    "prettier": "@frog4js/devkit-prettier"
 }
