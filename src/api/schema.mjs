@@ -1,6 +1,6 @@
 import { engine } from "../core/share.mjs";
 import { draft } from "../definition/share.mjs";
-import { typeUtil } from "../util/share.mjs";
+import { dataOperateUtil, typeUtil } from "../util/share.mjs";
 import crypto from "node:crypto";
 const drafts = Object.values(draft);
 
@@ -10,12 +10,12 @@ function getId(schema) {
 
 /**
  *
- * @param {Record<string, *>} json
+ * @param {Record<string, *> | Schema} json
  * @return {Schema}
  */
 function create(json) {
     typeUtil.assertObject(json);
-    const deepCloneSchema = JSON.parse(JSON.stringify(json));
+    const deepCloneSchema = dataOperateUtil.deepClone(json);
 
     let useDraft = draft.draft01;
     if (deepCloneSchema?.$schema) {
@@ -28,13 +28,13 @@ function create(json) {
     }
     const context = engine.startExecute(useDraft, deepCloneSchema);
     if (context.errors.length > 0) {
-        throw new Error(`schema is invalid: ${JSON.stringify(context.errors, undefined, 2)}`);
+        throw new Error(`schema is invalid: ${dataOperateUtil.toString(context.errors, undefined)}`);
     }
     for (const key of Object.keys(json)) {
         if (key.startsWith("#")) {
-            const childContext = engine.startExecute(useDraft, JSON.parse(JSON.stringify(json[key])));
+            const childContext = engine.startExecute(useDraft, dataOperateUtil.deepClone(json[key]));
             if (childContext.errors.length > 0) {
-                throw new Error(`${key} schema is invalid: ${JSON.stringify(context.errors, undefined, 2)}`);
+                throw new Error(`${key} schema is invalid: ${dataOperateUtil.toString(childContext.errors)}`);
             }
             context.instanceData.origin[key] = childContext.instanceData.origin;
         }

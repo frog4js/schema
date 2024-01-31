@@ -6,6 +6,7 @@ import {
     startExecute,
     startRefOrSchemaExecute,
 } from "../../src/core/engine.mjs";
+import { schemaManage } from "../../src/api/share.mjs";
 import * as assert from "assert";
 
 /**

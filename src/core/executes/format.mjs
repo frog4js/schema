@@ -87,7 +87,7 @@ const configs = [
                         );
                     }
                     if (!result) {
-                        pushError(context, "formatMustMatchTheDefinitionOfFormat", 1);
+                        pushError(context, "formatMustMatchTheDefinitionOfFormat");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

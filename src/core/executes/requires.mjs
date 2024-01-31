@@ -35,7 +35,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 resolve: (context, { startRefOrSchemaExecute }) => {
-                    const errors = startRefOrSchemaExecute(context, false);
+                    const errors = startRefOrSchemaExecute(context);
                     if (errors.length > 0) {
                         return executeConstant.ticks.endExecute;
                     }

@@ -21,14 +21,14 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key] <=
                             context.schemaData.current.$ref[context.schemaData.current.key]
                         ) {
-                            pushError(context, "minimumMustBeLessThanLimit", 1);
+                            pushError(context, "minimumMustBeLessThanLimit");
                         }
                     } else {
                         if (
                             context.instanceData.current.$ref[context.instanceData.current.key] <
                             context.schemaData.current.$ref[context.schemaData.current.key]
                         ) {
-                            pushError(context, "minimumMustBeLessThanOrEqualToLimit", 1);
+                            pushError(context, "minimumMustBeLessThanOrEqualToLimit");
                         }
                     }
 

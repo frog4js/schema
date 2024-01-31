@@ -11,7 +11,7 @@ import {
     getJsonTypeByRefData,
     getTypeofTypesByRefData,
 } from "./type.mjs";
-
+import { deepClone, clone, toString } from "./data-operate.mjs";
 export const typeUtil = {
     assertObject,
     assertPrimitiveBoolean,
@@ -24,4 +24,10 @@ export const typeUtil = {
     dispatchPlatformTypeByRefData,
     getJsonTypeByRefData,
     getTypeofTypesByRefData,
+};
+
+export const dataOperateUtil = {
+    deepClone,
+    clone,
+    toString,
 };

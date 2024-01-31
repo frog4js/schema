@@ -2,21 +2,10 @@ type RefData = {
     $ref: object | Array<any>;
     key: string | number;
 };
-
+type SchemaBasicType = "string" | "boolean" | "array" | "object" | "integer" | "null" | "any" | "number" | string;
 type SchemaV1 = {
     $ref?: string;
-    type?:
-        | "string"
-        | "boolean"
-        | "array"
-        | "object"
-        | "integer"
-        | "null"
-        | "any"
-        | "number"
-        | string
-        | Array<string>
-        | SchemaV1;
+    type?: SchemaBasicType | Array<SchemaBasicType | Schema>;
     $schema?: string;
     $id?: string;
     default?: any;
@@ -40,7 +29,7 @@ type SchemaV1 = {
     description?: string;
     contentEncoding?: string;
     maxDecimal?: number;
-    disallow?: string | Array<string>;
+    disallow?: SchemaBasicType | Array<SchemaBasicType>;
 };
 
 type Schema = SchemaV1;
@@ -52,7 +41,6 @@ type ExecuteError = {
     currentSchemaValue: any;
     currentInstanceKey: string;
     currentInstanceValue: any;
-    expected: any;
     message: string;
     code: string;
 };

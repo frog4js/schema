@@ -19,7 +19,7 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        pushError(context, "optionalMustBeExists", 1);
+                        pushError(context, "optionalMustBeExists");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

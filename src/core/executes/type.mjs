@@ -39,57 +39,38 @@ const configs = [
         index: 4,
         matches: [
             {
-                instanceTypes: [typeConstant.typeofTypes.undefined],
-                resolve: () => {
-                    return executeConstant.ticks.nextExecute;
-                },
-            },
-            {
-                schemaTypes: [typeConstant.typeofTypes.string],
+                schemaTypes: [typeConstant.jsonTypes.string],
+                instanceTypes: typeConstant.typeofTypeGroups.exist,
                 resolve: (context) => {
                     if (!signTypeExecute(context, context.schemaData.current.$ref[context.schemaData.current.key])) {
-                        pushError(
-                            context,
-                            `must be ${context.schemaData.current.$ref[context.schemaData.current.key]}`,
-                            1,
-                        );
+                        pushError(context, "typeMustBeOfTheType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },
             },
             {
-                schemaTypes: [typeConstant.typeofTypes.array],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                schemaTypes: [typeConstant.jsonTypes.array],
+                instanceTypes: typeConstant.typeofTypeGroups.exist,
+                resolve: (context, { startRefOrSchemaExecute, enterContext, backContext }) => {
                     const types = context.schemaData.current.$ref[context.schemaData.current.key];
                     let status;
-                    context.isLogError = false;
+                    let i = 0;
                     for (const type of types) {
+                        enterContext(context, i, undefined);
                         if (typeof type === typeConstant.typeofTypes.string) {
                             status = signTypeExecute(context, type);
                         } else if (typeof type === typeConstant.typeofTypes.object) {
                             const errors = startRefOrSchemaExecute(context);
-                            if (errors.length > 0) {
-                                status = false;
-                            }
+                            status = errors.length === 0;
                         }
+                        backContext(context, i, undefined);
+                        i++;
                         if (status) {
                             break;
                         }
                     }
-                    context.isLogError = true;
-
                     if (!status) {
-                        pushError(context, `must be ${JSON.stringify(types)}`, 1);
-                    }
-                    return executeConstant.ticks.nextExecute;
-                },
-            },
-            {
-                schemaTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
-                    const errors = startRefOrSchemaExecute(context);
-                    if (errors.length > 0) {
-                        mergeError(context, errors);
+                        pushError(context, "typeMustBeOfTheType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

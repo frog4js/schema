@@ -19,7 +19,7 @@ const configs = [
                         context.instanceData.current.$ref[context.instanceData.current.key].length <
                         context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        pushError(context, "minItemsMustBeLessThanOrEqualToLimit", 1);
+                        pushError(context, "minItemsMustBeLessThanOrEqualToLimit");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

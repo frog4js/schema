@@ -23,7 +23,7 @@ const configs = [
                         stringInstance[1] &&
                         stringInstance[1].length > context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        pushError(context, "maxDecimalMustBeLessThanOrEqualToLimit", 1);
+                        pushError(context, "maxDecimalMustBeLessThanOrEqualToLimit");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

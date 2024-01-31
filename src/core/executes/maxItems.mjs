@@ -20,7 +20,7 @@ const configs = [
                         context.instanceData.current.$ref[context.instanceData.current.key].length >
                         context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        pushError(context, "maxItemsMustBeGreaterThanOrEqualToLimit", 1);
+                        pushError(context, "maxItemsMustBeGreaterThanOrEqualToLimit");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

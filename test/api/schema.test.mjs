@@ -1,8 +1,9 @@
 import { describe, it, beforeEach } from "node:test";
 import { schemaManage } from "../../src/api/share.mjs";
 import * as assert from "assert";
+import { typeConstant } from "../../src/constants/share.mjs";
 
-describe("test the api module", () => {
+describe("test the schema module", () => {
     describe("test the create function", () => {
         it("should throw a TypeError when the input is undefined", () => {
             assert.throws(
@@ -57,7 +58,7 @@ describe("test the api module", () => {
             });
         });
         it("should set the $schema property of the schema", () => {
-            const schema = schemaManage.create({ $schema: "http://json-schema.org/draft-01/schema#" });
+            const schema = schemaManage.create({});
             assert.equal(schema.$schema, "http://json-schema.org/draft-01/schema#");
         });
 
@@ -91,6 +92,54 @@ describe("test the api module", () => {
                     name: "Error",
                 },
             );
+
+            assert.throws(
+                () => {
+                    schemaManage.create({ "#name": { type: { $ref: "#" } } });
+                },
+                {
+                    name: "Error",
+                },
+            );
+        });
+
+        it("should create a schema with not found types", () => {
+            const schema = schemaManage.create({ type: ["string", "number", "notFound"] });
+            assert.ok(schema);
+        });
+
+        it("should create a schema with duplicate types", () => {
+            const schema = schemaManage.create({ type: ["string", "string"] });
+            assert.ok(schema);
+        });
+
+        it("should throw an error when invalid types are provided", () => {
+            assert.throws(
+                () => {
+                    schemaManage.create({ type: ["string", 1, true, BigInt("21")] });
+                },
+                {
+                    name: "Error",
+                },
+            );
+        });
+
+        it("should create a schema with nested types and $ref", () => {
+            const schema = schemaManage.create({
+                type: [
+                    "string",
+                    {},
+                    { $ref: "#a" },
+                    {
+                        type: "object",
+                    },
+                    {
+                        $ref: "#",
+                    },
+                ],
+                "#a": {},
+            });
+            assert.ok(schema);
         });
     });
 });
