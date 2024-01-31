@@ -26,7 +26,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         ).filter((x) => !Object.keys(properties || {}).includes(x));
                         if (diffProperties.length > 0) {
-                            pushError(context, "additionalPropertiesMustNotHaveAdditionalProperties", 1);
+                            pushError(context, "additionalPropertiesMustNotHaveAdditionalProperties");
                         }
                     }
 

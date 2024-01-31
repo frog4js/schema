@@ -80,9 +80,11 @@ function enterContext(context, schemaKey, instanceKey) {
 function backContext(context, schemaKey, instanceKey) {
     if (instanceKey !== undefined) {
         context.instancePaths.pop();
+        context.instanceData.current = getCurrentInstanceRefData(context);
     }
     if (schemaKey !== undefined) {
         context.schemaPaths.pop();
+        context.schemaData.current = getCurrentSchemaRefData(context);
     }
 }
 

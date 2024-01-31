@@ -77,4 +77,7 @@ export const errorCodes = {
 
     // disallow
     disallowMustNotBeDisallowType: "must not be disallow type",
+
+    // type
+    typeMustBeOfTheType: "must be of the type",
 };

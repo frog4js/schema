@@ -17,7 +17,7 @@ const configs = [
                 resolve: (context) => {
                     const instanceType = typeUtil.getTypeofTypesByRefData(context.instanceData.current);
                     if (instanceType === context.schemaData.current.$ref[context.schemaData.current.key]) {
-                        pushError(context, "disallowMustNotBeDisallowType", 1);
+                        pushError(context, "disallowMustNotBeDisallowType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },
@@ -27,7 +27,7 @@ const configs = [
                 resolve: (context) => {
                     const instanceType = typeUtil.getTypeofTypesByRefData(context.instanceData.current);
                     if (context.schemaData.current.$ref[context.schemaData.current.key].includes(instanceType)) {
-                        pushError(context, "disallowMustNotBeDisallowType", 1);
+                        pushError(context, "disallowMustNotBeDisallowType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

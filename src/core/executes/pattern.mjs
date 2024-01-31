@@ -20,7 +20,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         )
                     ) {
-                        pushError(context, "patternMustMatchPattern", 1);
+                        pushError(context, "patternMustMatchPattern");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

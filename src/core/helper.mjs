@@ -2,7 +2,7 @@
  * @typedef {import("../../types/core")}
  */
 
-import { typeUtil } from "../util/share.mjs";
+import { dataOperateUtil, typeUtil } from "../util/share.mjs";
 import { executeConstant, typeConstant } from "../constants/share.mjs";
 
 /**
@@ -19,24 +19,25 @@ function slowGetRefDataDecodeAndDeepCloe(refData) {
             },
         },
     ]);
-    return isObject ? JSON.parse(JSON.stringify(refData.$ref?.[refData.key])) : refData.$ref?.[refData.key];
+    return isObject ? dataOperateUtil.deepClone(refData.$ref?.[refData.key]) : refData.$ref?.[refData.key];
 }
 /**
  *
  * @param {Context} context
  * @param {string} code
- * @param {*} expected
  */
-function pushError(context, code, expected) {
+function pushError(context, code) {
     (context.errorState.isTemp ? context.tempErrors : context.errors).push({
         instancePath: context.instancePaths.length > 0 ? "/" + context.instancePaths.join("/") : "",
-        schemaPath: context.schemaPaths.length > 0 ? "#/" + context.schemaPaths.join("/") : "#",
+        schemaPath:
+            context.schemaPaths.length > 0
+                ? "#/" + context.schemaPaths.filter((x) => x !== executeConstant.pathKeys.ref).join("/")
+                : "#",
         currentSchemaKey: context.schemaData.current.key,
         currentSchemaValue: slowGetRefDataDecodeAndDeepCloe(context.schemaData.current),
         currentInstanceKey: context.instanceData.current.key,
         currentInstanceValue: slowGetRefDataDecodeAndDeepCloe(context.instanceData.current),
         message: executeConstant.errorCodes[code],
-        expected: expected,
         code: code,
     });
 }
@@ -87,11 +88,7 @@ function getCurrentInstanceRefData(context) {
             key: "root",
         };
     }
-    let current = context.instanceData.origin;
-    for (let i = 0; i < context.instancePaths.length - 1; i++) {
-        const keyOrIndex = context.instancePaths[i];
-        current = current[keyOrIndex];
-    }
+    const current = getParentInstance(context);
     return { $ref: current, key: context.instancePaths[context.instancePaths.length - 1] };
 }
 
@@ -124,11 +121,7 @@ function getSiblingInstanceRefData(context, key) {
             key: "root",
         };
     }
-    let current = context.instanceData.origin;
-    for (let i = 0; i < context.instancePaths.length - 1; i++) {
-        const keyOrIndex = context.instancePaths[i];
-        current = current[keyOrIndex];
-    }
+    const current = getParentInstance(context);
     return { $ref: current, key };
 }
 
@@ -168,6 +161,14 @@ function getParentSchema(context) {
     }
     return current;
 }
+function getParentInstance(context) {
+    let current = context.instanceData.origin;
+    for (let i = 0; i < context.instancePaths.length - 1; i++) {
+        const keyOrIndex = context.instancePaths[i];
+        current = current[keyOrIndex];
+    }
+    return current;
+}
 
 /**
  *
@@ -200,4 +201,5 @@ export {
     getCurrentSchemaValue,
     getCurrentInstanceValue,
     getParentSchema,
+    getParentInstance,
 };

@@ -11,6 +11,7 @@ import {
     startExecute,
 } from "../../../src/core/engine.mjs";
 import { executeConfigs } from "../../../src/core/executes/share.mjs";
+import * as assert from "assert";
 
 /**
  *
@@ -22,8 +23,19 @@ import { executeConfigs } from "../../../src/core/executes/share.mjs";
  * @param {Array<string>} [schemaKeys]
  * @param {Array<string>} [instanceKeys]
  * @param {*} [configs]
+ * @param {number} [expectResult]
  */
-export function execResolve(schema, instance, executeKey, versionIndex, matchIndex, schemaKeys, instanceKeys, configs) {
+export function execResolve(
+    schema,
+    instance,
+    executeKey,
+    versionIndex,
+    matchIndex,
+    schemaKeys,
+    instanceKeys,
+    configs,
+    expectResult,
+) {
     const context = createContext(schema, instance, configs);
     if (schemaKeys) {
         schemaKeys.forEach((key) => enterContext(context, key));
@@ -33,13 +45,16 @@ export function execResolve(schema, instance, executeKey, versionIndex, matchInd
         instanceKeys.forEach((key) => enterContext(context, undefined, key));
     }
     const filterExecuteConfigs = executeConfigs.filter((x) => x.key === executeKey);
-    filterExecuteConfigs[versionIndex].matches[matchIndex].resolve(context, {
+    const result = filterExecuteConfigs[versionIndex].matches[matchIndex].resolve(context, {
         startRefOrSchemaExecute,
         startChildExecute,
         enterContext,
         backContext,
         startExecute,
     });
+    if (expectResult) {
+        assert.equal(result, expectResult);
+    }
     if (schemaKeys) {
         schemaKeys.forEach((key) => backContext(context, key));
     }

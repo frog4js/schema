@@ -1,5 +1,6 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
 import { getParentSchema, pushError } from "../helper.mjs";
+import { dataOperateUtil } from "../../util/share.mjs";
 
 /**
  * @typedef {import("../../../types/core")}
@@ -7,11 +8,11 @@ import { getParentSchema, pushError } from "../helper.mjs";
 
 function validateDefault(context, schemaValue, startExecute) {
     if (context.phase === "schemaValidate") {
-        const parentSchema = JSON.parse(JSON.stringify(getParentSchema(context)));
+        const parentSchema = dataOperateUtil.deepClone(getParentSchema(context));
         delete parentSchema.default;
         const defaultContext = startExecute(parentSchema, schemaValue, { phase: "instanceValidate" });
         if (defaultContext.errors.length > 0) {
-            pushError(context, "defaultMustComplyWithSchema", 1);
+            pushError(context, "defaultMustComplyWithSchema");
             return false;
         }
     }
@@ -32,9 +33,8 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context, { startExecute }) => {
                     const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
-                    context.instanceData.current.$ref[context.instanceData.current.key] = JSON.parse(
-                        JSON.stringify(schemaValue),
-                    );
+                    context.instanceData.current.$ref[context.instanceData.current.key] =
+                        dataOperateUtil.deepClone(schemaValue);
                     if (context.instancePaths.length === 0) {
                         context.instanceData.origin =
                             context.instanceData.current.$ref[context.instanceData.current.key];
