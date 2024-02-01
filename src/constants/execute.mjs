@@ -24,6 +24,8 @@ export const keys = {
     contentEncoding: "contentEncoding", // ?
     maxDecimal: "maxDecimal",
     disallow: "disallow",
+    divisibleBy: "divisibleBy",
+    uniqueItems: "uniqueItems",
 };
 export const ticks = {
     nextExecute: 1,
@@ -80,4 +82,7 @@ export const errorCodes = {
 
     // type
     typeMustBeOfTheType: "must be of the type",
+
+    // divisibleBy
+    divisibleByMustNotHaveDuplicateItems: "must not have duplicate items",
 };

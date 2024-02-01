@@ -32,7 +32,37 @@ type SchemaV1 = {
     disallow?: SchemaBasicType | Array<SchemaBasicType>;
 };
 
-type Schema = SchemaV1;
+type SchemaV2 = {
+    $ref?: string;
+    type?: SchemaBasicType | Array<SchemaBasicType | Schema>;
+    $schema?: string;
+    $id?: string;
+    default?: any;
+    optional?: boolean;
+    properties?: Record<string, SchemaV1>;
+    items?: SchemaV1 | Array<SchemaV1>;
+    additionalProperties?: boolean | SchemaV1;
+    requires?: string | SchemaV1;
+    minimum?: number;
+    maximum?: number;
+    minimumCanEqual?: boolean;
+    maximumCanEqual?: boolean;
+    minItems?: number;
+    maxItems?: number;
+    format?: string;
+    pattern?: string;
+    maxLength?: number;
+    minLength?: number;
+    enum?: Array<string>;
+    title?: string;
+    description?: string;
+    contentEncoding?: string;
+    disallow?: SchemaBasicType | Array<SchemaBasicType>;
+    divisibleBy?: number;
+    uniqueItems?: boolean;
+};
+
+type Schema = SchemaV1 | SchemaV2;
 
 type ExecuteError = {
     instancePath: string;
@@ -65,10 +95,11 @@ type Context = {
     };
     refSchemas: Record<string, Schema>;
     phase: "schemaValidate" | "instanceValidate";
+    version: number;
 };
 type ExecuteConfig = {
     key: string;
-    version: number[];
+    versions: number[];
     index: number;
     matches: Array<{
         schemaTypes: string[];

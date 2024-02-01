@@ -3,30 +3,30 @@ import { schemaManage, instanceManage } from "../../src/api/share.mjs";
 import * as assert from "assert";
 
 describe("test the instance module", () => {
+    /**
+     *
+     * @param {Context} context
+     * @param {Array<string>} [currentInstanceKeys]
+     * @param {Array<string>} [currentSchemaKeys]
+     * @param {Array<string>} [instancePaths]
+     * @return {number}
+     */
+    function filerErrorLength(context, currentInstanceKeys, currentSchemaKeys, instancePaths) {
+        return context.errors.filter((x) => {
+            let state = true;
+            if (state && currentInstanceKeys) {
+                state = currentInstanceKeys.includes(x.currentInstanceKey);
+            }
+            if (state && currentSchemaKeys) {
+                state = currentSchemaKeys.includes(x.currentSchemaKey);
+            }
+            if (state && instancePaths) {
+                state = instancePaths.includes(x.instancePath);
+            }
+            return state;
+        }).length;
+    }
     describe("schema is draft-01", () => {
-        /**
-         *
-         * @param {Context} context
-         * @param {Array<string>} [currentInstanceKeys]
-         * @param {Array<string>} [currentSchemaKeys]
-         * @param {Array<string>} [instancePaths]
-         * @return {number}
-         */
-        function filerErrorLength(context, currentInstanceKeys, currentSchemaKeys, instancePaths) {
-            return context.errors.filter((x) => {
-                let state = true;
-                if (state && currentInstanceKeys) {
-                    state = currentInstanceKeys.includes(x.currentInstanceKey);
-                }
-                if (state && currentSchemaKeys) {
-                    state = currentSchemaKeys.includes(x.currentSchemaKey);
-                }
-                if (state && instancePaths) {
-                    state = instancePaths.includes(x.instancePath);
-                }
-                return state;
-            }).length;
-        }
         let schema;
         beforeEach(() => {
             schema = schemaManage.create({
@@ -277,6 +277,143 @@ describe("test the instance module", () => {
             });
             assert.equal(filerErrorLength(context, ["picture"]), 0);
             assert.equal(filerErrorLength(context, ["isAdmin"]), 0);
+        });
+    });
+    describe("schema is draft-02 change", () => {
+        let schema;
+        beforeEach(() => {
+            schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-02/schema#",
+                type: "object",
+                $id: "User",
+                title: "user properties definition",
+                description: "user properties definition",
+                optional: false,
+                additionalProperties: false,
+                "#UserGroup": {
+                    type: "object",
+                    properties: {
+                        groupName: { type: "string" },
+                    },
+                },
+                properties: {
+                    name: {
+                        type: "string",
+                        maxLength: 20,
+                        minLength: 1,
+                        pattern: "[a-zA-z]{1,}",
+                        optional: false,
+                        title: "user name",
+                    },
+                    gender: {
+                        type: "string",
+                        enum: ["man", "woman"],
+                        optional: false,
+                        title: "user gender, man or woman",
+                    },
+                    age: {
+                        type: "integer",
+                        maximum: 100,
+                        minimum: 1,
+                        default: 1,
+                        optional: true,
+                    },
+                    email: {
+                        type: "string",
+                        format: "email",
+                        optional: true,
+                    },
+                    createdAt: {
+                        type: "string",
+                        format: "utc-millisec",
+                    },
+                    updatedAt: {
+                        type: "string",
+                        format: "utc-millisec",
+                        requires: "createdAt",
+                    },
+                    userGroups: {
+                        type: "array",
+                        items: {
+                            $ref: "#UserGroup",
+                        },
+                        uniqueItems: true,
+                        maxItems: 5,
+                        minItems: 1,
+                    },
+                    area: {
+                        type: ["array", "string"],
+                        items: {
+                            type: "string",
+                        },
+                        maxItems: 3,
+                        minItems: 3,
+                        pattern: "[^,]*,[^,]*,[^,]*",
+                    },
+                    balance: {
+                        type: "number",
+                        maxDecimal: 2,
+                        divisibleBy: 0.003,
+                        default: 0,
+                    },
+                    extendInfo: {
+                        type: "object",
+                        properties: {
+                            picture: {
+                                type: ["string", "null"],
+                                format: "uri",
+                            },
+                            isAdmin: {
+                                type: "boolean",
+                                default: false,
+                            },
+                        },
+                        optional: true,
+                        default: {
+                            picture: null,
+                            isAdmin: false,
+                        },
+                    },
+                },
+            });
+        });
+        it("should pass when maxDecimal is lose efficacy", () => {
+            const context = instanceManage.validate(schema, {
+                balance: 0.007,
+            });
+            assert.equal(filerErrorLength(context, ["balance"], ["maxDecimal"]), 0);
+        });
+        it("should pass validation when balance is 0.006", () => {
+            const context = instanceManage.validate(schema, {
+                balance: 0.006,
+            });
+            assert.equal(filerErrorLength(context, ["balance"]), 0);
+        });
+        it("should fail validation with divisibleBy error when balance is 0.007", () => {
+            const context = instanceManage.validate(schema, {
+                balance: 0.007,
+            });
+            assert.equal(filerErrorLength(context, ["balance"], ["divisibleBy"]), 1);
+        });
+        it("should pass validation when balance is 0", () => {
+            const context = instanceManage.validate(schema, {
+                balance: 0,
+            });
+            assert.equal(filerErrorLength(context, ["balance"], ["divisibleBy"]), 0);
+        });
+
+        it("should fail validation with uniqueItems error when userGroups has duplicate groupName", () => {
+            const context = instanceManage.validate(schema, {
+                userGroups: [{ groupName: "test" }, { groupName: "test" }],
+            });
+            assert.equal(filerErrorLength(context, ["userGroups"], ["uniqueItems"]), 1);
+        });
+
+        it("should pass validation when userGroups has unique groupNames", () => {
+            const context = instanceManage.validate(schema, {
+                userGroups: [{ groupName: "test" }, { groupName: "test1" }],
+            });
+            assert.equal(filerErrorLength(context, ["userGroups"], ["uniqueItems"]), 0);
         });
     });
 });

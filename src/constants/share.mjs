@@ -6,7 +6,7 @@ import {
     jsonTypeGroups,
     platformTypeGroups,
 } from "./type.mjs";
-import { jsonSchemaVersion } from "./version.mjs";
+import { jsonSchema$schemaVersionMap, jsonSchemaVersionGroups, jsonSchemaVersions } from "./version.mjs";
 import { keys, ticks, pathKeys, errorCodes } from "./execute.mjs";
 
 export const typeConstant = {
@@ -18,7 +18,9 @@ export const typeConstant = {
     platformTypeGroups,
 };
 export const versionConstant = {
-    jsonSchemaVersion,
+    jsonSchemaVersions,
+    jsonSchemaVersionGroups,
+    jsonSchema$schemaVersionMap,
 };
 export const executeConstant = {
     keys,

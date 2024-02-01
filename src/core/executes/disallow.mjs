@@ -9,7 +9,7 @@ import { pushError } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.disallow,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 18,
         matches: [
             {

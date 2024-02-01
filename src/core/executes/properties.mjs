@@ -7,7 +7,7 @@ import { typeConstant, versionConstant, executeConstant } from "../../constants/
 const configs = [
     {
         key: executeConstant.keys.properties,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 5,
         matches: [
             {

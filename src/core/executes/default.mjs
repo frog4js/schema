@@ -25,7 +25,7 @@ function validateDefault(context, schemaValue, startExecute) {
 const configs = [
     {
         key: executeConstant.keys.default,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 3,
         matches: [
             {

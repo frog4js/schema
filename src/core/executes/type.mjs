@@ -35,7 +35,7 @@ function signTypeExecute(context, schemaType) {
 const configs = [
     {
         key: executeConstant.keys.type,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 4,
         matches: [
             {

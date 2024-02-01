@@ -1,7 +1,8 @@
 import { executeConfigs } from "./executes/share.mjs";
-import { executeConstant, typeConstant } from "../constants/share.mjs";
+import { executeConstant, typeConstant, versionConstant } from "../constants/share.mjs";
 import { getJsonTypeByRefData, getTypeofTypeByRefData } from "../util/type.mjs";
 import { getCurrentInstanceRefData, getCurrentSchemaRefData, setLogError } from "./helper.mjs";
+import { jsonSchema$schemaVersionMap, jsonSchemaVersionGroups } from "../constants/version.mjs";
 
 /**
  * @typedef {import("../../types/core")}
@@ -42,6 +43,9 @@ function createContext(schema, instance, configs) {
         },
         refSchemas: {},
         phase: configs?.phase || "instanceValidate",
+        version:
+            versionConstant.jsonSchema$schemaVersionMap[schema.$schema] ||
+            versionConstant.jsonSchemaVersionGroups.lastVersions[0],
     };
     for (const key of Object.keys(schema)) {
         if (key.startsWith("#")) {
@@ -129,6 +133,9 @@ function startRefOrSchemaExecute(context) {
  */
 function schemaExecute(context) {
     executeLoop: for (let execute of executeConfigs) {
+        if (!execute.versions.includes(context.version)) {
+            continue;
+        }
         enterContext(context, execute.key);
         for (const match of execute.matches) {
             const schemaType = getJsonTypeByRefData(context.schemaData.current);

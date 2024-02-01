@@ -12,7 +12,7 @@ import { pushError, getSiblingSchemaRefData } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.additionalProperties,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 7,
         matches: [
             {

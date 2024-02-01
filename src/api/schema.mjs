@@ -24,6 +24,9 @@ function create(json) {
     if (deepCloneSchema?.$schema) {
         useDraft = drafts.find((x) => getId(x) === json.$schema);
     }
+    if (!useDraft) {
+        throw new Error(`schema is invalid: $schema must be a valid value`);
+    }
 
     deepCloneSchema.$schema = getId(useDraft);
     if (!deepCloneSchema.$id) {
