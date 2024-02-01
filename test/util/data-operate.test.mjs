@@ -3,7 +3,7 @@ import * as assert from "assert";
 import { dataOperateUtil } from "../../src/util/share.mjs";
 
 describe("test the data operate module", () => {
-    describe("clone", () => {
+    describe("test the clone function", () => {
         it("should return null when given data is null", () => {
             const result = dataOperateUtil.clone(null);
             assert.strictEqual(result, null);
@@ -33,7 +33,7 @@ describe("test the data operate module", () => {
         });
     });
 
-    describe("deepClone", () => {
+    describe("test the deepClone function", () => {
         it("should return null when given data is null", () => {
             const result = dataOperateUtil.deepClone(null);
             assert.strictEqual(result, null);
@@ -67,7 +67,7 @@ describe("test the data operate module", () => {
         });
     });
 
-    describe("toString", () => {
+    describe("test the toString function", () => {
         it("should return 'null' when given data is null", () => {
             const result = dataOperateUtil.toString(null);
             assert.strictEqual(result, "null");
@@ -127,6 +127,79 @@ describe("test the data operate module", () => {
             const obj = { a: 1, b: { c: 2 }, d: [3] };
             const result = dataOperateUtil.toString(obj, 2);
             assert.strictEqual(result, '{ "a": 1, "b": { "c": 2 }, "d": [ 3 ] }');
+        });
+    });
+    describe("test the fastDeepHasDuplicates function", () => {
+        it("should return false for empty array", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([]);
+            assert.equal(result, false);
+        });
+
+        it("should return false for array with unique elements", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([1, 2, 3, "4", 4, true, false]);
+            assert.equal(result, false);
+        });
+
+        it("should return true for array with duplicate primitive values", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([1, 2, 1, 3]);
+            assert.equal(result, true);
+        });
+
+        it("should return true for array with duplicate object properties", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([
+                { a: 1, b: 2 },
+                { a: 1, b: 2 },
+            ]);
+            assert.equal(result, true);
+        });
+
+        it("should return false for array with duplicate object properties", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([
+                { a: 1, b: 2 },
+                { a: 1, b: 3 },
+            ]);
+            assert.equal(result, false);
+        });
+
+        it("should return false for array with duplicate nested array values", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([
+                { a: 1, b: 2, c: [] },
+                { a: 1, b: 2, c: 0 },
+            ]);
+            assert.equal(result, false);
+        });
+
+        it("should return false for array with complex nested values", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([
+                { a: { b: 1 }, c: [{ d: 1 }, true] },
+                {
+                    a: { b: 1 },
+                    c: [{ d: 1 }, false],
+                },
+                undefined,
+                null,
+                true,
+            ]);
+            assert.equal(result, false);
+        });
+
+        it("should return true for array with duplicate nested array values", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([
+                [1, 2],
+                [3, 4],
+                [1, 2],
+            ]);
+            assert.equal(result, true);
+        });
+
+        it("should handle nested arrays and objects", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([{ a: [1, 2] }, { a: [1, 2] }]);
+            assert.equal(result, true);
+        });
+
+        it("should handle complex array with mixed types", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([1, "foo", { a: 1 }, [1, 2], "foo"]);
+            assert.equal(result, true);
         });
     });
 });

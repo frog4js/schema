@@ -8,7 +8,7 @@ import { pushError } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.maxLength,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 14,
         matches: [
             {

@@ -11,7 +11,7 @@ import { pushError } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.optional,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 2,
         matches: [
             {

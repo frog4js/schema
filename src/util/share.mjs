@@ -8,7 +8,7 @@ import {
     getTypeofTypeByRefData,
     getTypeofType,
 } from "./type.mjs";
-import { deepClone, clone, toString } from "./data-operate.mjs";
+import { deepClone, clone, toString, fastDeepHasDuplicates } from "./data-operate.mjs";
 export const typeUtil = {
     getPlatformType,
     getPlatformTypeByRefData,
@@ -24,4 +24,5 @@ export const dataOperateUtil = {
     deepClone,
     clone,
     toString,
+    fastDeepHasDuplicates,
 };

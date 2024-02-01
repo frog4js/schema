@@ -8,7 +8,7 @@ import { pushError } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.maxDecimal,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: [versionConstant.jsonSchemaVersions.draft01],
         index: 17,
         matches: [
             {

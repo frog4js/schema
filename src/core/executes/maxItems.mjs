@@ -9,7 +9,7 @@ import { getTypeofTypeByRefData } from "../../util/type.mjs";
 const configs = [
     {
         key: executeConstant.keys.maxItems,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 11,
         matches: [
             {

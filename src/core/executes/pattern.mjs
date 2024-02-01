@@ -8,7 +8,7 @@ import { pushError, mergeError, getSiblingSchemaRefData, getSiblingInstanceRefDa
 const configs = [
     {
         key: executeConstant.keys.pattern,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 13,
         matches: [
             {

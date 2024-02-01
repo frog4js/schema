@@ -8,7 +8,7 @@ import { mergeError } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.items,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 6,
         matches: [
             {

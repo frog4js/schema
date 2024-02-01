@@ -11,7 +11,7 @@ import { getSiblingInstanceRefData } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.requires,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 1,
         matches: [
             {

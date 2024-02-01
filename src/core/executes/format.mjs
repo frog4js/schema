@@ -65,7 +65,7 @@ function regex(str) {
 const configs = [
     {
         key: executeConstant.keys.format,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 12,
         matches: [
             {

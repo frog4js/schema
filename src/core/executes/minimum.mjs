@@ -8,7 +8,7 @@ import { pushError, getSiblingSchemaRefData } from "../helper.mjs";
 const configs = [
     {
         key: executeConstant.keys.minimum,
-        version: versionConstant.jsonSchemaVersion.all,
+        versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 8,
         matches: [
             {

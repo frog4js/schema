@@ -16,6 +16,8 @@ import minLengthConfigs from "./minLength.mjs";
 import enumConfigs from "./enum.mjs";
 import maxDecimalConfigs from "./maxDecimal.mjs";
 import disallowConfigs from "./disallow.mjs";
+import divisibleByConfigs from "./divisibleBy.mjs";
+import uniqueItemsConfigs from "./uniqueItems.mjs";
 export const executeConfigs = [
     ...optionalConfigs,
     ...requiresConfigs,
@@ -35,4 +37,6 @@ export const executeConfigs = [
     ...enumConfigs,
     ...maxDecimalConfigs,
     ...disallowConfigs,
+    ...divisibleByConfigs,
+    ...uniqueItemsConfigs,
 ].sort((item1, item2) => item1.index - item2.index);
