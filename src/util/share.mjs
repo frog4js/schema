@@ -1,29 +1,23 @@
 import {
-    assertObject,
-    assertPrimitiveArray,
-    assertPrimitiveBoolean,
-    assertPrimitiveNumber,
-    assertPrimitiveString,
-    dispatchPlatformType,
-    dispatchPlatformTypeByRefData,
     getPlatformType,
     getPlatformTypeByRefData,
+    dispatchPlatformType,
+    dispatchPlatformTypeByRefData,
+    getJsonType,
     getJsonTypeByRefData,
-    getTypeofTypesByRefData,
+    getTypeofTypeByRefData,
+    getTypeofType,
 } from "./type.mjs";
 import { deepClone, clone, toString } from "./data-operate.mjs";
 export const typeUtil = {
-    assertObject,
-    assertPrimitiveBoolean,
-    assertPrimitiveArray,
-    assertPrimitiveString,
-    assertPrimitiveNumber,
     getPlatformType,
     getPlatformTypeByRefData,
     dispatchPlatformType,
     dispatchPlatformTypeByRefData,
+    getJsonType,
     getJsonTypeByRefData,
-    getTypeofTypesByRefData,
+    getTypeofTypeByRefData,
+    getTypeofType,
 };
 
 export const dataOperateUtil = {

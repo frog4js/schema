@@ -1,6 +1,6 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
 import { pushError, mergeError, getSiblingSchemaRefData, getSiblingInstanceRefData } from "../helper.mjs";
-import { getTypeofTypesByRefData } from "../../util/type.mjs";
+import { getTypeofTypeByRefData } from "../../util/type.mjs";
 
 /**
  *

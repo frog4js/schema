@@ -1,13 +1,21 @@
-import { jsonTypes, platformType, typeofTypes, typeofTypeGroups, jsonTypeGroups } from "./type.mjs";
+import {
+    jsonTypes,
+    platformTypes,
+    typeofTypes,
+    typeofTypeGroups,
+    jsonTypeGroups,
+    platformTypeGroups,
+} from "./type.mjs";
 import { jsonSchemaVersion } from "./version.mjs";
 import { keys, ticks, pathKeys, errorCodes } from "./execute.mjs";
 
 export const typeConstant = {
     jsonTypes,
-    platformType,
+    platformTypes,
     typeofTypes,
     typeofTypeGroups,
     jsonTypeGroups,
+    platformTypeGroups,
 };
 export const versionConstant = {
     jsonSchemaVersion,

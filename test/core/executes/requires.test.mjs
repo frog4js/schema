@@ -3,7 +3,6 @@ import { describe, it, beforeEach } from "node:test";
 import * as assert from "assert";
 import { executeConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
-
 describe("test the executes.requires module", () => {
     describe("test the resolve(string) function", () => {
         it("should pass when validating an object with missing required property", () => {
@@ -22,7 +21,7 @@ describe("test the executes.requires module", () => {
                 0,
                 0,
                 [executeConstant.keys.properties, "age", executeConstant.keys.requires],
-                ["ago"],
+                ["age"],
                 undefined,
                 executeConstant.ticks.endExecute,
             );
@@ -45,7 +44,7 @@ describe("test the executes.requires module", () => {
                 0,
                 0,
                 [executeConstant.keys.properties, "age", executeConstant.keys.requires],
-                ["ago"],
+                ["age"],
                 executeConstant.ticks.nextExecute,
             );
             assert.equal(context.errors.length, 0);
@@ -59,17 +58,17 @@ describe("test the executes.requires module", () => {
                     type: "object",
                     properties: {
                         name: { type: "string" },
-                        age: { type: "string", maxLength: 3, requires: { maxLength: 2 } },
+                        age: { type: "string", maxLength: 1, requires: { maxLength: 2 } },
                     },
                 },
                 {
-                    age: "error",
+                    age: "test",
                 },
                 executeConstant.keys.requires,
                 0,
                 1,
                 [executeConstant.keys.properties, "age", executeConstant.keys.requires],
-                ["ago"],
+                ["age"],
                 [],
                 undefined,
                 executeConstant.ticks.endExecute,
@@ -82,7 +81,7 @@ describe("test the executes.requires module", () => {
                     type: "object",
                     properties: {
                         name: { type: "string" },
-                        age: { type: "string", maxLength: 3, requires: { maxLength: 6 } },
+                        age: { type: "string", maxLength: 1, requires: { maxLength: 6 } },
                     },
                 },
                 {
@@ -92,7 +91,7 @@ describe("test the executes.requires module", () => {
                 0,
                 1,
                 [executeConstant.keys.properties, "age", executeConstant.keys.requires],
-                ["ago"],
+                ["age"],
                 executeConstant.ticks.nextExecute,
             );
             assert.equal(context.errors.length, 0);

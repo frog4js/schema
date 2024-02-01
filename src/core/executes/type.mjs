@@ -1,6 +1,6 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
 import { pushError, mergeError } from "../helper.mjs";
-import { getTypeofTypesByRefData } from "../../util/type.mjs";
+import { getTypeofTypeByRefData } from "../../util/type.mjs";
 
 /**
  * @typedef {import("../../../types/core")}
@@ -20,7 +20,7 @@ function signTypeExecute(context, schemaType) {
     if (schemaType === schemaTypes.any) {
         return true;
     }
-    const instanceType = getTypeofTypesByRefData(context.instanceData.current);
+    const instanceType = getTypeofTypeByRefData(context.instanceData.current);
 
     if (schemaType === schemaTypes.integer) {
         return Number.isInteger(context.instanceData.current.$ref[context.instanceData.current.key]);
