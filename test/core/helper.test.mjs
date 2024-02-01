@@ -7,6 +7,8 @@ import {
     getParentInstance,
     getParentSchema,
     getCurrentSchemaRefData,
+    getSiblingInstanceRefData,
+    getSiblingSchemaRefData,
 } from "../../src/core/helper.mjs";
 import { executeConstant } from "../../src/constants/share.mjs";
 import { createContext, enterContext, backContext } from "../../src/core/engine.mjs";
@@ -265,6 +267,48 @@ describe("test the helper module", () => {
             const result = getParentSchema(context);
 
             assert.deepEqual(result, context.schemaData.origin["#arrayItem"].properties.name);
+        });
+    });
+    describe("test the getSiblingSchemaRefData function ", () => {
+        /**
+         * @type {Context}
+         */
+        let context;
+        beforeEach(() => {
+            context = createContext(schema, { array: [{ name: true, age: 1 }] });
+        });
+        it("should return correct sibling schema ref data for schema paths is empty array", () => {
+            let data = getSiblingSchemaRefData(context, "test");
+            assert.deepEqual(data.key, "root");
+        });
+
+        it("should correctly update context and return sibling schema ref data for 'type' key", () => {
+            enterContext(context, "properties");
+            let data = getSiblingSchemaRefData(context, "type");
+            assert.deepEqual(data.key, "type");
+            assert.deepEqual(data.$ref[data.key], "object");
+        });
+    });
+    describe("test the getSiblingInstanceRefData function ", () => {
+        /**
+         * @type {Context}
+         */
+        let context;
+        beforeEach(() => {
+            context = createContext(schema, { array: [{ name: true, age: 1 }] });
+        });
+        it("should return correct sibling instance ref data for instance paths is empty array", () => {
+            let data = getSiblingInstanceRefData(context, "test");
+            assert.deepEqual(data.key, "root");
+        });
+
+        it("should correctly update context and return instance schema ref data for 'name' key", () => {
+            enterContext(context, undefined, "array");
+            enterContext(context, undefined, 0);
+            enterContext(context, undefined, "name");
+            let data = getSiblingInstanceRefData(context, "name");
+            assert.equal(data.key, "name");
+            assert.equal(data.$ref[data.key], true);
         });
     });
 });

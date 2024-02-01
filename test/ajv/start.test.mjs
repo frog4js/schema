@@ -1,8 +1,9 @@
 import { describe, it, beforeEach } from "node:test";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import { schemaManage, instanceManage } from "../../src/api/share.mjs";
 
-describe("test the ajv", () => {
+describe.skip("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
         addFormats(ajv);
@@ -128,5 +129,90 @@ describe("test the ajv", () => {
         console.log(validate(data)); // true
         console.log(validate.errors); // true
         console.log(data); // { "foo": 1, "bar": "baz" }
+    });
+    it("diff-current", () => {
+        function generateRandomString(length) {
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let result = "";
+
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                result += characters.charAt(randomIndex);
+            }
+
+            return result;
+        }
+
+        const json = {
+            type: "object",
+            $id: "User",
+            title: "user properties definition",
+            description: "user properties definition",
+            additionalProperties: false,
+            properties: {
+                names: {
+                    type: "array",
+                    items: {
+                        type: "string",
+                    },
+                },
+            },
+        };
+
+        const data = {
+            names: [],
+        };
+        for (let i = 0; i < 10; i++) {
+            data.names.push(generateRandomString(500000));
+        }
+        const start = Date.now();
+
+        const schema = schemaManage.create(json);
+        instanceManage.validate(schema, data);
+
+        console.log("end====================", Date.now() - start);
+    });
+
+    it("diff-ajv", () => {
+        const ajv = new Ajv({ useDefaults: true, allErrors: true });
+
+        function generateRandomString(length) {
+            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let result = "";
+
+            for (let i = 0; i < length; i++) {
+                const randomIndex = Math.floor(Math.random() * characters.length);
+                result += characters.charAt(randomIndex);
+            }
+
+            return result;
+        }
+
+        const schema = {
+            type: "object",
+            $id: "User",
+            title: "user properties definition",
+            description: "user properties definition",
+            additionalProperties: false,
+            properties: {
+                names: {
+                    type: "array",
+                    items: {
+                        type: "string",
+                    },
+                },
+            },
+        };
+
+        const data = {
+            names: [],
+        };
+        for (let i = 0; i < 10; i++) {
+            data.names.push(generateRandomString(500000));
+        }
+        const start = Date.now();
+        const validate = ajv.compile(schema);
+        validate(data);
+        console.log("end====================", Date.now() - start);
     });
 });

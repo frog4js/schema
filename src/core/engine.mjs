@@ -1,6 +1,6 @@
 import { executeConfigs } from "./executes/share.mjs";
 import { executeConstant, typeConstant } from "../constants/share.mjs";
-import { getJsonTypeByRefData, getTypeofTypesByRefData } from "../util/type.mjs";
+import { getJsonTypeByRefData, getTypeofTypeByRefData } from "../util/type.mjs";
 import { getCurrentInstanceRefData, getCurrentSchemaRefData, setLogError } from "./helper.mjs";
 
 /**
@@ -132,7 +132,7 @@ function schemaExecute(context) {
         enterContext(context, execute.key);
         for (const match of execute.matches) {
             const schemaType = getJsonTypeByRefData(context.schemaData.current);
-            const instanceType = getTypeofTypesByRefData(context.instanceData.current);
+            const instanceType = getTypeofTypeByRefData(context.instanceData.current);
             let isExec = true;
             if (isExec && (!match.schemaTypes || match.schemaTypes.includes(schemaType))) {
                 isExec = true;

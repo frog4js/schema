@@ -2,6 +2,7 @@ import { engine } from "../core/share.mjs";
 import { draft } from "../definition/share.mjs";
 import { dataOperateUtil, typeUtil } from "../util/share.mjs";
 import crypto from "node:crypto";
+import { typeConstant } from "../constants/share.mjs";
 const drafts = Object.values(draft);
 
 function getId(schema) {
@@ -14,7 +15,9 @@ function getId(schema) {
  * @return {Schema}
  */
 function create(json) {
-    typeUtil.assertObject(json);
+    if (typeUtil.getTypeofType(json) !== typeConstant.typeofTypes.object) {
+        throw new Error(`schema is invalid: must be a JSON object`);
+    }
     const deepCloneSchema = dataOperateUtil.deepClone(json);
 
     let useDraft = draft.draft01;

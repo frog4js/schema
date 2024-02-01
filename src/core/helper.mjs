@@ -13,7 +13,7 @@ function slowGetRefDataDecodeAndDeepCloe(refData) {
     let isObject = false;
     typeUtil.dispatchPlatformTypeByRefData(refData, [
         {
-            type: typeConstant.platformType.ParentObject,
+            type: typeConstant.platformTypeGroups.parentObject,
             callback: () => {
                 isObject = true;
             },
@@ -169,26 +169,26 @@ function getParentInstance(context) {
     }
     return current;
 }
-
-/**
- *
- * @param {Context}context
- * @return {*}
- */
-
-function getCurrentSchemaValue(context) {
-    return context.schemaData.current.$ref[context.schemaData.current.key];
-}
-
-/**
- *
- * @param {Context}context
- * @return {*}
- */
-
-function getCurrentInstanceValue(context) {
-    return context.instanceData.current.$ref[context.instanceData.current.key];
-}
+//
+// /**
+//  *
+//  * @param {Context}context
+//  * @return {*}
+//  */
+//
+// function getCurrentSchemaValue(context) {
+//     return context.schemaData.current.$ref[context.schemaData.current.key];
+// }
+//
+// /**
+//  *
+//  * @param {Context}context
+//  * @return {*}
+//  */
+//
+// function getCurrentInstanceValue(context) {
+//     return context.instanceData.current.$ref[context.instanceData.current.key];
+// }
 
 export {
     pushError,
@@ -198,8 +198,8 @@ export {
     getCurrentSchemaRefData,
     getSiblingInstanceRefData,
     getCurrentInstanceRefData,
-    getCurrentSchemaValue,
-    getCurrentInstanceValue,
+    // getCurrentSchemaValue,
+    // getCurrentInstanceValue,
     getParentSchema,
     getParentInstance,
 };

@@ -11,8 +11,8 @@ describe("test the schema module", () => {
                     schemaManage.create(undefined);
                 },
                 {
-                    name: "TypeError",
-                    message: "Input value must be an object type, received undefined",
+                    name: "Error",
+                    message: "schema is invalid: must be a JSON object",
                 },
             );
         });
@@ -22,8 +22,8 @@ describe("test the schema module", () => {
                     schemaManage.create(1);
                 },
                 {
-                    name: "TypeError",
-                    message: "Input value must be an object type, received number",
+                    name: "Error",
+                    message: "schema is invalid: must be a JSON object",
                 },
             );
         });
@@ -33,8 +33,8 @@ describe("test the schema module", () => {
                     schemaManage.create([]);
                 },
                 {
-                    name: "TypeError",
-                    message: "Input value must be an object type, received array",
+                    name: "Error",
+                    message: "schema is invalid: must be a JSON object",
                 },
             );
         });

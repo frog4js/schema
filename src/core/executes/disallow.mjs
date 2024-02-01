@@ -15,7 +15,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.string],
                 resolve: (context) => {
-                    const instanceType = typeUtil.getTypeofTypesByRefData(context.instanceData.current);
+                    const instanceType = typeUtil.getTypeofTypeByRefData(context.instanceData.current);
                     if (instanceType === context.schemaData.current.$ref[context.schemaData.current.key]) {
                         pushError(context, "disallowMustNotBeDisallowType");
                     }
@@ -25,7 +25,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
                 resolve: (context) => {
-                    const instanceType = typeUtil.getTypeofTypesByRefData(context.instanceData.current);
+                    const instanceType = typeUtil.getTypeofTypeByRefData(context.instanceData.current);
                     if (context.schemaData.current.$ref[context.schemaData.current.key].includes(instanceType)) {
                         pushError(context, "disallowMustNotBeDisallowType");
                     }
