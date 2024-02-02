@@ -3,7 +3,7 @@
  */
 
 import { dataOperateUtil, typeUtil } from "../util/share.mjs";
-import { executeConstant, typeConstant } from "../constants/share.mjs";
+import { executeConstant, typeConstant, versionConstant } from "../constants/share.mjs";
 
 /**
  *
@@ -189,7 +189,35 @@ function getParentInstance(context) {
 // function getCurrentInstanceValue(context) {
 //     return context.instanceData.current.$ref[context.instanceData.current.key];
 // }
-
+/**
+ *
+ * @param {Context} context
+ * @return { boolean}
+ */
+function canEqualInstance(context) {
+    if (context.version < versionConstant.jsonSchemaVersions.draft03) {
+        let siblingSchema;
+        if (context.schemaData.current.key === executeConstant.keys.maximum) {
+            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.maximumCanEqual);
+        } else if (context.schemaData.current.key === executeConstant.keys.minimum) {
+            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.minimumCanEqual);
+        }
+        if (siblingSchema) {
+            return siblingSchema.$ref[siblingSchema.key];
+        }
+    } else {
+        let siblingSchema;
+        if (context.schemaData.current.key === executeConstant.keys.maximum) {
+            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.exclusiveMaximum);
+        } else if (context.schemaData.current.key === executeConstant.keys.minimum) {
+            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.exclusiveMinimum);
+        }
+        if (siblingSchema) {
+            return !siblingSchema.$ref[siblingSchema.key];
+        }
+    }
+    return true;
+}
 export {
     pushError,
     mergeError,
@@ -202,4 +230,5 @@ export {
     // getCurrentInstanceValue,
     getParentSchema,
     getParentInstance,
+    canEqualInstance,
 };

@@ -39,8 +39,10 @@ describe("test the schema module", () => {
             );
         });
 
-        it("should create an empty schema with default values", () => {
-            const schema = schemaManage.create({});
+        it("should create an empty schema with default values when $schema is draft-01", () => {
+            const schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-01/schema#",
+            });
             assert.ok(schema);
             assert.ok(schema.$schema);
             assert.ok(schema.$id);
@@ -55,11 +57,13 @@ describe("test the schema module", () => {
                 minItems: 0,
                 minLength: 0,
                 extends: {},
+                maximumCanEqual: true,
+                minimumCanEqual: true,
             });
         });
         it("should set the $schema property of the schema", () => {
             const schema = schemaManage.create({});
-            assert.equal(schema.$schema, "http://json-schema.org/draft-01/schema#");
+            assert.equal(schema.$schema, "http://json-schema.org/draft-03/schema#");
         });
 
         it("should set the $id property of the schema", () => {
@@ -109,7 +113,10 @@ describe("test the schema module", () => {
         });
 
         it("should create a schema with duplicate types", () => {
-            const schema = schemaManage.create({ type: ["string", "string"] });
+            const schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-01/schema#",
+                type: ["string", "string"],
+            });
             assert.ok(schema);
         });
 

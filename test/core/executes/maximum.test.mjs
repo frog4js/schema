@@ -9,6 +9,7 @@ describe("test the executes.maximum module", () => {
         it("should pass when validating a number with maximum constraint equal to limit", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-01/schema#",
                     type: "number",
                     maximum: 3,
                 },
@@ -25,6 +26,7 @@ describe("test the executes.maximum module", () => {
         it("should fail when validating a number above the maximum constraint", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-01/schema#",
                     type: "number",
                     maximum: 3.1,
                 },
@@ -42,6 +44,7 @@ describe("test the executes.maximum module", () => {
         it("should pass when validating an integer with maximum constraint and maximumCanEqual option set to true", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-01/schema#",
                     type: "integer",
                     maximum: 3,
                     maximumCanEqual: true,
@@ -59,9 +62,47 @@ describe("test the executes.maximum module", () => {
         it("should fail when validating a number with maximum constraint and maximumCanEqual option set to false", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-01/schema#",
                     type: "number",
                     maximum: 3,
                     maximumCanEqual: false,
+                },
+                3,
+                executeConstant.keys.maximum,
+                0,
+                0,
+                [executeConstant.keys.maximum],
+                undefined,
+            );
+            assert.equal(context.errors.length, 1);
+            assert.equal(context.errors[0].code, "maximumMustBeLessThanLimit");
+        });
+
+        it("should pass when validating an integer with maximum constraint and exclusiveMaximum option set to false", () => {
+            const context = execResolve(
+                {
+                    $schema: "http://json-schema.org/draft-03/schema#",
+                    type: "integer",
+                    maximum: 3,
+                    exclusiveMaximum: false,
+                },
+                3,
+                executeConstant.keys.maximum,
+                0,
+                0,
+                [executeConstant.keys.maximum],
+                undefined,
+            );
+            assert.equal(context.errors.length, 0);
+        });
+
+        it("should fail when validating a number with maximum constraint and maximumCanEqual option set to true", () => {
+            const context = execResolve(
+                {
+                    $schema: "http://json-schema.org/draft-03/schema#",
+                    type: "number",
+                    maximum: 3,
+                    exclusiveMaximum: true,
                 },
                 3,
                 executeConstant.keys.maximum,

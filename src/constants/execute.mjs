@@ -26,6 +26,11 @@ export const keys = {
     disallow: "disallow",
     divisibleBy: "divisibleBy",
     uniqueItems: "uniqueItems",
+    extends: "extends",
+    required: "required",
+    exclusiveMinimum: "exclusiveMinimum",
+    exclusiveMaximum: "exclusiveMaximum",
+    dependencies: "dependencies",
 };
 export const ticks = {
     nextExecute: 1,
@@ -85,4 +90,10 @@ export const errorCodes = {
 
     // divisibleBy
     divisibleByMustNotHaveDuplicateItems: "must not have duplicate items",
+
+    // require
+    requiredMustBeExists: "must be exists",
+
+    // dependencies
+    dependenciesMustBeTheRightDependency: "must be the right dependency",
 };

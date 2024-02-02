@@ -62,7 +62,37 @@ type SchemaV2 = {
     uniqueItems?: boolean;
 };
 
-type Schema = SchemaV1 | SchemaV2;
+type SchemaV3 = {
+    $ref?: string;
+    type?: SchemaBasicType | Array<SchemaBasicType | Schema>;
+    $schema?: string;
+    id?: string;
+    default?: any;
+    required?: boolean;
+    properties?: Record<string, SchemaV1>;
+    items?: SchemaV1 | Array<SchemaV1>;
+    additionalProperties?: boolean | SchemaV1;
+    requires?: string | SchemaV1;
+    minimum?: number;
+    maximum?: number;
+    exclusiveMinimum?: boolean;
+    exclusiveMaximum?: boolean;
+    minItems?: number;
+    maxItems?: number;
+    format?: string;
+    pattern?: string;
+    maxLength?: number;
+    minLength?: number;
+    enum?: Array<string>;
+    title?: string;
+    description?: string;
+    contentEncoding?: string;
+    disallow?: SchemaBasicType | Array<SchemaBasicType>;
+    divisibleBy?: number;
+    uniqueItems?: boolean;
+};
+
+type Schema = SchemaV1 | SchemaV2 | SchemaV3;
 
 type ExecuteError = {
     instancePath: string;

@@ -18,6 +18,8 @@ import maxDecimalConfigs from "./maxDecimal.mjs";
 import disallowConfigs from "./disallow.mjs";
 import divisibleByConfigs from "./divisibleBy.mjs";
 import uniqueItemsConfigs from "./uniqueItems.mjs";
+import requiredConfigs from "./required.mjs";
+import dependenciesConfig from "./dependencies.mjs";
 export const executeConfigs = [
     ...optionalConfigs,
     ...requiresConfigs,
@@ -39,4 +41,6 @@ export const executeConfigs = [
     ...disallowConfigs,
     ...divisibleByConfigs,
     ...uniqueItemsConfigs,
+    ...requiredConfigs,
+    ...dependenciesConfig,
 ].sort((item1, item2) => item1.index - item2.index);

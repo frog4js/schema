@@ -2,7 +2,7 @@ import { engine } from "../core/share.mjs";
 import { draft } from "../definition/share.mjs";
 import { dataOperateUtil, typeUtil } from "../util/share.mjs";
 import crypto from "node:crypto";
-import { typeConstant } from "../constants/share.mjs";
+import { typeConstant, versionConstant } from "../constants/share.mjs";
 const drafts = Object.values(draft);
 
 function getId(schema) {
@@ -19,10 +19,20 @@ function create(json) {
         throw new Error(`schema is invalid: must be a JSON object`);
     }
     const deepCloneSchema = dataOperateUtil.deepClone(json);
-
     let useDraft = draft.draft01;
+    for (const $schema of Object.keys(versionConstant.jsonSchema$schemaVersionMap)) {
+        if (
+            versionConstant.jsonSchema$schemaVersionMap[$schema] ===
+            versionConstant.jsonSchemaVersionGroups.lastVersions[0]
+        ) {
+            useDraft = drafts.find((x) => getId(x) === $schema);
+        }
+    }
     if (deepCloneSchema?.$schema) {
-        useDraft = drafts.find((x) => getId(x) === json.$schema);
+        const findItem = drafts.find((x) => getId(x) === json.$schema);
+        if (findItem) {
+            useDraft = findItem;
+        }
     }
     if (!useDraft) {
         throw new Error(`schema is invalid: $schema must be a valid value`);
