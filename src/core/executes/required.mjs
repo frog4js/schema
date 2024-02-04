@@ -9,7 +9,7 @@ import { dataOperateUtil } from "../../util/share.mjs";
 const configs = [
     {
         key: executeConstant.keys.required,
-        versions: versionConstant.jsonSchemaVersionGroups.draft03ByAdd,
+        versions: [versionConstant.jsonSchemaVersions.draft03],
         index: 2.1,
         matches: [
             {
@@ -17,6 +17,29 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
+                        pushError(context, "requiredMustBeExists");
+                    }
+                    return executeConstant.ticks.nextExecute;
+                },
+            },
+        ],
+    },
+    {
+        key: executeConstant.keys.required,
+        versions: versionConstant.jsonSchemaVersionGroups.draft04ByAdd,
+        index: 40,
+        matches: [
+            {
+                schemaTypes: [typeConstant.jsonTypes.array],
+                instanceTypes: [typeConstant.typeofTypes.object],
+                resolve: (context) => {
+                    const instanceKeys = new Set(
+                        Object.keys(context.instanceData.current.$ref[context.instanceData.current.key]),
+                    );
+                    const requiredKeys = context.schemaData.current.$ref[context.schemaData.current.key];
+
+                    const result = requiredKeys.every((key) => instanceKeys.has(key));
+                    if (!result) {
                         pushError(context, "requiredMustBeExists");
                     }
                     return executeConstant.ticks.nextExecute;

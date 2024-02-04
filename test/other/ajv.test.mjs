@@ -3,19 +3,17 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import { schemaManage, instanceManage } from "../../src/api/share.mjs";
 
-describe.skip("test the ajv", () => {
+describe("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
         addFormats(ajv);
 
         const schema = {
-            type: "object",
-            dependencies: {
-                name: {},
-            },
+            type: "number",
+            anyOf: [{ maximum: 3 }, { type: "integer" }],
         };
 
-        const data = { name: "111111" };
+        const data = 3.4;
 
         const validate = ajv.compile(schema);
         validate("ajv result", data);

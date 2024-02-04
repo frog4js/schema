@@ -94,8 +94,41 @@ type SchemaV3 = {
     patternProperties?: Record<string, Schema>;
     dependencies?: Record<string, string | Array<string> | Schema>;
 };
-
-type Schema = SchemaV1 | SchemaV2 | SchemaV3;
+type SchemaV4 = {
+    $ref?: string;
+    type?: Exclude<SchemaBasicType, "any"> | Array<Exclude<SchemaBasicType, "any"> | Schema>;
+    $schema?: "http://json-schema.org/draft-04/schema#";
+    id?: string;
+    definitions?: Record<string, Schema>;
+    default?: any;
+    required?: string[];
+    properties?: Record<string, Schema>;
+    items?: Schema | Array<Schema>;
+    additionalProperties?: boolean | Schema;
+    minimum?: number;
+    maximum?: number;
+    exclusiveMinimum?: boolean;
+    exclusiveMaximum?: boolean;
+    minItems?: number;
+    maxItems?: number;
+    format?: string;
+    pattern?: string;
+    maxLength?: number;
+    minLength?: number;
+    enum?: Array<string>;
+    title?: string;
+    description?: string;
+    contentEncoding?: string;
+    divisibleBy?: number;
+    uniqueItems?: boolean;
+    additionalItems?: boolean | Schema;
+    patternProperties?: Record<string, Schema>;
+    dependencies?: Record<string, string | Array<string> | Schema>;
+    anyOf?: Schema | Array<Schema>;
+    oneOf?: Schema | Array<Schema>;
+    allOf?: Schema | Array<Schema>;
+};
+type Schema = SchemaV1 | SchemaV2 | SchemaV3 | SchemaV4;
 
 type ExecuteError = {
     instancePath: string;

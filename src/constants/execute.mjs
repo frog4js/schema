@@ -32,6 +32,9 @@ export const keys = {
     dependencies: "dependencies",
     additionalItems: "additionalItems",
     patternProperties: "patternProperties",
+    oneOf: "oneOf",
+    anyOf: "anyOf",
+    allOf: "allOf",
 };
 export const ticks = {
     nextExecute: 1,
@@ -100,4 +103,13 @@ export const errorCodes = {
 
     // additionalItems
     additionalItemsMustNotHaveMoreItems: "must not have more items",
+
+    // oneOf
+    oneOfMustMatchExactlyOneSchemaInOneOf: "must match exactly one schema in oneOf",
+
+    // anyOf
+    anyOfMustMatchASchemaInAnyOf: "must match a schema in anyOf",
+
+    // allOf
+    allOfMustMatchSchemasInAllOf: "must match schemas in allOf",
 };

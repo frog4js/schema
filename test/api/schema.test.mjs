@@ -63,7 +63,7 @@ describe("test the schema module", () => {
         });
         it("should set the $schema property of the schema", () => {
             const schema = schemaManage.create({});
-            assert.equal(schema.$schema, "http://json-schema.org/draft-03/schema#");
+            assert.equal(schema.$schema, "http://json-schema.org/draft-04/schema#");
         });
 
         it("should set the $id property of the schema", () => {

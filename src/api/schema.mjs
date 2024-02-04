@@ -65,6 +65,8 @@ function create(json, defaultConfig) {
             context.instanceData.origin[key] = childContext.instanceData.origin;
         }
     }
-    return context.instanceData.origin;
+
+    // definitions
+    if (json.definitions) return context.instanceData.origin;
 }
 export { create };
