@@ -1,7 +1,6 @@
 import { engine } from "../core/share.mjs";
 import { draft } from "../definition/share.mjs";
 import { dataOperateUtil, typeUtil } from "../util/share.mjs";
-import crypto from "node:crypto";
 import { typeConstant, versionConstant } from "../constants/share.mjs";
 const drafts = Object.values(draft);
 
@@ -9,12 +8,22 @@ function getId(schema) {
     return schema.$id || schema.id;
 }
 
+function assignDefault(defaultConfig) {
+    return Object.assign(
+        {
+            baseURI: "https://github.com/frog4js/schema",
+        },
+        defaultConfig,
+    );
+}
 /**
  *
  * @param {Record<string, *> | Schema} json
+ * @param {{baseURI}} defaultConfig
  * @return {Schema}
  */
-function create(json) {
+function create(json, defaultConfig) {
+    defaultConfig = assignDefault(defaultConfig);
     if (typeUtil.getTypeofType(json) !== typeConstant.typeofTypes.object) {
         throw new Error(`schema is invalid: must be a JSON object`);
     }
@@ -39,8 +48,9 @@ function create(json) {
     }
 
     deepCloneSchema.$schema = getId(useDraft);
-    if (!deepCloneSchema.$id) {
-        deepCloneSchema.$id = "random-" + crypto.randomUUID();
+    if (getId(deepCloneSchema)) {
+        const url = new URL(getId(deepCloneSchema), defaultConfig.baseURI);
+        //deepCloneSchema.$id = url.href;
     }
     const context = engine.startExecute(useDraft, deepCloneSchema);
     if (context.errors.length > 0) {

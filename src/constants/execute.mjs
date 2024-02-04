@@ -21,7 +21,6 @@ export const keys = {
     enum: "enum",
     title: "title",
     description: "description",
-    contentEncoding: "contentEncoding", // ?
     maxDecimal: "maxDecimal",
     disallow: "disallow",
     divisibleBy: "divisibleBy",
@@ -31,6 +30,8 @@ export const keys = {
     exclusiveMinimum: "exclusiveMinimum",
     exclusiveMaximum: "exclusiveMaximum",
     dependencies: "dependencies",
+    additionalItems: "additionalItems",
+    patternProperties: "patternProperties",
 };
 export const ticks = {
     nextExecute: 1,
@@ -96,4 +97,7 @@ export const errorCodes = {
 
     // dependencies
     dependenciesMustBeTheRightDependency: "must be the right dependency",
+
+    // additionalItems
+    additionalItemsMustNotHaveMoreItems: "must not have more items",
 };

@@ -6,14 +6,14 @@ type SchemaBasicType = "string" | "boolean" | "array" | "object" | "integer" | "
 type SchemaV1 = {
     $ref?: string;
     type?: SchemaBasicType | Array<SchemaBasicType | Schema>;
-    $schema?: string;
-    $id?: string;
+    $schema?: "http://json-schema.org/draft-01/schema#";
+    id?: string;
     default?: any;
     optional?: boolean;
-    properties?: Record<string, SchemaV1>;
-    items?: SchemaV1 | Array<SchemaV1>;
-    additionalProperties?: boolean | SchemaV1;
-    requires?: string | SchemaV1;
+    properties?: Record<string, Schema>;
+    items?: Schema | Array<Schema>;
+    additionalProperties?: boolean | Schema;
+    requires?: string | Schema;
     minimum?: number;
     maximum?: number;
     minimumCanEqual?: boolean;
@@ -35,14 +35,14 @@ type SchemaV1 = {
 type SchemaV2 = {
     $ref?: string;
     type?: SchemaBasicType | Array<SchemaBasicType | Schema>;
-    $schema?: string;
-    $id?: string;
+    $schema?: "http://json-schema.org/draft-02/schema#";
+    id?: string;
     default?: any;
     optional?: boolean;
-    properties?: Record<string, SchemaV1>;
-    items?: SchemaV1 | Array<SchemaV1>;
-    additionalProperties?: boolean | SchemaV1;
-    requires?: string | SchemaV1;
+    properties?: Record<string, Schema>;
+    items?: Schema | Array<Schema>;
+    additionalProperties?: boolean | Schema;
+    requires?: string | Schema;
     minimum?: number;
     maximum?: number;
     minimumCanEqual?: boolean;
@@ -65,14 +65,14 @@ type SchemaV2 = {
 type SchemaV3 = {
     $ref?: string;
     type?: SchemaBasicType | Array<SchemaBasicType | Schema>;
-    $schema?: string;
+    $schema?: "http://json-schema.org/draft-03/schema#";
     id?: string;
     default?: any;
     required?: boolean;
-    properties?: Record<string, SchemaV1>;
-    items?: SchemaV1 | Array<SchemaV1>;
-    additionalProperties?: boolean | SchemaV1;
-    requires?: string | SchemaV1;
+    properties?: Record<string, Schema>;
+    items?: Schema | Array<Schema>;
+    additionalProperties?: boolean | Schema;
+    requires?: string | Schema;
     minimum?: number;
     maximum?: number;
     exclusiveMinimum?: boolean;
@@ -90,6 +90,9 @@ type SchemaV3 = {
     disallow?: SchemaBasicType | Array<SchemaBasicType>;
     divisibleBy?: number;
     uniqueItems?: boolean;
+    additionalItems?: boolean | Schema;
+    patternProperties?: Record<string, Schema>;
+    dependencies?: Record<string, string | Array<string> | Schema>;
 };
 
 type Schema = SchemaV1 | SchemaV2 | SchemaV3;

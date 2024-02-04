@@ -45,7 +45,7 @@ describe("test the schema module", () => {
             });
             assert.ok(schema);
             assert.ok(schema.$schema);
-            assert.ok(schema.$id);
+            assert.equal(schema.$id, undefined);
             delete schema.$schema;
             delete schema.$id;
             assert.deepEqual(schema, {

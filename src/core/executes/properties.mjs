@@ -14,8 +14,8 @@ const configs = [
                 schemaTypes: [typeConstant.typeofTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
                 resolve: (context, { startChildExecute }) => {
-                    const instanceData = context.schemaData.current.$ref[context.schemaData.current.key];
-                    const currentSchemaKeys = Object.keys(instanceData || {});
+                    const currentSchemaData = context.schemaData.current.$ref[context.schemaData.current.key];
+                    const currentSchemaKeys = Object.keys(currentSchemaData);
                     for (const propertyKey of currentSchemaKeys) {
                         startChildExecute(context, propertyKey, propertyKey);
                     }

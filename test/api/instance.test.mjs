@@ -416,4 +416,162 @@ describe("test the instance module", () => {
             assert.equal(filerErrorLength(context, ["userGroups"], ["uniqueItems"]), 0);
         });
     });
+    describe("schema is draft-03 change", () => {
+        let schema;
+        beforeEach(() => {
+            schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-03/schema#",
+                type: "object",
+                title: "user properties definition",
+                description: "user properties definition",
+                additionalProperties: false,
+                "#UserGroup": {
+                    type: "object",
+                    properties: {
+                        groupName: { type: "string" },
+                    },
+                },
+                required: true,
+                properties: {
+                    name: {
+                        type: "string",
+                        maxLength: 20,
+                        minLength: 1,
+                        pattern: "[a-zA-z]{1,}",
+                        required: true,
+                        title: "user name",
+                    },
+                    gender: {
+                        type: "string",
+                        enum: ["man", "woman"],
+                        optional: false,
+                        title: "user gender, man or woman",
+                    },
+                    age: {
+                        type: "integer",
+                        maximum: 100,
+                        minimum: 1,
+                        default: 1,
+                        required: true,
+                    },
+                    email: {
+                        type: "string",
+                        format: "email",
+                    },
+                    createdAt: {
+                        type: "string",
+                        format: "utc-millisec",
+                    },
+                    updatedAt: {
+                        type: "string",
+                        format: "utc-millisec",
+                    },
+                    userGroups: {
+                        type: "array",
+                        items: {
+                            $ref: "#UserGroup",
+                        },
+                        uniqueItems: true,
+                        maxItems: 5,
+                        minItems: 1,
+                    },
+                    area: {
+                        type: ["array", "string"],
+                        items: [
+                            {
+                                type: "string",
+                            },
+                        ],
+                        additionalItems: {
+                            type: "string",
+                            maxLength: 4,
+                        },
+                        maxItems: 3,
+                        minItems: 3,
+                        pattern: "[^,]*,[^,]*,[^,]*",
+                    },
+                    balance: {
+                        type: "number",
+                        divisibleBy: 0.003,
+                        default: 0,
+                    },
+                    extendInfo: {
+                        type: "object",
+                        properties: {
+                            picture: {
+                                type: ["string", "null"],
+                                format: "uri",
+                            },
+                            isAdmin: {
+                                type: "boolean",
+                                default: false,
+                            },
+                        },
+                        required: false,
+                        default: {
+                            picture: null,
+                            isAdmin: false,
+                        },
+                    },
+                },
+                dependencies: {
+                    updatedAt: "createdAt",
+                },
+                patternProperties: {
+                    "name|gender": {
+                        maxLength: 20,
+                    },
+                },
+            });
+        });
+        it("should report errors for 'area' array items exceeding maxLength", () => {
+            const context = instanceManage.validate(schema, {
+                area: ["area11", "area11", "area11"],
+            });
+            assert.equal(filerErrorLength(context, undefined, ["maxLength"], ["/area/1", "/area/2"]), 2);
+        });
+        it("should not report errors for 'area' array items within maxLength", () => {
+            const context = instanceManage.validate(schema, {
+                area: ["area11", "area", "area"],
+            });
+            assert.equal(filerErrorLength(context, undefined, ["maxLength"], ["/area/1", "/area/2"]), 0);
+        });
+
+        it("should not report required error for empty 'name' and optional 'gender'", () => {
+            const context = instanceManage.validate(schema, {
+                name: "",
+            });
+            assert.equal(filerErrorLength(context, ["required"], ["name"]), 0);
+            assert.equal(filerErrorLength(context, ["optional"], ["gender"]), 0);
+        });
+
+        it("should report error for 'updatedAt' without matching 'createdAt' dependency", () => {
+            const context = instanceManage.validate(schema, {
+                updatedAt: "1122",
+            });
+            assert.equal(filerErrorLength(context, undefined, ["updatedAt"]), 1);
+        });
+
+        it("should not report error when both 'updatedAt' and 'createdAt' are provided", () => {
+            const context = instanceManage.validate(schema, {
+                updatedAt: "1122",
+                createdAt: "1122",
+            });
+            assert.equal(filerErrorLength(context, undefined, ["updatedAt"]), 0);
+        });
+        it("should report maxLength errors for 'name' and 'age' exceeding limit", () => {
+            const context = instanceManage.validate(schema, {
+                name: "11111111111111111111111111111",
+                age: "11111111111111111111111111111",
+            });
+            assert.equal(filerErrorLength(context, ["name", "age"], ["maxLength"]), 2);
+        });
+        it("should not report maxLength errors for valid 'name' and 'age' values", () => {
+            const context = instanceManage.validate(schema, {
+                name: "test",
+                age: "man",
+            });
+            assert.equal(filerErrorLength(context, ["name", "age"], ["maxLength"]), 0);
+        });
+    });
 });

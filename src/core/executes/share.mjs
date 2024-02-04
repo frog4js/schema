@@ -20,6 +20,8 @@ import divisibleByConfigs from "./divisibleBy.mjs";
 import uniqueItemsConfigs from "./uniqueItems.mjs";
 import requiredConfigs from "./required.mjs";
 import dependenciesConfig from "./dependencies.mjs";
+import additionalItemsConfig from "./additionalItems.mjs";
+import patternPropertiesConfig from "./patternProperties.mjs";
 export const executeConfigs = [
     ...optionalConfigs,
     ...requiresConfigs,
@@ -43,4 +45,6 @@ export const executeConfigs = [
     ...uniqueItemsConfigs,
     ...requiredConfigs,
     ...dependenciesConfig,
+    ...additionalItemsConfig,
+    ...patternPropertiesConfig,
 ].sort((item1, item2) => item1.index - item2.index);

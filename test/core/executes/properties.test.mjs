@@ -36,6 +36,7 @@ describe("test the executes.properties module", () => {
             const context = execResolve(
                 {
                     type: "object",
+                    properties: {},
                 },
                 {
                     name: "test",

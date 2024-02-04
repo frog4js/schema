@@ -164,11 +164,5 @@ export default {
             format: "uri",
         },
     },
-    // 命名解决 TODO
-    // "dependencies": {
-    //     "exclusiveMinimum": "minimum",
-    //     "exclusiveMaximum": "maximum"
-    // },
-
     default: {},
 };

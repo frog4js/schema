@@ -18,16 +18,16 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                /**
-                 *
-                 * @param {Context} context
-                 */
                 resolve: (context, { enterContext, backContext, startRefOrSchemaExecute }) => {
                     const schema = context.schemaData.current.$ref[context.schemaData.current.key];
                     const instance = context.instanceData.current.$ref[context.instanceData.current.key];
                     for (const key of Object.keys(schema)) {
+                        if (!(key in instance)) {
+                            continue;
+                        }
                         enterContext(context, key);
                         const type = typeUtil.getTypeofTypeByRefData(context.schemaData.current);
+
                         let validResult = true;
                         switch (type) {
                             case typeConstant.typeofTypes.string:
@@ -44,10 +44,11 @@ const configs = [
                                 break;
                         }
                         if (!validResult) {
-                            pushError(context, "dependencies");
+                            pushError(context, "dependenciesMustBeTheRightDependency");
                         }
                         backContext(context, key);
                     }
+                    return executeConstant.ticks.nextExecute;
                 },
             },
         ],
