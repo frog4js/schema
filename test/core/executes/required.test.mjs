@@ -4,20 +4,20 @@ import * as assert from "assert";
 import { executeConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
 
-describe("test the executes.optional module", () => {
+describe("test the executes.required module", () => {
     describe("test the resolve function", () => {
-        it("should pass when validating an optional string which is undefined", () => {
+        it("should pass when validating an required string which is undefined", () => {
             const context = execResolve(
                 {
-                    $schema: "http://json-schema.org/draft-01/schema#",
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
-                    optional: true,
+                    required: false,
                 },
                 undefined,
-                executeConstant.keys.optional,
+                executeConstant.keys.required,
                 0,
                 0,
-                [executeConstant.keys.optional],
+                [executeConstant.keys.required],
                 undefined,
             );
             assert.equal(context.errors.length, 0);
@@ -28,17 +28,17 @@ describe("test the executes.optional module", () => {
                 {
                     $schema: "http://json-schema.org/draft-01/schema#",
                     type: "string",
-                    optional: false,
+                    required: true,
                 },
                 undefined,
-                executeConstant.keys.optional,
+                executeConstant.keys.required,
                 0,
                 0,
-                [executeConstant.keys.optional],
+                [executeConstant.keys.required],
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "optionalMustBeExists");
+            assert.equal(context.errors[0].code, "requiredMustBeExists");
         });
     });
 });

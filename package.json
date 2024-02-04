@@ -30,7 +30,8 @@
         "ajv": "^8.12.0",
         "ajv-formats": "^2.1.1",
         "ajv-keywords": "^5.1.0",
-        "rimraf": "^5.0.5"
+        "rimraf": "^5.0.5",
+        "@cfworker/json-schema": "^1.12.8"
     },
     "commitlint": {
         "extends": [

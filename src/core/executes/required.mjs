@@ -1,8 +1,6 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
 import { pushError } from "../helper.mjs";
-/**
- * @typedef {import("../../../types/core")}
- */
+import { dataOperateUtil } from "../../util/share.mjs";
 
 /**
  *
@@ -10,16 +8,16 @@ import { pushError } from "../helper.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.optional,
-        versions: [versionConstant.jsonSchemaVersions.draft01, versionConstant.jsonSchemaVersions.draft02],
-        index: 2,
+        key: executeConstant.keys.required,
+        versions: versionConstant.jsonSchemaVersionGroups.draft03ByAdd,
+        index: 2.1,
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.boolean],
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
-                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        pushError(context, "optionalMustBeExists");
+                    if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
+                        pushError(context, "requiredMustBeExists");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

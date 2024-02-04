@@ -3,102 +3,26 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import { schemaManage, instanceManage } from "../../src/api/share.mjs";
 
-describe("test the ajv", () => {
+describe.skip("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
         addFormats(ajv);
 
         const schema = {
             type: "object",
-            properties: {
-                val: { type: "array", uniqueItems: true },
+            dependencies: {
+                name: {},
             },
         };
 
-        const data = {
-            val: [
-                { b: 1, a: 2 },
-                { a: 2, b: 1 },
-            ],
-        };
+        const data = { name: "111111" };
 
         const validate = ajv.compile(schema);
-        validate(data);
+        validate("ajv result", data);
         console.log("ajv1", validate(data)); // true
         console.log(validate.errors); // true
         console.log(data); // { "foo": 1, "bar": "baz" }
     });
-
-    function validate10(data, { instancePath = "", parentData, parentDataProperty, rootData = data } = {}) {
-        let vErrors = null;
-        let errors = 0;
-        if (data && typeof data == "object" && !Array.isArray(data)) {
-            if (data.val !== undefined) {
-                let data0 = data.val;
-                if (Array.isArray(data0)) {
-                    let i0 = data0.length;
-                    let j0;
-                    if (i0 > 1) {
-                        outer0: for (; i0--; ) {
-                            for (j0 = i0; j0--; ) {
-                                if (func0(data0[i0], data0[j0])) {
-                                    const err0 = {
-                                        instancePath: instancePath + "/val",
-                                        schemaPath: "#/properties/val/uniqueItems",
-                                        keyword: "uniqueItems",
-                                        params: { i: i0, j: j0 },
-                                        message:
-                                            "must NOT have duplicate items (items ## " +
-                                            j0 +
-                                            " and " +
-                                            i0 +
-                                            " are identical)",
-                                    };
-                                    if (vErrors === null) {
-                                        vErrors = [err0];
-                                    } else {
-                                        vErrors.push(err0);
-                                    }
-                                    errors++;
-                                    break outer0;
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    const err1 = {
-                        instancePath: instancePath + "/val",
-                        schemaPath: "#/properties/val/type",
-                        keyword: "type",
-                        params: { type: "array" },
-                        message: "must be array",
-                    };
-                    if (vErrors === null) {
-                        vErrors = [err1];
-                    } else {
-                        vErrors.push(err1);
-                    }
-                    errors++;
-                }
-            }
-        } else {
-            const err2 = {
-                instancePath,
-                schemaPath: "#/type",
-                keyword: "type",
-                params: { type: "object" },
-                message: "must be object",
-            };
-            if (vErrors === null) {
-                vErrors = [err2];
-            } else {
-                vErrors.push(err2);
-            }
-            errors++;
-        }
-        validate10.errors = vErrors;
-        return errors === 0;
-    }
 
     it("ajv2", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
@@ -220,6 +144,7 @@ describe("test the ajv", () => {
         }
 
         const json = {
+            $schema: "http://json-schema.org/draft-01/schema#",
             type: "object",
             $id: "User",
             title: "user properties definition",

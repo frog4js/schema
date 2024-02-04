@@ -1,6 +1,5 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError, mergeError, getSiblingSchemaRefData, getSiblingInstanceRefData } from "../helper.mjs";
-
+import { pushError, canEqualInstance } from "../helper.mjs";
 /**
  *
  * @type {Array<ExecuteConfig>}
@@ -15,8 +14,7 @@ const configs = [
                 schemaTypes: [typeConstant.jsonTypes.number],
                 instanceTypes: [typeConstant.typeofTypes.number],
                 resolve: (context) => {
-                    const siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.maximumCanEqual);
-                    if (siblingSchema.$ref[siblingSchema.key] === false) {
+                    if (canEqualInstance(context) === false) {
                         if (
                             context.instanceData.current.$ref[context.instanceData.current.key] >=
                             context.schemaData.current.$ref[context.schemaData.current.key]

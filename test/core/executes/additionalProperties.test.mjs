@@ -50,7 +50,7 @@ describe("test the executes.additionalProperties module", () => {
             );
 
             assert.equal(context.errors.length, 1);
-            context.errors[0].code = "additionalPropertiesMustNotHaveAdditionalProperties";
+            assert.equal(context.errors[0].code, "additionalPropertiesMustNotHaveAdditionalProperties");
         });
 
         it("should pass when no additional properties are provided", () => {
@@ -157,7 +157,7 @@ describe("test the executes.additionalProperties module", () => {
             );
 
             assert.equal(context.errors.length, 1);
-            context.errors[0].code = "additionalPropertiesMustNotHaveAdditionalProperties";
+            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
         });
 
         it("should fail when additional properties do not match the schema", () => {
@@ -180,7 +180,7 @@ describe("test the executes.additionalProperties module", () => {
             );
 
             assert.equal(context.errors.length, 1);
-            context.errors[0].code = "additionalPropertiesMustNotHaveAdditionalProperties";
+            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
         });
 
         it("should pass when additional properties match the schema", () => {
@@ -228,7 +228,7 @@ describe("test the executes.additionalProperties module", () => {
             );
 
             assert.equal(context.errors.length, 1);
-            context.errors[0].code = "additionalPropertiesMustNotHaveAdditionalProperties";
+            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
         });
 
         it("should pass when additional properties match the schema", () => {

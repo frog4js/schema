@@ -21,11 +21,17 @@ export const keys = {
     enum: "enum",
     title: "title",
     description: "description",
-    contentEncoding: "contentEncoding", // ?
     maxDecimal: "maxDecimal",
     disallow: "disallow",
     divisibleBy: "divisibleBy",
     uniqueItems: "uniqueItems",
+    extends: "extends",
+    required: "required",
+    exclusiveMinimum: "exclusiveMinimum",
+    exclusiveMaximum: "exclusiveMaximum",
+    dependencies: "dependencies",
+    additionalItems: "additionalItems",
+    patternProperties: "patternProperties",
 };
 export const ticks = {
     nextExecute: 1,
@@ -85,4 +91,13 @@ export const errorCodes = {
 
     // divisibleBy
     divisibleByMustNotHaveDuplicateItems: "must not have duplicate items",
+
+    // require
+    requiredMustBeExists: "must be exists",
+
+    // dependencies
+    dependenciesMustBeTheRightDependency: "must be the right dependency",
+
+    // additionalItems
+    additionalItemsMustNotHaveMoreItems: "must not have more items",
 };
