@@ -17,7 +17,7 @@ const configs = [
                 resolve: (context, { enterContext, backContext, startRefOrSchemaExecute }) => {
                     let matchCount = 0;
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
-                    for (let index = 0; index < schemaArrayLength - 1; index++) {
+                    for (let index = 0; index < schemaArrayLength; index++) {
                         enterContext(context, index);
                         const errors = startRefOrSchemaExecute(context, index, undefined);
                         if (errors.length === 0) {
@@ -25,7 +25,7 @@ const configs = [
                         }
                         backContext(context, index);
                     }
-                    if (matchCount !== 0) {
+                    if (matchCount !== 1) {
                         pushError(context, "oneOfMustMatchExactlyOneSchemaInOneOf");
                     }
                     return executeConstant.ticks.nextExecute;

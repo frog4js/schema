@@ -9,11 +9,19 @@ describe("test the ajv", () => {
         addFormats(ajv);
 
         const schema = {
-            type: "number",
-            anyOf: [{ maximum: 3 }, { type: "integer" }],
+            type: "object",
+            properties: {
+                name: {
+                    default: "1",
+                },
+                age: {
+                    default: 1,
+                },
+            },
+            required: ["age", "name"],
         };
 
-        const data = 3.4;
+        const data = {};
 
         const validate = ajv.compile(schema);
         validate("ajv result", data);

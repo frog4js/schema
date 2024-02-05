@@ -16,16 +16,18 @@ const configs = [
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
                 resolve: (context, { enterContext, backContext, startRefOrSchemaExecute }) => {
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
-                    for (let index = 0; index < schemaArrayLength - 1; index++) {
+                    let status = false;
+                    for (let index = 0; index < schemaArrayLength; index++) {
                         enterContext(context, index);
                         const errors = startRefOrSchemaExecute(context, index, undefined);
-                        if (errors.length > 0) {
-                            mergeError(context, errors);
-                        }
                         backContext(context, index);
-                        if (errors.length > 0) {
+                        if (errors.length === 0) {
+                            status = true;
                             break;
                         }
+                    }
+                    if (!status) {
+                        pushError(context, "anyOfMustMatchASchemaInAnyOf");
                     }
 
                     return executeConstant.ticks.nextExecute;

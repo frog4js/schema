@@ -127,6 +127,9 @@ type SchemaV4 = {
     anyOf?: Schema | Array<Schema>;
     oneOf?: Schema | Array<Schema>;
     allOf?: Schema | Array<Schema>;
+    minProperties?: number;
+    maxProperties?: number;
+    multipleOf?: number;
 };
 type Schema = SchemaV1 | SchemaV2 | SchemaV3 | SchemaV4;
 

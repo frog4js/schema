@@ -25,6 +25,10 @@ import patternPropertiesConfigs from "./patternProperties.mjs";
 import anyOfConfigs from "./anyOf.mjs";
 import oneOfConfigs from "./oneOf.mjs";
 import allOfConfigs from "./allOf.mjs";
+import notConfigs from "./not.mjs";
+import minPropertiesConfigs from "./minProperties.mjs";
+import maxPropertiesConfigs from "./maxProperties.mjs";
+import multipleOfConfigs from "./multipleOf.mjs";
 export const executeConfigs = [
     ...optionalConfigs,
     ...requiresConfigs,
@@ -53,4 +57,8 @@ export const executeConfigs = [
     ...allOfConfigs,
     ...anyOfConfigs,
     ...oneOfConfigs,
+    ...notConfigs,
+    ...minPropertiesConfigs,
+    ...maxPropertiesConfigs,
+    ...multipleOfConfigs,
 ].sort((item1, item2) => item1.index - item2.index);

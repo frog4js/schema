@@ -9,6 +9,18 @@ describe("test the hyprtjump json schema", () => {
 
                 type: "number",
                 allOf: [{ maximum: 3 }, { type: "integer" }],
+                definitions: {
+                    a: {
+                        b: {
+                            c: {
+                                type: "string",
+                                d: {
+                                    type: "number",
+                                },
+                            },
+                        },
+                    },
+                },
             },
             "draft-04",
         );

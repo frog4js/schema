@@ -16,7 +16,7 @@ const configs = [
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
                 resolve: (context, { enterContext, backContext, startRefOrSchemaExecute }) => {
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
-                    for (let index = 0; index < schemaArrayLength - 1; index++) {
+                    for (let index = 0; index < schemaArrayLength; index++) {
                         enterContext(context, index);
                         const errors = startRefOrSchemaExecute(context, index, undefined);
                         backContext(context, index);

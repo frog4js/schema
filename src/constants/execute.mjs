@@ -35,6 +35,10 @@ export const keys = {
     oneOf: "oneOf",
     anyOf: "anyOf",
     allOf: "allOf",
+    not: "not",
+    minProperties: "minProperties",
+    maxProperties: "maxProperties",
+    multipleOf: "multipleOf",
 };
 export const ticks = {
     nextExecute: 1,
@@ -93,7 +97,7 @@ export const errorCodes = {
     typeMustBeOfTheType: "must be of the type",
 
     // divisibleBy
-    divisibleByMustNotHaveDuplicateItems: "must not have duplicate items",
+    divisibleByMustBeDivisible: "must be divisible",
 
     // require
     requiredMustBeExists: "must be exists",
@@ -112,4 +116,12 @@ export const errorCodes = {
 
     // allOf
     allOfMustMatchSchemasInAllOf: "must match schemas in allOf",
+
+    // not
+    notMustNotBeValid: "must NOT be valid",
+    // minProperties
+    minPropertiesMustBeLessThanOrEqualToLimit: "must be less than or equal to limit",
+    // maxProperties
+    maxPropertiesMustBeGreaterThanOrEqualToLimit: "must be greater than or equal to limit",
+    multipleOfMustBeDivisible: "must be divisible",
 };

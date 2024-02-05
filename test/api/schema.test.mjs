@@ -74,7 +74,10 @@ describe("test the schema module", () => {
         it("should throw an Error when the type property is invalid", () => {
             assert.throws(
                 () => {
-                    schemaManage.create({ type: true });
+                    schemaManage.create({
+                        $schema: "http://json-schema.org/draft-03/schema#",
+                        type: true,
+                    });
                 },
                 {
                     name: "Error",
@@ -83,14 +86,21 @@ describe("test the schema module", () => {
         });
 
         it("should set child schema with a valid type", () => {
-            const schema = schemaManage.create({ "#name": { type: "string" } });
+            const schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-03/schema#",
+                "#name": { type: "string" },
+            });
             assert.equal(schema["#name"].type, "string");
         });
 
         it("should set child schema with a invalid type", () => {
             assert.throws(
                 () => {
-                    schemaManage.create({ "#name": { type: true } });
+                    schemaManage.create({
+                        $schema: "http://json-schema.org/draft-03/schema#",
+
+                        "#name": { type: true },
+                    });
                 },
                 {
                     name: "Error",
@@ -99,7 +109,10 @@ describe("test the schema module", () => {
 
             assert.throws(
                 () => {
-                    schemaManage.create({ "#name": { type: { $ref: "#" } } });
+                    schemaManage.create({
+                        $schema: "http://json-schema.org/draft-03/schema#",
+                        "#name": { type: { $ref: "#" } },
+                    });
                 },
                 {
                     name: "Error",
@@ -108,7 +121,10 @@ describe("test the schema module", () => {
         });
 
         it("should create a schema with not found types", () => {
-            const schema = schemaManage.create({ type: ["string", "number", "notFound"] });
+            const schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-03/schema#",
+                type: ["string", "number", "notFound"],
+            });
             assert.ok(schema);
         });
 
@@ -123,7 +139,10 @@ describe("test the schema module", () => {
         it("should throw an error when invalid types are provided", () => {
             assert.throws(
                 () => {
-                    schemaManage.create({ type: ["string", 1, true, BigInt("21")] });
+                    schemaManage.create({
+                        $schema: "http://json-schema.org/draft-03/schema#",
+                        type: ["string", 1, true, BigInt("21")],
+                    });
                 },
                 {
                     name: "Error",
@@ -133,6 +152,7 @@ describe("test the schema module", () => {
 
         it("should create a schema with nested types and $ref", () => {
             const schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-03/schema#",
                 type: [
                     "string",
                     {},
