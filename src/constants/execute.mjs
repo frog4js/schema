@@ -32,6 +32,13 @@ export const keys = {
     dependencies: "dependencies",
     additionalItems: "additionalItems",
     patternProperties: "patternProperties",
+    oneOf: "oneOf",
+    anyOf: "anyOf",
+    allOf: "allOf",
+    not: "not",
+    minProperties: "minProperties",
+    maxProperties: "maxProperties",
+    multipleOf: "multipleOf",
 };
 export const ticks = {
     nextExecute: 1,
@@ -90,7 +97,7 @@ export const errorCodes = {
     typeMustBeOfTheType: "must be of the type",
 
     // divisibleBy
-    divisibleByMustNotHaveDuplicateItems: "must not have duplicate items",
+    divisibleByMustBeDivisible: "must be divisible",
 
     // require
     requiredMustBeExists: "must be exists",
@@ -100,4 +107,21 @@ export const errorCodes = {
 
     // additionalItems
     additionalItemsMustNotHaveMoreItems: "must not have more items",
+
+    // oneOf
+    oneOfMustMatchExactlyOneSchemaInOneOf: "must match exactly one schema in oneOf",
+
+    // anyOf
+    anyOfMustMatchASchemaInAnyOf: "must match a schema in anyOf",
+
+    // allOf
+    allOfMustMatchSchemasInAllOf: "must match schemas in allOf",
+
+    // not
+    notMustNotBeValid: "must NOT be valid",
+    // minProperties
+    minPropertiesMustBeLessThanOrEqualToLimit: "must be less than or equal to limit",
+    // maxProperties
+    maxPropertiesMustBeGreaterThanOrEqualToLimit: "must be greater than or equal to limit",
+    multipleOfMustBeDivisible: "must be divisible",
 };

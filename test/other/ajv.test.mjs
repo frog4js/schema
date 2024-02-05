@@ -3,19 +3,25 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 import { schemaManage, instanceManage } from "../../src/api/share.mjs";
 
-describe.skip("test the ajv", () => {
+describe("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
         addFormats(ajv);
 
         const schema = {
             type: "object",
-            dependencies: {
-                name: {},
+            properties: {
+                name: {
+                    default: "1",
+                },
+                age: {
+                    default: 1,
+                },
             },
+            required: ["age", "name"],
         };
 
-        const data = { name: "111111" };
+        const data = {};
 
         const validate = ajv.compile(schema);
         validate("ajv result", data);

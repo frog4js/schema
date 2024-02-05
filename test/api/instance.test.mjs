@@ -2,7 +2,7 @@ import { beforeEach, describe, it } from "node:test";
 import { schemaManage, instanceManage } from "../../src/api/share.mjs";
 import * as assert from "assert";
 
-describe("test the instance module", () => {
+describe.only("test the instance module", () => {
     /**
      *
      * @param {Context} context
@@ -26,7 +26,7 @@ describe("test the instance module", () => {
             return state;
         }).length;
     }
-    describe("schema is draft-01", () => {
+    describe.only("schema is draft-01", () => {
         let schema;
         beforeEach(() => {
             schema = schemaManage.create({
@@ -160,7 +160,7 @@ describe("test the instance module", () => {
             });
             assert.equal(filerErrorLength(context), 0);
         });
-        it("should fail when the name property is empty string", () => {
+        it.only("should fail when the name property is empty string", () => {
             const context = instanceManage.validate(schema, {
                 name: "",
             });
@@ -572,6 +572,131 @@ describe("test the instance module", () => {
                 age: "man",
             });
             assert.equal(filerErrorLength(context, ["name", "age"], ["maxLength"]), 0);
+        });
+    });
+
+    describe("schema is draft-03 change", () => {
+        let schema;
+        beforeEach(() => {
+            schema = schemaManage.create({
+                $schema: "http://json-schema.org/draft-04/schema#",
+                type: "object",
+                title: "user properties definition",
+                description: "user properties definition",
+                additionalProperties: false,
+                definitions: {
+                    UserGroup: {
+                        type: "object",
+                        properties: {
+                            groupName: { type: "string" },
+                        },
+                    },
+                },
+                required: ["name", "age"],
+                properties: {
+                    name: {
+                        type: "string",
+                        maxLength: 20,
+                        minLength: 1,
+                        not: {
+                            pattern: "^[a-zA-z]{1,}",
+                        },
+                        title: "user name",
+                    },
+                    gender: {
+                        type: "string",
+                        oneOf: [
+                            {
+                                enum: ["man"],
+                            },
+                            {
+                                enum: ["woman"],
+                            },
+                        ],
+                        title: "user gender, man or woman",
+                    },
+                    age: {
+                        type: "integer",
+                        allOf: [
+                            {
+                                maximum: 100,
+                            },
+                            {
+                                minimum: 1,
+                            },
+                        ],
+                        default: 1,
+                    },
+                    email: {
+                        anyOf: [
+                            {
+                                type: "string",
+                                format: "email",
+                            },
+                            {
+                                type: "string",
+                                maxLength: 3,
+                            },
+                        ],
+                    },
+                    createdAt: {
+                        type: "integer",
+                    },
+                    updatedAt: {
+                        type: "integer",
+                    },
+                    userGroups: {
+                        type: "array",
+                        items: {
+                            $ref: "#/definitions/UserGroup",
+                        },
+                        uniqueItems: true,
+                        maxItems: 5,
+                        minItems: 1,
+                    },
+                    balance: {
+                        type: "integer",
+                        multipleOf: 2,
+                        default: 0,
+                    },
+                },
+                dependencies: {
+                    updatedAt: ["createdAt"],
+                },
+            });
+        });
+        it("should pass validation", () => {
+            const context = instanceManage.validate(schema, {
+                name: "1test",
+                age: 30,
+                gender: "man",
+                email: "1@xxx.com",
+                createdAt: 1,
+                updatedAt: 1,
+                userGroups: [{ groupName: "test" }],
+                balance: 10,
+            });
+            assert.equal(context.errors.length, 0);
+        });
+
+        it("should fail validation when name is test", () => {
+            const context = instanceManage.validate(schema, {
+                name: "test",
+            });
+            assert.equal(filerErrorLength(context, ["name"], ["not"]), 1);
+        });
+
+        it("should fail validation when age is 101", () => {
+            const context = instanceManage.validate(schema, {
+                age: 101,
+            });
+            assert.equal(filerErrorLength(context, ["age"], ["allOf"]), 1);
+        });
+        it("should fail validation when age is xxxxxxx", () => {
+            const context = instanceManage.validate(schema, {
+                email: "xxxxxxx",
+            });
+            assert.equal(filerErrorLength(context, ["email"], ["anyOf"]), 1);
         });
     });
 });

@@ -7,9 +7,9 @@ import { pushError } from "../helper.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.divisibleBy,
-        versions: [versionConstant.jsonSchemaVersions.draft02, versionConstant.jsonSchemaVersions.draft03],
-        index: 20,
+        key: executeConstant.keys.multipleOf,
+        versions: versionConstant.jsonSchemaVersionGroups.draft04ByAdd,
+        index: 46,
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.number],
@@ -20,10 +20,9 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key] %
                             context.schemaData.current.$ref[context.schemaData.current.key];
                         if (val !== 0) {
-                            pushError(context, "divisibleByMustBeDivisible");
+                            pushError(context, "multipleOfMustBeDivisible");
                         }
                     }
-
                     return executeConstant.ticks.nextExecute;
                 },
             },

@@ -19,9 +19,16 @@ import disallowConfigs from "./disallow.mjs";
 import divisibleByConfigs from "./divisibleBy.mjs";
 import uniqueItemsConfigs from "./uniqueItems.mjs";
 import requiredConfigs from "./required.mjs";
-import dependenciesConfig from "./dependencies.mjs";
-import additionalItemsConfig from "./additionalItems.mjs";
-import patternPropertiesConfig from "./patternProperties.mjs";
+import dependenciesConfigs from "./dependencies.mjs";
+import additionalItemsConfigs from "./additionalItems.mjs";
+import patternPropertiesConfigs from "./patternProperties.mjs";
+import anyOfConfigs from "./anyOf.mjs";
+import oneOfConfigs from "./oneOf.mjs";
+import allOfConfigs from "./allOf.mjs";
+import notConfigs from "./not.mjs";
+import minPropertiesConfigs from "./minProperties.mjs";
+import maxPropertiesConfigs from "./maxProperties.mjs";
+import multipleOfConfigs from "./multipleOf.mjs";
 export const executeConfigs = [
     ...optionalConfigs,
     ...requiresConfigs,
@@ -44,7 +51,14 @@ export const executeConfigs = [
     ...divisibleByConfigs,
     ...uniqueItemsConfigs,
     ...requiredConfigs,
-    ...dependenciesConfig,
-    ...additionalItemsConfig,
-    ...patternPropertiesConfig,
+    ...dependenciesConfigs,
+    ...additionalItemsConfigs,
+    ...patternPropertiesConfigs,
+    ...allOfConfigs,
+    ...anyOfConfigs,
+    ...oneOfConfigs,
+    ...notConfigs,
+    ...minPropertiesConfigs,
+    ...maxPropertiesConfigs,
+    ...multipleOfConfigs,
 ].sort((item1, item2) => item1.index - item2.index);

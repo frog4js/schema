@@ -74,6 +74,7 @@ describe("test the executes.format module", () => {
         it("should fail when format value is 'date'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "date",
                 },
@@ -107,6 +108,7 @@ describe("test the executes.format module", () => {
         it("should fail when format value is 'date'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "time",
                 },
@@ -140,6 +142,7 @@ describe("test the executes.format module", () => {
         it("should fail when format value is 'date'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "utc-millisec",
                 },
@@ -222,6 +225,7 @@ describe("test the executes.format module", () => {
         it("should pass when format value is 'phone'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "phone",
                 },
@@ -238,6 +242,7 @@ describe("test the executes.format module", () => {
         it("should fail when format value is 'phone'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "phone",
                 },

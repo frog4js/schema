@@ -56,6 +56,7 @@ function create(json, defaultConfig) {
     if (context.errors.length > 0) {
         throw new Error(`schema is invalid: ${dataOperateUtil.toString(context.errors, undefined)}`);
     }
+
     for (const key of Object.keys(json)) {
         if (key.startsWith("#")) {
             const childContext = engine.startExecute(useDraft, dataOperateUtil.deepClone(json[key]));
@@ -63,6 +64,16 @@ function create(json, defaultConfig) {
                 throw new Error(`${key} schema is invalid: ${dataOperateUtil.toString(childContext.errors)}`);
             }
             context.instanceData.origin[key] = childContext.instanceData.origin;
+        }
+    }
+    // definitions
+    if (json.definitions) {
+        for (const key of Object.keys(json.definitions)) {
+            const childContext = engine.startExecute(useDraft, dataOperateUtil.deepClone(json.definitions[key]));
+            if (childContext.errors.length > 0) {
+                throw new Error(`${key} schema is invalid: ${dataOperateUtil.toString(childContext.errors)}`);
+            }
+            context.instanceData.origin.definitions[key] = childContext.instanceData.origin;
         }
     }
     return context.instanceData.origin;

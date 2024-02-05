@@ -141,6 +141,23 @@ function getSiblingSchemaRefData(context, key) {
     const current = getParentSchema(context);
     return { $ref: current, key };
 }
+function getValueByJsonPointer(obj, pointer) {
+    if (pointer === "") {
+        return obj; // Return the whole document
+    }
+
+    const parts = pointer
+        .substring(1)
+        .split("/")
+        .map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
+    let current = obj;
+
+    for (let part of parts) {
+        current = current[part];
+    }
+
+    return current;
+}
 
 function getParentSchema(context) {
     let current = context.schemaData.origin;
@@ -151,12 +168,12 @@ function getParentSchema(context) {
         } else {
             current = current[keyOrIndex];
         }
-        if (
-            typeof current?.$ref === typeConstant.typeofTypes.string &&
-            current.$ref.startsWith("#") &&
-            context.refSchemas[current.$ref]
-        ) {
-            current = context.refSchemas[current.$ref];
+        if (typeof current?.$ref === typeConstant.typeofTypes.string && current.$ref.startsWith("#")) {
+            if (context.version < versionConstant.jsonSchemaVersions.draft04) {
+                current = context.refSchemas[current.$ref];
+            } else {
+                current = getValueByJsonPointer(context.schemaData.origin, current.$ref.substring(1));
+            }
         }
     }
     return current;

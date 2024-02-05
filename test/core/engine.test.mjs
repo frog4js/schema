@@ -146,6 +146,7 @@ describe("test the engine module", () => {
         let schema;
         beforeEach(() => {
             schema = {
+                $schema: "http://json-schema.org/draft-03/schema#",
                 type: "object",
                 properties: {
                     isStringRef: { $ref: "#isStringRef" },

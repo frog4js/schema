@@ -208,6 +208,7 @@ describe("test the executes.additionalProperties module", () => {
         it("should fail when additional properties do not match the schema", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "object",
                     additionalProperties: {
                         $ref: "#addition",

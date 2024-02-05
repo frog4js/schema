@@ -48,7 +48,32 @@ const formats = {
     "postal-code": { regex: /^.*/ },
     // country - This should be the name of a country.
     country: { regex: /^.*/ },
+    "uri-reference": { regex: /^(?:(?:[a-z][a-z0-9+\-.]*:)?\/?\/)?(?:[^\\\s#][^\s#]*)?(?:#[^\\\s]*)?$/i },
+    hostname: {
+        regex: /^(?=.{1,253}\.?$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*\.?$/i,
+    },
 };
+const beforeV4FormatKeys = [
+    "date-time",
+    "date",
+    "time",
+    "utc-millisec",
+    "regex",
+    "color",
+    "style",
+    "phone",
+    "uri",
+    "email",
+    "ipv4",
+    "ip-address",
+    "ipv6",
+    "street-address",
+    "locality",
+    "region",
+    "postal-code",
+    "country",
+];
+const afterV4FormatKeys = ["date-time", "email", "ipv4", "ipv6", "hostname", "uri", "uri-reference", "regex"];
 
 function regex(str) {
     try {
@@ -73,6 +98,21 @@ const configs = [
                 schemaTypes: [typeConstant.jsonTypes.string],
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
+                    if (context.version < versionConstant.jsonSchemaVersions.draft04) {
+                        if (
+                            !beforeV4FormatKeys.includes(
+                                context.schemaData.current.$ref[context.schemaData.current.key],
+                            )
+                        ) {
+                            return executeConstant.ticks.nextExecute;
+                        }
+                    } else {
+                        if (
+                            !afterV4FormatKeys.includes(context.schemaData.current.$ref[context.schemaData.current.key])
+                        ) {
+                            return executeConstant.ticks.nextExecute;
+                        }
+                    }
                     const valid = formats[context.schemaData.current.$ref[context.schemaData.current.key]];
                     if (!valid) {
                         return executeConstant.ticks.nextExecute;
