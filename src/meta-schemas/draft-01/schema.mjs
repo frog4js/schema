@@ -1,16 +1,22 @@
 export default {
-    $schema: "http://json-schema.org/draft-02/hyper-schema#",
-    id: "http://json-schema.org/draft-02/schema#",
+    $schema: "http://json-schema.org/draft-01/hyper-schema#",
+    id: "http://json-schema.org/draft-01/schema#",
     type: "object",
-
     properties: {
+        id: {
+            type: "string",
+            optional: true,
+        },
+        $schema: {
+            type: "string",
+            optional: true,
+        },
         type: {
             type: ["string", "array"],
             items: {
                 type: ["string", { $ref: "#" }],
             },
             optional: true,
-            uniqueItems: true,
             default: "any",
         },
 
@@ -82,12 +88,6 @@ export default {
             minimum: 0,
         },
 
-        uniqueItems: {
-            type: "boolean",
-            optional: true,
-            default: false,
-        },
-
         pattern: {
             type: "string",
             optional: true,
@@ -110,7 +110,6 @@ export default {
             type: "array",
             optional: true,
             minItems: 1,
-            uniqueItems: true,
         },
 
         title: {
@@ -138,19 +137,16 @@ export default {
             optional: true,
         },
 
-        divisibleBy: {
-            type: "number",
-            minimum: 0,
-            minimumCanEqual: false,
+        maxDecimal: {
+            type: "integer",
             optional: true,
-            default: 1,
+            minimum: 0,
         },
 
         disallow: {
             type: ["string", "array"],
             items: { type: "string" },
             optional: true,
-            uniqueItems: true,
         },
 
         extends: {
@@ -160,7 +156,6 @@ export default {
             default: {},
         },
     },
-
     optional: true,
     default: {},
 };

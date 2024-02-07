@@ -29,7 +29,7 @@ import notConfigs from "./not.mjs";
 import minPropertiesConfigs from "./minProperties.mjs";
 import maxPropertiesConfigs from "./maxProperties.mjs";
 import multipleOfConfigs from "./multipleOf.mjs";
-export const executeConfigs = [
+export default [
     ...optionalConfigs,
     ...requiresConfigs,
     ...defaultConfigs,

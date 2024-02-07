@@ -1,0 +1,12 @@
+export namespace JSONSchema {
+    type ExecuteError = {
+        instancePath: string;
+        schemaPath: string;
+        currentSchemaKey: string;
+        currentSchemaValue: any;
+        currentInstanceKey: string;
+        currentInstanceValue: any;
+        message: string;
+        code: string;
+    };
+}

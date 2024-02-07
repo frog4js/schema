@@ -1,11 +1,15 @@
 export const keys = {
+    $ref: "$ref",
+
+    $schema: "$schema",
+    id: "id",
+
     type: "type",
     schema: "schema",
     default: "default",
     optional: "optional",
     properties: "properties",
     items: "items",
-    $ref: "$ref",
     additionalProperties: "additionalProperties",
     requires: "requires",
     minimum: "minimum",

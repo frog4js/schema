@@ -1,27 +1,34 @@
 import { describe, it, beforeEach } from "node:test";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import { schemaManage, instanceManage } from "../../src/api/share.mjs";
+import { contextManage } from "../../src/context/share.mjs";
+import { schemaManage } from "../../src/schema/share.mjs";
 
-describe("test the ajv", () => {
-    it("ajv1", () => {
+describe.only("test the ajv", () => {
+    it.only("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
         addFormats(ajv);
 
         const schema = {
+            $defs: {
+                a: { type: "string" },
+            },
             type: "object",
             properties: {
                 name: {
+                    $defs: {
+                        a: { type: "number" },
+                    },
                     default: "1",
                 },
                 age: {
-                    default: 1,
+                    $ref: "#/properties/name/$defs/a",
                 },
             },
             required: ["age", "name"],
         };
 
-        const data = {};
+        const data = { name: "22", age: "1" };
 
         const validate = ajv.compile(schema);
         validate("ajv result", data);
@@ -136,7 +143,7 @@ describe("test the ajv", () => {
         console.log(validate.errors); // true
         console.log(data); // { "foo": 1, "bar": "baz" }
     });
-    it("diff-current", () => {
+    it.only("diff-current", () => {
         function generateRandomString(length) {
             const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             let result = "";
@@ -169,13 +176,12 @@ describe("test the ajv", () => {
         const data = {
             names: [],
         };
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 2; i++) {
             data.names.push(generateRandomString(500000));
         }
         const start = Date.now();
-
-        const schema = schemaManage.create(json);
-        instanceManage.validate(schema, data);
+        const context = contextManage.create();
+        schemaManage.setMainSchema(context, json);
 
         console.log("end====================", Date.now() - start);
     });
