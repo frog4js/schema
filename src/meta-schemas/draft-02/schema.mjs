@@ -3,14 +3,6 @@ export default {
     id: "http://json-schema.org/draft-02/schema#",
     type: "object",
     properties: {
-        id: {
-            type: "string",
-            optional: true,
-        },
-        $schema: {
-            type: "string",
-            optional: true,
-        },
         type: {
             type: ["string", "array"],
             items: {

@@ -12,8 +12,7 @@ declare namespace JSONSchema {
             resolve: (
                 context: Context,
                 hooks: {
-                    enterContext: (context: Context, schemaKey: string, instanceKey: string) => void;
-                    backContext: (context: Context, schemaKey: string, instanceKey: string) => void;
+                    startRefOrSchemaExecute: (context: Context, isPushError?: boolean) => ExecuteError[];
                 },
             ) => number;
         }>;

@@ -1,9 +1,8 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { mergeError } from "../helper.mjs";
-
+import { errorManage } from "../../error/share.mjs";
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -20,7 +19,7 @@ const configs = [
                     for (const instanceItem of instanceData) {
                         enterContext(context, undefined, index);
                         const errors = startRefOrSchemaExecute(context);
-                        mergeError(context, errors);
+                        errorManage.mergeError(context, errors);
                         backContext(context, undefined, index);
                         index++;
                     }
@@ -36,7 +35,7 @@ const configs = [
                     for (const schemaItem of schemaData) {
                         enterContext(context, index, index);
                         const errors = startRefOrSchemaExecute(context);
-                        mergeError(context, errors);
+                        errorManage.mergeError(context, errors);
                         backContext(context, index, index);
                         index++;
                     }

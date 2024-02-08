@@ -21,26 +21,6 @@ function slowGetRefDataDecodeAndDeepCloe(refData) {
     ]);
     return isObject ? dataOperateUtil.deepClone(refData.$ref?.[refData.key]) : refData.$ref?.[refData.key];
 }
-/**
- *
- * @param {Context} context
- * @param {string} code
- */
-function pushError(context, code) {
-    (context.errorState.isTemp ? context.tempErrors : context.errors).push({
-        instancePath: context.instancePaths.length > 0 ? "/" + context.instancePaths.join("/") : "",
-        schemaPath:
-            context.schemaPaths.length > 0
-                ? "#/" + context.schemaPaths.filter((x) => x !== executeConstant.pathKeys.ref).join("/")
-                : "#",
-        currentSchemaKey: context.schemaData.current.key,
-        currentSchemaValue: slowGetRefDataDecodeAndDeepCloe(context.schemaData.current),
-        currentInstanceKey: context.instanceData.current.key,
-        currentInstanceValue: slowGetRefDataDecodeAndDeepCloe(context.instanceData.current),
-        message: executeConstant.errorCodes[code],
-        code: code,
-    });
-}
 
 /**
  *

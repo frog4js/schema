@@ -1,12 +1,12 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
+import { errorManage } from "../../error/share.mjs";
 /**
  * @typedef {import("../../../types/core")}
  */
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -19,7 +19,7 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        pushError(context, "optionalMustBeExists");
+                        errorManage.pushError(context, "optionalMustBeExists");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

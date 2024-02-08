@@ -1,9 +1,8 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError, mergeError, getSiblingSchemaRefData, getSiblingInstanceRefData } from "../helper.mjs";
-
+import { errorManage } from "../../error/share.mjs";
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -20,7 +19,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         )
                     ) {
-                        pushError(context, "patternMustMatchPattern");
+                        errorManage.pushError(context, "patternMustMatchPattern");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

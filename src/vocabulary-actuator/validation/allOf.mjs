@@ -1,9 +1,9 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { mergeError, pushError } from "../helper.mjs";
+import { errorManage } from "../../error/share.mjs";
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -14,14 +14,14 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
-                resolve: (context, { enterContext, backContext, startRefOrSchemaExecute }) => {
+                resolve: (context, { startRefOrSchemaExecute }) => {
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
                     for (let index = 0; index < schemaArrayLength; index++) {
-                        enterContext(context, index);
+                        context.enterContext(context, index);
                         const errors = startRefOrSchemaExecute(context, index, undefined);
-                        backContext(context, index);
+                        context.backContext(context, index);
                         if (errors.length > 0) {
-                            pushError(context, "allOfMustMatchSchemasInAllOf");
+                            errorManage.pushError(context, "allOfMustMatchSchemasInAllOf");
                             break;
                         }
                     }

@@ -1,9 +1,10 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -20,7 +21,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key] %
                             context.schemaData.current.$ref[context.schemaData.current.key];
                         if (val !== 0) {
-                            pushError(context, "divisibleByMustBeDivisible");
+                            errorManage.pushError(context, "divisibleByMustBeDivisible");
                         }
                     }
 

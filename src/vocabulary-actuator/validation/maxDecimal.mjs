@@ -1,9 +1,8 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
-
+import { errorManage } from "../../error/share.mjs";
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -23,7 +22,7 @@ const configs = [
                         stringInstance[1] &&
                         stringInstance[1].length > context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        pushError(context, "maxDecimalMustBeLessThanOrEqualToLimit");
+                        errorManage.pushError(context, "maxDecimalMustBeLessThanOrEqualToLimit");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

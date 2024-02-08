@@ -1,18 +1,18 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { getParentSchema, pushError } from "../helper.mjs";
 import { dataOperateUtil } from "../../util/share.mjs";
-
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 /**
  * @typedef {import("../../../types/core")}
  */
 
 function validateDefault(context, schemaValue, startExecute) {
     if (context.phase === "schemaValidate") {
-        const parentSchema = dataOperateUtil.deepClone(getParentSchema(context));
+        const parentSchema = dataOperateUtil.deepClone(context.getParentSchema(context));
         delete parentSchema.default;
         const defaultContext = startExecute(parentSchema, schemaValue, { phase: "instanceValidate" });
         if (defaultContext.errors.length > 0) {
-            pushError(context, "defaultMustComplyWithSchema");
+            errorManage.pushError(context, "defaultMustComplyWithSchema");
             return false;
         }
     }
@@ -20,7 +20,7 @@ function validateDefault(context, schemaValue, startExecute) {
 }
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {

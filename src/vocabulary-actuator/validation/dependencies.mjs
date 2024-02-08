@@ -1,5 +1,6 @@
 import { executeConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
-import { getSiblingInstanceRefData, pushError } from "../helper.mjs";
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 import { typeUtil } from "../../util/share.mjs";
 /**
  * @typedef {import("../../../types/core")}
@@ -7,7 +8,7 @@ import { typeUtil } from "../../util/share.mjs";
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -18,14 +19,14 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { enterContext, backContext, startRefOrSchemaExecute }) => {
+                resolve: (context, { startRefOrSchemaExecute }) => {
                     const schema = context.schemaData.current.$ref[context.schemaData.current.key];
                     const instance = context.instanceData.current.$ref[context.instanceData.current.key];
                     for (const key of Object.keys(schema)) {
                         if (!(key in instance)) {
                             continue;
                         }
-                        enterContext(context, key);
+                        contextManage.enterContext(context, key);
                         const type = typeUtil.getTypeofTypeByRefData(context.schemaData.current);
 
                         let validResult = true;
@@ -44,9 +45,9 @@ const configs = [
                                 break;
                         }
                         if (!validResult) {
-                            pushError(context, "dependenciesMustBeTheRightDependency");
+                            errorManage.pushError(context, "dependenciesMustBeTheRightDependency");
                         }
-                        backContext(context, key);
+                        contextManage.backContext(context, key);
                     }
                     return executeConstant.ticks.nextExecute;
                 },

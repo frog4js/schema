@@ -1,9 +1,9 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError, canEqualInstance } from "../helper.mjs";
-
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -15,12 +15,12 @@ const configs = [
                 schemaTypes: [typeConstant.jsonTypes.number],
                 instanceTypes: [typeConstant.typeofTypes.number],
                 resolve: (context) => {
-                    if (canEqualInstance(context) === false) {
+                    if (contextManage.canEqualInstance(context) === false) {
                         if (
                             context.instanceData.current.$ref[context.instanceData.current.key] <=
                             context.schemaData.current.$ref[context.schemaData.current.key]
                         ) {
-                            pushError(context, "minimumMustBeLessThanLimit");
+                            errorManage.pushError(context, "minimumMustBeLessThanLimit");
                         }
                     } else {
                         if (

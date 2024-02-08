@@ -1,5 +1,5 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError, mergeError } from "../helper.mjs";
+import { errorManage } from "../../error/share.mjs";
 import { getTypeofTypeByRefData } from "../../util/type.mjs";
 
 /**
@@ -30,7 +30,7 @@ function signTypeExecute(context, schemaType) {
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -43,7 +43,7 @@ const configs = [
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
                 resolve: (context) => {
                     if (!signTypeExecute(context, context.schemaData.current.$ref[context.schemaData.current.key])) {
-                        pushError(context, "typeMustBeOfTheType");
+                        errorManage.pushError(context, "typeMustBeOfTheType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },
@@ -70,7 +70,7 @@ const configs = [
                         }
                     }
                     if (!status) {
-                        pushError(context, "typeMustBeOfTheType");
+                        errorManage.pushError(context, "typeMustBeOfTheType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

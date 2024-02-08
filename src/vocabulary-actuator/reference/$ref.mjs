@@ -14,12 +14,6 @@ export default [
             {
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
-                    const url = new URL(
-                        context.instanceData.current.$ref[context.instanceData.current.key],
-                        context.defaultConfig.baseURI,
-                    );
-                    context.instanceData.current.$ref[context.instanceData.current.key] = url.href;
-                    context.cacheReferenceSchemas[url.href] = context.instanceData.origin;
                     return executeConstant.ticks.nextExecute;
                 },
             },

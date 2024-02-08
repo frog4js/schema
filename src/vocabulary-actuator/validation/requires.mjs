@@ -1,12 +1,12 @@
 import { executeConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
-import { getSiblingInstanceRefData } from "../helper.mjs";
+import { contextManage } from "../../context/share.mjs";
 /**
  * @typedef {import("../../../types/core")}
  */
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -21,7 +21,7 @@ const configs = [
                  * @param {Context} context
                  */
                 resolve: (context) => {
-                    const parentInstance = getSiblingInstanceRefData(
+                    const parentInstance = contextManage.getSiblingInstanceRefData(
                         context,
                         context.schemaData.current.$ref[context.schemaData.current.key],
                     );

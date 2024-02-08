@@ -1,10 +1,10 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
+import { errorManage } from "../../error/share.mjs";
 import { dataOperateUtil } from "../../util/share.mjs";
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -22,7 +22,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         )
                     ) {
-                        pushError(context, "divisibleByMustNotHaveDuplicateItems");
+                        errorManage.pushError(context, "divisibleByMustNotHaveDuplicateItems");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

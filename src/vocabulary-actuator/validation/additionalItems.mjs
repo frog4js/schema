@@ -1,14 +1,11 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError, getSiblingSchemaRefData } from "../helper.mjs";
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 import { typeUtil } from "../../util/share.mjs";
 
 /**
- * @typedef {import("../../../types/core")}
- */
-
-/**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -21,13 +18,16 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        const parentSchemaInfo = getSiblingSchemaRefData(context, executeConstant.keys.items);
+                        const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
+                            context,
+                            executeConstant.keys.items,
+                        );
                         const items = parentSchemaInfo.$ref[parentSchemaInfo.key];
                         if (
                             typeUtil.getTypeofType(items) === typeConstant.typeofTypes.array &&
                             context.instanceData.current.$ref[context.instanceData.current.key].length > items.length
                         ) {
-                            pushError(context, "additionalItemsMustNotHaveMoreItems");
+                            errorManage.pushError(context, "additionalItemsMustNotHaveMoreItems");
                         }
                     }
                     return executeConstant.ticks.nextExecute;
@@ -36,14 +36,16 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.array],
-                resolve: (context, { startChildExecute }) => {
-                    const parentSchemaInfo = getSiblingSchemaRefData(context, executeConstant.keys.items);
+                resolve: (context, { startRefOrSchemaExecute }) => {
+                    const parentSchemaInfo = contextManage.getSiblingSchemaRefData(context, executeConstant.keys.items);
                     const items = parentSchemaInfo.$ref[parentSchemaInfo.key];
                     if (typeUtil.getTypeofType(items) === typeConstant.typeofTypes.array) {
                         const instanceCount =
                             context.instanceData.current.$ref[context.instanceData.current.key].length;
                         for (let moreItemIndex = items.length; moreItemIndex < instanceCount; moreItemIndex++) {
-                            startChildExecute(context, undefined, moreItemIndex);
+                            contextManage.enterContext(context, undefined, moreItemIndex);
+                            startRefOrSchemaExecute(context, true);
+                            contextManage.backContext(context, undefined, moreItemIndex);
                         }
                     }
                     return executeConstant.ticks.nextExecute;

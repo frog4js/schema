@@ -1,9 +1,8 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
-
+import { errorManage } from "../../error/share.mjs";
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -19,7 +18,7 @@ const configs = [
                         Object.keys(context.instanceData.current.$ref[context.instanceData.current.key]).length >
                         context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        pushError(context, "maxPropertiesMustBeGreaterThanOrEqualToLimit");
+                        errorManage.pushError(context, "maxPropertiesMustBeGreaterThanOrEqualToLimit");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

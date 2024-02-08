@@ -1,5 +1,6 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError, getSiblingSchemaRefData } from "../helper.mjs";
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 
 /**
  * @typedef {import("../../../types/core")}
@@ -7,7 +8,7 @@ import { pushError, getSiblingSchemaRefData } from "../helper.mjs";
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -20,13 +21,16 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.object],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        const parentSchemaInfo = getSiblingSchemaRefData(context, executeConstant.keys.properties);
+                        const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
+                            context,
+                            executeConstant.keys.properties,
+                        );
                         const properties = parentSchemaInfo.$ref[parentSchemaInfo.key];
                         const diffProperties = Object.keys(
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         ).filter((x) => !Object.keys(properties || {}).includes(x));
                         if (diffProperties.length > 0) {
-                            pushError(context, "additionalPropertiesMustNotHaveAdditionalProperties");
+                            errorManage.pushError(context, "additionalPropertiesMustNotHaveAdditionalProperties");
                         }
                     }
 
@@ -36,15 +40,20 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startChildExecute }) => {
-                    const parentSchemaInfo = getSiblingSchemaRefData(context, executeConstant.keys.properties);
+                resolve: (context, { startRefOrSchemaExecute }) => {
+                    const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
+                        context,
+                        executeConstant.keys.properties,
+                    );
                     const properties = parentSchemaInfo.$ref[parentSchemaInfo.key];
 
                     const diffProperties = Object.keys(
                         context.instanceData.current.$ref[context.instanceData.current.key],
                     ).filter((x) => !Object.keys(properties || {}).includes(x));
                     for (const diffProperty of diffProperties) {
-                        startChildExecute(context, undefined, diffProperty);
+                        contextManage.enterContext(context, undefined, diffProperty);
+                        startRefOrSchemaExecute(context, true);
+                        contextManage.backContext(context, undefined, diffProperty);
                     }
 
                     return executeConstant.ticks.nextExecute;

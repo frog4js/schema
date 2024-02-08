@@ -10,6 +10,7 @@ describe.only("test the ajv", () => {
         addFormats(ajv);
 
         const schema = {
+            $id: "#/abcd",
             $defs: {
                 a: { type: "string" },
             },
@@ -22,15 +23,25 @@ describe.only("test the ajv", () => {
                     default: "1",
                 },
                 age: {
-                    $ref: "#/properties/name/$defs/a",
+                    $ref: "#/abc/properties/name",
                 },
             },
             required: ["age", "name"],
         };
-
-        const data = { name: "22", age: "1" };
+        ajv.addSchema({
+            $id: "#/a",
+        });
+        ajv.addSchema({
+            $id: "#/abc",
+            type: "object",
+            properties: {
+                name: { $ref: "#/a" },
+            },
+        });
+        const data = { name: "22", age: { name: { name: { name: "111" } } } };
 
         const validate = ajv.compile(schema);
+
         validate("ajv result", data);
         console.log("ajv1", validate(data)); // true
         console.log(validate.errors); // true

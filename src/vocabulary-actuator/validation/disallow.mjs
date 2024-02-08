@@ -1,10 +1,11 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
 import { typeUtil } from "../../util/share.mjs";
-import { pushError } from "../helper.mjs";
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -21,7 +22,7 @@ const configs = [
                 resolve: (context) => {
                     const instanceType = typeUtil.getTypeofTypeByRefData(context.instanceData.current);
                     if (instanceType === context.schemaData.current.$ref[context.schemaData.current.key]) {
-                        pushError(context, "disallowMustNotBeDisallowType");
+                        errorManage.pushError(context, "disallowMustNotBeDisallowType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },
@@ -31,7 +32,7 @@ const configs = [
                 resolve: (context) => {
                     const instanceType = typeUtil.getTypeofTypeByRefData(context.instanceData.current);
                     if (context.schemaData.current.$ref[context.schemaData.current.key].includes(instanceType)) {
-                        pushError(context, "disallowMustNotBeDisallowType");
+                        errorManage.pushError(context, "disallowMustNotBeDisallowType");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

@@ -18,6 +18,7 @@ declare namespace JSONSchema {
         version: number;
         schemaData: {
             origin?: Schema;
+            main?: Schema;
             current?: RefData;
         };
         instanceData: {

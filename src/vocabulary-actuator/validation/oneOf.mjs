@@ -1,9 +1,9 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
-
+import { contextManage } from "../../context/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -14,19 +14,19 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
-                resolve: (context, { enterContext, backContext, startRefOrSchemaExecute }) => {
+                resolve: (context, { startRefOrSchemaExecute }) => {
                     let matchCount = 0;
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
                     for (let index = 0; index < schemaArrayLength; index++) {
-                        enterContext(context, index);
+                        contextManage.enterContext(context, index);
                         const errors = startRefOrSchemaExecute(context, index, undefined);
                         if (errors.length === 0) {
                             matchCount++;
                         }
-                        backContext(context, index);
+                        contextManage.backContext(context, index);
                     }
                     if (matchCount !== 1) {
-                        pushError(context, "oneOfMustMatchExactlyOneSchemaInOneOf");
+                        errorManage.pushError(context, "oneOfMustMatchExactlyOneSchemaInOneOf");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

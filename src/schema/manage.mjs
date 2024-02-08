@@ -2,8 +2,10 @@ import { vocabularyActuatorManage } from "../vocabulary-actuator/share.mjs";
 import metaSchemas from "../meta-schemas/share.mjs";
 import { dataOperateUtil } from "../util/share.mjs";
 import { versionConstant } from "../constants/share.mjs";
+
 const metaSchemaMap = {};
 metaSchemas.forEach((metaSchema) => (metaSchemaMap[metaSchema.id || metaSchema.$id] = metaSchema));
+
 /**
  * @typedef {import("../../types/context").JSONSchema.Context} Context
  * @typedef {import("../../types/schema").JSONSchema.Schema} Schema
@@ -30,22 +32,21 @@ function switchVersion(context, draft$schema) {
  */
 function addReferenceSchema(context, schema) {
     validateSchema(context, schema);
-    // context.cacheReferenceSchemas = {
-    //     schema
-    // }
+    context.schemaData.origin = context.schemaData.main;
+    context.schemaData.current = { $ref: { root: context.schemaData.main }, key: "root" };
+    context.schemaPaths = [];
 }
+
 /**
  *
  * @param {Context}context
  * @param {Schema}schema
  */
 function validateSchema(context, schema) {
-    if (!context.schemaData.origin) {
-        if (!metaSchemaMap[context.defaultConfig.$schema]) {
-            throw new Error("TODO");
-        }
-        context.schemaData.origin = metaSchemaMap[context.defaultConfig.$schema];
+    if (!metaSchemaMap[context.defaultConfig.$schema]) {
+        throw new Error("TODO");
     }
+    context.schemaData.origin = metaSchemaMap[context.defaultConfig.$schema];
     context.schemaData.current = { $ref: { root: context.schemaData.origin }, key: "root" };
     context.schemaPaths = [];
     vocabularyActuatorManage.validate(context, schema);
@@ -53,12 +54,15 @@ function validateSchema(context, schema) {
         throw new Error(`schema is invalid: ${dataOperateUtil.toString(context.errors, undefined)}`);
     }
 }
+
 /**
  *
  * @param {Context} context
  * @param {Schema} schema
  */
 function setMainSchema(context, schema) {
+    context.schemaData.main = schema;
     validateSchema(context, schema);
 }
+
 export { setMainSchema, addReferenceSchema, switchVersion };

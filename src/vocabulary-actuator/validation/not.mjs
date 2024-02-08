@@ -1,9 +1,8 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
-
+import { errorManage } from "../../error/share.mjs";
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -17,7 +16,7 @@ const configs = [
                     if (Object.keys(context.schemaData.current.$ref[context.schemaData.current.key]).length > 0) {
                         const errors = startRefOrSchemaExecute(context);
                         if (errors.length === 0) {
-                            pushError(context, "notMustNotBeValid");
+                            errorManage.pushError(context, "notMustNotBeValid");
                         }
                     }
 

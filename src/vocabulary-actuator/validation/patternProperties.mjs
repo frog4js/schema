@@ -2,7 +2,7 @@ import { typeConstant, versionConstant, executeConstant } from "../../constants/
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -13,7 +13,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.typeofTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startChildExecute }) => {
+                resolve: (context, { startRefOrSchemaExecute }) => {
                     const currentSchemaData = context.schemaData.current.$ref[context.schemaData.current.key];
                     const currentInstanceData = context.instanceData.current.$ref[context.instanceData.current.key];
                     const currentSchemaKeys = Object.keys(currentSchemaData);
@@ -33,7 +33,7 @@ const configs = [
                                 return currentSchemaKeyReExp.test(currentInstanceKey);
                             })
                             .forEach((currentInstanceKey) => {
-                                startChildExecute(context, currentSchemaKey, currentInstanceKey);
+                                startRefOrSchemaExecute(context, currentSchemaKey, currentInstanceKey);
                             });
                     }
                     return executeConstant.ticks.nextExecute;

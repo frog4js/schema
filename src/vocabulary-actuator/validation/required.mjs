@@ -1,10 +1,9 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
-import { dataOperateUtil } from "../../util/share.mjs";
+import { errorManage } from "../../error/share.mjs";
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -17,7 +16,7 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
-                        pushError(context, "requiredMustBeExists");
+                        errorManage.pushError(context, "requiredMustBeExists");
                     }
                     return executeConstant.ticks.nextExecute;
                 },

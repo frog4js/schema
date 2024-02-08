@@ -1,6 +1,5 @@
 import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
-import { pushError } from "../helper.mjs";
-
+import { errorManage } from "../../error/share.mjs";
 const formats = {
     // date-time - This should be a date in ISO 8601 format of YYYY-MM-DDThh:mm:ssZ in UTC time. This is the recommended form of date/timestamp.
     "date-time": {
@@ -86,7 +85,7 @@ function regex(str) {
 
 /**
  *
- * @type {Array<ExecuteConfig>}
+ * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
@@ -128,7 +127,7 @@ const configs = [
                         );
                     }
                     if (!result) {
-                        pushError(context, "formatMustMatchTheDefinitionOfFormat");
+                        errorManage.pushError(context, "formatMustMatchTheDefinitionOfFormat");
                     }
                     return executeConstant.ticks.nextExecute;
                 },
