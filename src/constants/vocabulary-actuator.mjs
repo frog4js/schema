@@ -44,6 +44,7 @@ export const keys = {
     maxProperties: "maxProperties",
     multipleOf: "multipleOf",
 };
+
 export const ticks = {
     nextExecute: 1,
     nextMatch: 2,
@@ -51,6 +52,7 @@ export const ticks = {
 };
 export const pathKeys = {
     ref: -100,
+    self: "#",
 };
 export const errorCodes = {
     // additionalProperties
