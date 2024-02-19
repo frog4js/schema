@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 import { dataOperateUtil } from "../../util/share.mjs";
 
@@ -8,7 +8,7 @@ import { dataOperateUtil } from "../../util/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.uniqueItems,
+        key: vocabularyActuatorConstant.keys.uniqueItems,
         versions: versionConstant.jsonSchemaVersionGroups.draft02ByAdd,
         index: 21,
         matches: [
@@ -24,7 +24,7 @@ const configs = [
                     ) {
                         errorManage.pushError(context, "divisibleByMustNotHaveDuplicateItems");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

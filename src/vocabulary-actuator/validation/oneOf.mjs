@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 /**
@@ -7,7 +7,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.oneOf,
+        key: vocabularyActuatorConstant.keys.oneOf,
         versions: versionConstant.jsonSchemaVersionGroups.draft04ByAdd,
         index: 41,
         matches: [
@@ -19,7 +19,7 @@ const configs = [
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
                     for (let index = 0; index < schemaArrayLength; index++) {
                         contextManage.enterContext(context, index);
-                        const errors = startRefOrSchemaExecute(context, index, undefined);
+                        const errors = startRefOrSchemaExecute(context, true);
                         if (errors.length === 0) {
                             matchCount++;
                         }
@@ -28,7 +28,7 @@ const configs = [
                     if (matchCount !== 1) {
                         errorManage.pushError(context, "oneOfMustMatchExactlyOneSchemaInOneOf");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

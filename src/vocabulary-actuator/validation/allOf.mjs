@@ -1,5 +1,6 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
+import { contextManage } from "../../context/share.mjs";
 
 /**
  *
@@ -7,7 +8,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.allOf,
+        key: vocabularyActuatorConstant.keys.allOf,
         versions: versionConstant.jsonSchemaVersionGroups.draft04ByAdd,
         index: 43,
         matches: [
@@ -17,15 +18,15 @@ const configs = [
                 resolve: (context, { startRefOrSchemaExecute }) => {
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
                     for (let index = 0; index < schemaArrayLength; index++) {
-                        context.enterContext(context, index);
-                        const errors = startRefOrSchemaExecute(context, index, undefined);
-                        context.backContext(context, index);
+                        contextManage.enterContext(context, index);
+                        const errors = startRefOrSchemaExecute(context, true);
+                        contextManage.backContext(context, index);
                         if (errors.length > 0) {
                             errorManage.pushError(context, "allOfMustMatchSchemasInAllOf");
                             break;
                         }
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

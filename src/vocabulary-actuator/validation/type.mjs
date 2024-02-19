@@ -1,9 +1,10 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 import { getTypeofTypeByRefData } from "../../util/type.mjs";
+import { contextManage } from "../../context/share.mjs";
 
 /**
- * @typedef {import("../../../types/core")}
+ * @typedef {import("../../../types/share")}
  */
 const schemaTypes = {
     string: "string",
@@ -34,7 +35,7 @@ function signTypeExecute(context, schemaType) {
  */
 const configs = [
     {
-        key: executeConstant.keys.type,
+        key: vocabularyActuatorConstant.keys.type,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 4,
         matches: [
@@ -45,25 +46,25 @@ const configs = [
                     if (!signTypeExecute(context, context.schemaData.current.$ref[context.schemaData.current.key])) {
                         errorManage.pushError(context, "typeMustBeOfTheType");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
-                resolve: (context, { startRefOrSchemaExecute, enterContext, backContext }) => {
+                resolve: (context, { startRefOrSchemaExecute }) => {
                     const types = context.schemaData.current.$ref[context.schemaData.current.key];
                     let status;
                     let i = 0;
                     for (const type of types) {
-                        enterContext(context, i, undefined);
+                        contextManage.enterContext(context, i, undefined);
                         if (typeof type === typeConstant.typeofTypes.string) {
                             status = signTypeExecute(context, type);
                         } else if (typeof type === typeConstant.typeofTypes.object) {
-                            const errors = startRefOrSchemaExecute(context);
+                            const errors = startRefOrSchemaExecute(context, true);
                             status = errors.length === 0;
                         }
-                        backContext(context, i, undefined);
+                        contextManage.backContext(context, i, undefined);
                         i++;
                         if (status) {
                             break;
@@ -72,7 +73,7 @@ const configs = [
                     if (!status) {
                         errorManage.pushError(context, "typeMustBeOfTheType");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

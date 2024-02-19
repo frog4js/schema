@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { typeUtil } from "../../util/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
@@ -9,7 +9,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.disallow,
+        key: vocabularyActuatorConstant.keys.disallow,
         versions: [
             versionConstant.jsonSchemaVersions.draft01,
             versionConstant.jsonSchemaVersions.draft02,
@@ -24,7 +24,7 @@ const configs = [
                     if (instanceType === context.schemaData.current.$ref[context.schemaData.current.key]) {
                         errorManage.pushError(context, "disallowMustNotBeDisallowType");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
             {
@@ -34,7 +34,7 @@ const configs = [
                     if (context.schemaData.current.$ref[context.schemaData.current.key].includes(instanceType)) {
                         errorManage.pushError(context, "disallowMustNotBeDisallowType");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

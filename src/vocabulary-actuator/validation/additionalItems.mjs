@@ -1,15 +1,15 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 import { typeUtil } from "../../util/share.mjs";
 
 /**
- *
+ * @typedef import("../../types/share")
  * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
-        key: executeConstant.keys.additionalItems,
+        key: vocabularyActuatorConstant.keys.additionalItems,
         versions: versionConstant.jsonSchemaVersionGroups.draft03ByAdd,
         index: 7,
         matches: [
@@ -20,7 +20,7 @@ const configs = [
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
                         const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
                             context,
-                            executeConstant.keys.items,
+                            vocabularyActuatorConstant.keys.items,
                         );
                         const items = parentSchemaInfo.$ref[parentSchemaInfo.key];
                         if (
@@ -30,25 +30,28 @@ const configs = [
                             errorManage.pushError(context, "additionalItemsMustNotHaveMoreItems");
                         }
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: (context, { startRefOrSchemaExecute }) => {
-                    const parentSchemaInfo = contextManage.getSiblingSchemaRefData(context, executeConstant.keys.items);
+                    const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
+                        context,
+                        vocabularyActuatorConstant.keys.items,
+                    );
                     const items = parentSchemaInfo.$ref[parentSchemaInfo.key];
                     if (typeUtil.getTypeofType(items) === typeConstant.typeofTypes.array) {
                         const instanceCount =
                             context.instanceData.current.$ref[context.instanceData.current.key].length;
                         for (let moreItemIndex = items.length; moreItemIndex < instanceCount; moreItemIndex++) {
                             contextManage.enterContext(context, undefined, moreItemIndex);
-                            startRefOrSchemaExecute(context, true);
+                            startRefOrSchemaExecute(context, false);
                             contextManage.backContext(context, undefined, moreItemIndex);
                         }
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

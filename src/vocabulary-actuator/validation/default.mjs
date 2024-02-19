@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { dataOperateUtil } from "../../util/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
@@ -24,7 +24,7 @@ function validateDefault(context, schemaValue, startExecute) {
  */
 const configs = [
     {
-        key: executeConstant.keys.default,
+        key: vocabularyActuatorConstant.keys.default,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 3,
         matches: [
@@ -40,7 +40,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key];
                     }
                     validateDefault(context, schemaValue, startExecute);
-                    return executeConstant.ticks.endExecute;
+                    return vocabularyActuatorConstant.ticks.endExecute;
                 },
             },
             {
@@ -58,7 +58,7 @@ const configs = [
                         context.schemaData.current.$ref[context.schemaData.current.key],
                         startExecute,
                     );
-                    return executeConstant.ticks.endExecute;
+                    return vocabularyActuatorConstant.ticks.endExecute;
                 },
             },
         ],

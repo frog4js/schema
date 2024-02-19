@@ -1,4 +1,4 @@
-import { executeConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
+import { vocabularyActuatorConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 import { typeUtil } from "../../util/share.mjs";
@@ -12,7 +12,7 @@ import { typeUtil } from "../../util/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.dependencies,
+        key: vocabularyActuatorConstant.keys.dependencies,
         versions: versionConstant.jsonSchemaVersionGroups.draft03ByAdd,
         index: 30,
         matches: [
@@ -41,7 +41,7 @@ const configs = [
                                 );
                                 break;
                             case typeConstant.typeofTypes.object:
-                                validResult = startRefOrSchemaExecute(context).length === 0;
+                                validResult = startRefOrSchemaExecute(context, true).length === 0;
                                 break;
                         }
                         if (!validResult) {
@@ -49,7 +49,7 @@ const configs = [
                         }
                         contextManage.backContext(context, key);
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

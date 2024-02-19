@@ -6,8 +6,14 @@ import {
     jsonTypeGroups,
     platformTypeGroups,
 } from "./type.mjs";
-import { jsonSchema$schemaVersionMap, jsonSchemaVersionGroups, jsonSchemaVersions } from "./version.mjs";
-import { keys, ticks, pathKeys, errorCodes } from "./execute.mjs";
+import {
+    jsonSchema$schemaVersionMap,
+    jsonSchemaVersionGroups,
+    jsonSchemaVersions,
+    jsonSchema$schemaDraftMap,
+} from "./version.mjs";
+import { keys, ticks, pathKeys, errorCodes } from "./vocabulary-actuator.mjs";
+import { states, phases } from "./context.mjs";
 
 export const typeConstant = {
     jsonTypes,
@@ -21,10 +27,15 @@ export const versionConstant = {
     jsonSchemaVersions,
     jsonSchemaVersionGroups,
     jsonSchema$schemaVersionMap,
+    jsonSchema$schemaDraftMap,
 };
-export const executeConstant = {
+export const vocabularyActuatorConstant = {
     keys,
     ticks,
     pathKeys,
     errorCodes,
+};
+export const contextConstant = {
+    states,
+    phases,
 };

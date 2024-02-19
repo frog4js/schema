@@ -1,46 +1,46 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
+import { contextManage } from "../../context/share.mjs";
+
 /**
- *
+ * @typedef {import("../../../types/share")}
  * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
-        key: executeConstant.keys.items,
+        key: vocabularyActuatorConstant.keys.items,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 6,
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.array],
-                resolve: (context, { startRefOrSchemaExecute, enterContext, backContext }) => {
+                resolve: (context, { startRefOrSchemaExecute }) => {
                     let index = 0;
                     const instanceData = context.instanceData.current.$ref[context.instanceData.current.key];
                     for (const instanceItem of instanceData) {
-                        enterContext(context, undefined, index);
-                        const errors = startRefOrSchemaExecute(context);
-                        errorManage.mergeError(context, errors);
-                        backContext(context, undefined, index);
+                        contextManage.enterContext(context, undefined, index);
+                        startRefOrSchemaExecute(context, false);
+                        contextManage.backContext(context, undefined, index);
                         index++;
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
                 instanceTypes: [typeConstant.typeofTypes.array],
-                resolve: (context, { startRefOrSchemaExecute, enterContext, backContext }) => {
+                resolve: (context, { startRefOrSchemaExecute }) => {
                     const schemaData = context.schemaData.current.$ref[context.schemaData.current.key];
                     let index = 0;
                     for (const schemaItem of schemaData) {
-                        enterContext(context, index, index);
-                        const errors = startRefOrSchemaExecute(context);
-                        errorManage.mergeError(context, errors);
-                        backContext(context, index, index);
+                        contextManage.enterContext(context, index, index);
+                        startRefOrSchemaExecute(context, false);
+                        contextManage.backContext(context, index, index);
                         index++;
                     }
 
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

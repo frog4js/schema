@@ -6,21 +6,7 @@ describe("test the hyprtjump json schema", () => {
         const validator = new Validator(
             {
                 $schema: "https://json-schema.org/draft/draft-04/schema",
-
-                type: "number",
-                allOf: [{ maximum: 3 }, { type: "integer" }],
-                definitions: {
-                    a: {
-                        b: {
-                            c: {
-                                type: "string",
-                                d: {
-                                    type: "number",
-                                },
-                            },
-                        },
-                    },
-                },
+                id: "http://x.c",
             },
             "draft-04",
         );

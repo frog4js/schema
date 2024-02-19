@@ -1,4 +1,4 @@
-import { executeConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
+import { vocabularyActuatorConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 /**
  * @typedef {import("../../../types/core")}
@@ -10,7 +10,7 @@ import { contextManage } from "../../context/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.requires,
+        key: vocabularyActuatorConstant.keys.requires,
         versions: [versionConstant.jsonSchemaVersions.draft01, versionConstant.jsonSchemaVersions.draft02],
         index: 1,
         matches: [
@@ -27,19 +27,19 @@ const configs = [
                     );
 
                     if (!(parentInstance.key in parentInstance.$ref)) {
-                        return executeConstant.ticks.endExecute;
+                        return vocabularyActuatorConstant.ticks.endExecute;
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 resolve: (context, { startRefOrSchemaExecute }) => {
-                    const errors = startRefOrSchemaExecute(context);
+                    const errors = startRefOrSchemaExecute(context, true);
                     if (errors.length > 0) {
-                        return executeConstant.ticks.endExecute;
+                        return vocabularyActuatorConstant.ticks.endExecute;
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

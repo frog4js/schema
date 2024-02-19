@@ -1,16 +1,13 @@
 /**
- * @typedef {import("../../types/share").JSONSchema.Context} Context
- * @typedef {import("../../types/share").JSONSchema.VocabularyActuatorConfig} VocabularyActuatorConfig
- * @typedef {import("../../types/share").JSONSchema.Schema} Schema
- * @typedef {import("../../types/share").JSONSchema.ExecuteError} ExecuteError
+ * @typedef {import("../../types/share")}
+
  */
 
-import { getJsonTypeByRefData, getTypeofTypeByRefData } from "../util/type.mjs";
-import { executeConstant, typeConstant, versionConstant } from "../constants/share.mjs";
+import { contextConstant, vocabularyActuatorConstant, typeConstant, versionConstant } from "../constants/share.mjs";
 import coreConfigs from "./core/share.mjs";
 import { contextManage } from "../context/share.mjs";
 import referenceConfigs from "./reference/share.mjs";
-import { typeUtil } from "../util/share.mjs";
+import { dataOperateUtil, typeUtil } from "../util/share.mjs";
 import validationConfigs from "./validation/share.mjs";
 import { errorManage } from "../error/share.mjs";
 
@@ -18,51 +15,41 @@ import { errorManage } from "../error/share.mjs";
  *
  * @param {Context} context
  * @param {*}instance
+ * @return {{errors: Array<ExecuteError>, valid: boolean}}
  */
 function validate(context, instance) {
     if (!context.schemaData.origin) {
         throw new Error("TODO");
     }
+    context.phase = contextConstant.phases.instanceValidate;
     context.instanceData.origin = instance;
-    context.instanceData.current = { $ref: { root: instance }, key: "root" };
-    context.instancePaths = [];
-    context.errors = [];
-    context.tempErrors = [];
-    context.errorState = {
-        isTemp: false,
-        lockKey: "",
-    };
     startValidate(context);
-    return context;
+    return {
+        valid: !(context.errors.length > 0),
+        errors: context.errors,
+    };
 }
 /**
  *
  * @param {Context} context
- * @param {boolean} [isPushError]
+ * @param {boolean} [isTryExecute]
  * @return {ExecuteError[]}
  */
-function startRefOrSchemaExecute(context, isPushError) {
+function startRefOrSchemaExecute(context, isTryExecute) {
     const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
-    errorManage.setLogError(context, true);
+    isTryExecute === true && errorManage.setLogError(context, true);
     if (typeof schemaValue.$ref === typeConstant.typeofTypes.string) {
-        if (schemaValue.$ref.startsWith("#") && context.refSchemas[schemaValue.$ref]) {
-            contextManage.enterContext(context, executeConstant.pathKeys.ref);
-            contextManage.enterContext(context, schemaValue.$ref);
-            startValidateValidation(context);
-            contextManage.backContext(context, schemaValue.$ref);
-            contextManage.backContext(context, executeConstant.pathKeys.ref);
-        } else {
-            // TODO
-        }
+        const paths = dataOperateUtil.getPathsByRef(schemaValue);
+        paths.unshift(vocabularyActuatorConstant.pathKeys.ref);
+        paths.forEach((pathItem) => contextManage.enterContext(context, pathItem));
+        startValidateValidation(context);
+        paths.forEach((pathItem) => contextManage.backContext(context, pathItem));
     } else {
         startValidateValidation(context);
     }
-    if (errorManage.setLogError(context, false)) {
+    if (isTryExecute && errorManage.setLogError(context, false)) {
         const errors = context.tempErrors;
         context.tempErrors = [];
-        if (isPushError === true) {
-            errorManage.mergeError(context, errors);
-        }
         return errors;
     } else {
         return [];
@@ -98,9 +85,9 @@ function startValidateValidation(context) {
                 const tick = match.resolve(context, {
                     startRefOrSchemaExecute,
                 });
-                if (tick === executeConstant.ticks.nextExecute) {
+                if (tick === vocabularyActuatorConstant.ticks.nextExecute) {
                     break;
-                } else if (tick === executeConstant.ticks.endExecute) {
+                } else if (tick === vocabularyActuatorConstant.ticks.endExecute) {
                     contextManage.backContext(context, execute.key);
                     break executeLoop;
                 }
@@ -110,18 +97,20 @@ function startValidateValidation(context) {
     }
     context.endTime = Date.now();
 }
+
 /**
  *
  * @param {Context} context
  */
 function startValidateCore(context) {
+    restoreStartState(context);
     executeLoop: for (let execute of coreConfigs) {
         if (!execute.versions.includes(context.version)) {
             continue;
         }
-        enterContext(context, undefined, execute.key);
+        contextManage.enterContext(context, undefined, execute.key);
         for (const match of execute.matches) {
-            const instanceType = getTypeofTypeByRefData(context.instanceData.current);
+            const instanceType = typeUtil.getTypeofTypeByRefData(context.instanceData.current);
             let isExec = true;
             if (isExec && (!match.instanceTypes || match.instanceTypes.includes(instanceType))) {
                 isExec = true;
@@ -132,9 +121,9 @@ function startValidateCore(context) {
                 const tick = match.resolve(context, {
                     startRefOrSchemaExecute,
                 });
-                if (tick === executeConstant.ticks.nextExecute) {
+                if (tick === vocabularyActuatorConstant.ticks.nextExecute) {
                     break;
-                } else if (tick === executeConstant.ticks.endExecute) {
+                } else if (tick === vocabularyActuatorConstant.ticks.endExecute) {
                     contextManage.backContext(context, execute.key);
                     break executeLoop;
                 }
@@ -144,12 +133,70 @@ function startValidateCore(context) {
     }
     context.endTime = Date.now();
 }
+
+function startValidateSchemaSpecialValue(context) {
+    restoreStartState(context);
+
+    const each = (keyOrIndex, item) => {
+        const itemType = typeUtil.getTypeofType(item);
+        if (itemType === typeConstant.typeofTypes.array) {
+            item.map((subItem, index) => {
+                contextManage.enterContext(context, undefined, index);
+                each(index, subItem);
+                contextManage.backContext(context, undefined, index);
+            });
+        } else if (itemType === typeConstant.typeofTypes.object) {
+            for (const key of Object.keys(item)) {
+                contextManage.enterContext(context, undefined, key);
+                each(key, item[key]);
+                contextManage.backContext(context, undefined, key);
+            }
+        } else {
+            if (typeof keyOrIndex === typeConstant.typeofTypes.string) {
+                referenceConfigs.forEach((config) => {
+                    if (config.versions.includes(context.version) && keyOrIndex === config.key) {
+                        config.matches.forEach((match) => {
+                            if (!match.instanceTypes || match.instanceTypes.includes(itemType)) {
+                                match.resolve(context);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    };
+    return each(undefined, context.instanceData.origin);
+}
+
 /**
  *
  * @param {Context} context
  */
 function startValidate(context) {
-    startValidateCore(context);
+    if (context.phase === contextConstant.phases.instanceValidate) {
+        if (context.state !== contextConstant.states.compile) {
+            throw new Error("TODO2");
+        }
+    } else if (context.phase === contextConstant.phases.schemaValidate) {
+        startValidateCore(context);
+        startValidateSchemaSpecialValue(context);
+    }
+    restoreStartState(context);
     startValidateValidation(context);
 }
-export { validate };
+
+/**
+ *
+ * @param {Context}context
+ */
+function restoreStartState(context) {
+    context.instanceData.current = { $ref: { root: context.instanceData.origin }, key: "root" };
+    context.instancePaths = [];
+    context.errors = [];
+    context.tempErrors = [];
+    context.errorState = {
+        isTemp: false,
+        lockKey: "",
+    };
+}
+export { validate, startValidate, startRefOrSchemaExecute };

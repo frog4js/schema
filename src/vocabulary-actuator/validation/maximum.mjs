@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 /**
@@ -7,7 +7,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.maximum,
+        key: vocabularyActuatorConstant.keys.maximum,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 9,
         matches: [
@@ -31,7 +31,7 @@ const configs = [
                         }
                     }
 
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

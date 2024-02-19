@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 const formats = {
     // date-time - This should be a date in ISO 8601 format of YYYY-MM-DDThh:mm:ssZ in UTC time. This is the recommended form of date/timestamp.
@@ -51,6 +51,16 @@ const formats = {
     hostname: {
         regex: /^(?=.{1,253}\.?$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*\.?$/i,
     },
+    "json-schema-system-base-URI": {
+        func: (val) => {
+            try {
+                const url = new URL(val);
+                return !(url.hash.length > 0 || val[val.length - 1] !== "#");
+            } catch (e) {
+                return false;
+            }
+        },
+    },
 };
 const beforeV4FormatKeys = [
     "date-time",
@@ -71,8 +81,19 @@ const beforeV4FormatKeys = [
     "region",
     "postal-code",
     "country",
+    "json-schema-system-base-URI",
 ];
-const afterV4FormatKeys = ["date-time", "email", "ipv4", "ipv6", "hostname", "uri", "uri-reference", "regex"];
+const afterV4FormatKeys = [
+    "date-time",
+    "email",
+    "ipv4",
+    "ipv6",
+    "hostname",
+    "uri",
+    "uri-reference",
+    "regex",
+    "json-schema-system-base-URI",
+];
 
 function regex(str) {
     try {
@@ -82,14 +103,13 @@ function regex(str) {
         return false;
     }
 }
-
 /**
  *
  * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
-        key: executeConstant.keys.format,
+        key: vocabularyActuatorConstant.keys.format,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 12,
         matches: [
@@ -103,18 +123,18 @@ const configs = [
                                 context.schemaData.current.$ref[context.schemaData.current.key],
                             )
                         ) {
-                            return executeConstant.ticks.nextExecute;
+                            return vocabularyActuatorConstant.ticks.nextExecute;
                         }
                     } else {
                         if (
                             !afterV4FormatKeys.includes(context.schemaData.current.$ref[context.schemaData.current.key])
                         ) {
-                            return executeConstant.ticks.nextExecute;
+                            return vocabularyActuatorConstant.ticks.nextExecute;
                         }
                     }
                     const valid = formats[context.schemaData.current.$ref[context.schemaData.current.key]];
                     if (!valid) {
-                        return executeConstant.ticks.nextExecute;
+                        return vocabularyActuatorConstant.ticks.nextExecute;
                     }
                     let result = true;
                     if (valid.regex) {
@@ -129,7 +149,7 @@ const configs = [
                     if (!result) {
                         errorManage.pushError(context, "formatMustMatchTheDefinitionOfFormat");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

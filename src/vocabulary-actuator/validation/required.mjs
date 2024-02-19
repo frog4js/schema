@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 
 /**
@@ -7,7 +7,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.required,
+        key: vocabularyActuatorConstant.keys.required,
         versions: [versionConstant.jsonSchemaVersions.draft03],
         index: 2.1,
         matches: [
@@ -18,13 +18,13 @@ const configs = [
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
                         errorManage.pushError(context, "requiredMustBeExists");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],
     },
     {
-        key: executeConstant.keys.required,
+        key: vocabularyActuatorConstant.keys.required,
         versions: versionConstant.jsonSchemaVersionGroups.draft04ByAdd,
         index: 40,
         matches: [
@@ -39,9 +39,9 @@ const configs = [
 
                     const result = requiredKeys.every((key) => instanceKeys.has(key));
                     if (!result) {
-                        pushError(context, "requiredMustBeExists");
+                        errorManage.pushError(context, "requiredMustBeExists");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

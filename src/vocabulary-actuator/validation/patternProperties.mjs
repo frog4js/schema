@@ -1,12 +1,13 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
+import { contextManage } from "../../context/share.mjs";
 
 /**
- *
+ * @typedef import("../../types/share")
  * @type {Array<VocabularyActuatorConfig>}
  */
 const configs = [
     {
-        key: executeConstant.keys.patternProperties,
+        key: vocabularyActuatorConstant.keys.patternProperties,
         versions: versionConstant.jsonSchemaVersionGroups.draft03ByAdd,
         index: 31,
         matches: [
@@ -33,10 +34,12 @@ const configs = [
                                 return currentSchemaKeyReExp.test(currentInstanceKey);
                             })
                             .forEach((currentInstanceKey) => {
-                                startRefOrSchemaExecute(context, currentSchemaKey, currentInstanceKey);
+                                contextManage.enterContext(context, currentSchemaKey, currentInstanceKey);
+                                startRefOrSchemaExecute(context, false);
+                                contextManage.backContext(context, currentSchemaKey, currentInstanceKey);
                             });
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 /**
  *
@@ -6,7 +6,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.multipleOf,
+        key: vocabularyActuatorConstant.keys.multipleOf,
         versions: versionConstant.jsonSchemaVersionGroups.draft04ByAdd,
         index: 46,
         matches: [
@@ -22,7 +22,7 @@ const configs = [
                             errorManage.pushError(context, "multipleOfMustBeDivisible");
                         }
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

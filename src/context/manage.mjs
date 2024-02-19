@@ -1,24 +1,26 @@
-import { executeConstant, typeConstant, versionConstant } from "../constants/share.mjs";
+import { contextConstant, vocabularyActuatorConstant, typeConstant, versionConstant } from "../constants/share.mjs";
 import { schemaManage } from "../schema/share.mjs";
-
-const systemDefault = {
-    $schema: "http://json-schema.org/draft-04/schema#",
-    baseURI: "https://github.com/frog4js",
-};
+import { dataOperateUtil } from "../util/share.mjs";
+import { jsonSchema$schemaVersionMap } from "../constants/version.mjs";
+import { defaultConfigManage } from "../default-config/share.mjs";
 
 /**
- * @typedef {import("../../types/context").JSONSchema.Context} Context
- * @typedef {import("../../types/context").JSONSchema.DefaultConfig} DefaultConfig
+ * @typedef {import("../../types/share")}
  */
 
 /**
  *
  * @param {DefaultConfig} [defaultConfig]
  * @return {Context}
+ * @throws {Error}
  */
 function create(defaultConfig) {
-    defaultConfig = Object.assign({}, systemDefault, defaultConfig);
-    new URL(defaultConfig.baseURI);
+    if (defaultConfig) {
+        defaultConfigManage.validate(defaultConfig);
+        defaultConfig = Object.assign(defaultConfigManage.getSystemDefaultConfig(), defaultConfig);
+    } else {
+        defaultConfig = defaultConfigManage.getSystemDefaultConfig();
+    }
     const context = {
         errors: [],
         tempErrors: [],
@@ -34,7 +36,10 @@ function create(defaultConfig) {
         defaultConfig,
         schemaData: {},
         instanceData: {},
-        cacheReferenceSchemas: {},
+        referenceSchemas: {},
+        state: contextConstant.states.init,
+        phase: contextConstant.phases.schemaValidate,
+        waitValidateRefs: [],
     };
     schemaManage.switchVersion(context, defaultConfig.$schema);
     return context;
@@ -62,12 +67,6 @@ function getCurrentInstanceRefData(context) {
  * @return {RefData}
  */
 function getCurrentSchemaRefData(context) {
-    if (context.schemaPaths.length === 0) {
-        return {
-            $ref: { root: context.schemaData.origin },
-            key: "root",
-        };
-    }
     const current = getParentSchema(context);
     return { $ref: current, key: context.schemaPaths[context.schemaPaths.length - 1] };
 }
@@ -96,49 +95,23 @@ function getSiblingInstanceRefData(context, key) {
  * @return {RefData}
  */
 function getSiblingSchemaRefData(context, key) {
-    if (context.schemaPaths.length === 0) {
-        return {
-            $ref: { root: context.schemaData.origin },
-            key: "root",
-        };
-    }
     const current = getParentSchema(context);
     return { $ref: current, key };
 }
 
-function getValueByJsonPointer(obj, pointer) {
-    if (pointer === "") {
-        return obj; // Return the whole document
-    }
-
-    const parts = pointer
-        .substring(1)
-        .split("/")
-        .map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
-    let current = obj;
-
-    for (let part of parts) {
-        current = current[part];
-    }
-
-    return current;
-}
-
+/**
+ *
+ * @param {Context}context
+ * @return {*}
+ */
 function getParentSchema(context) {
-    let current = context.schemaData.origin;
+    let current;
     for (let i = 0; i < context.schemaPaths.length - 1; i++) {
         const keyOrIndex = context.schemaPaths[i];
-        if (keyOrIndex === executeConstant.pathKeys.ref) {
-            current = context.refSchemas;
+        if (keyOrIndex === vocabularyActuatorConstant.pathKeys.ref) {
+            current = context.referenceSchemas;
         } else {
             current = current[keyOrIndex];
-        }
-        if (typeof current?.$ref === typeConstant.typeofTypes.string && current.$ref.startsWith("#")) {
-            if (context.version < versionConstant.jsonSchemaVersions.draft04) {
-                current = context.refSchemas[current.$ref];
-            } else {
-                current = getValueByJsonPointer(context.schemaData.origin, current.$ref.substring(1));
-            }
         }
     }
     return current;
@@ -164,7 +137,7 @@ function enterContext(context, schemaKey, instanceKey) {
         if (instanceKey !== undefined) {
             context.instancePaths.push(instanceKey);
         }
-        if (schemaKey !== executeConstant.pathKeys.ref) {
+        if (schemaKey !== vocabularyActuatorConstant.pathKeys.ref) {
             context.instanceData.current = getCurrentInstanceRefData(context);
         }
     }
@@ -172,7 +145,7 @@ function enterContext(context, schemaKey, instanceKey) {
         if (schemaKey !== undefined) {
             context.schemaPaths.push(schemaKey);
         }
-        if (schemaKey !== executeConstant.pathKeys.ref) {
+        if (schemaKey !== vocabularyActuatorConstant.pathKeys.ref) {
             context.schemaData.current = getCurrentSchemaRefData(context);
         }
     }
@@ -196,20 +169,20 @@ function backContext(context, schemaKey, instanceKey) {
 function canEqualInstance(context) {
     if (context.version < versionConstant.jsonSchemaVersions.draft03) {
         let siblingSchema;
-        if (context.schemaData.current.key === executeConstant.keys.maximum) {
-            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.maximumCanEqual);
-        } else if (context.schemaData.current.key === executeConstant.keys.minimum) {
-            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.minimumCanEqual);
+        if (context.schemaData.current.key === vocabularyActuatorConstant.keys.maximum) {
+            siblingSchema = getSiblingSchemaRefData(context, vocabularyActuatorConstant.keys.maximumCanEqual);
+        } else if (context.schemaData.current.key === vocabularyActuatorConstant.keys.minimum) {
+            siblingSchema = getSiblingSchemaRefData(context, vocabularyActuatorConstant.keys.minimumCanEqual);
         }
         if (siblingSchema) {
             return siblingSchema.$ref[siblingSchema.key];
         }
     } else {
         let siblingSchema;
-        if (context.schemaData.current.key === executeConstant.keys.maximum) {
-            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.exclusiveMaximum);
-        } else if (context.schemaData.current.key === executeConstant.keys.minimum) {
-            siblingSchema = getSiblingSchemaRefData(context, executeConstant.keys.exclusiveMinimum);
+        if (context.schemaData.current.key === vocabularyActuatorConstant.keys.maximum) {
+            siblingSchema = getSiblingSchemaRefData(context, vocabularyActuatorConstant.keys.exclusiveMaximum);
+        } else if (context.schemaData.current.key === vocabularyActuatorConstant.keys.minimum) {
+            siblingSchema = getSiblingSchemaRefData(context, vocabularyActuatorConstant.keys.exclusiveMinimum);
         }
         if (siblingSchema) {
             return !siblingSchema.$ref[siblingSchema.key];

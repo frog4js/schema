@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 /**
  *
@@ -6,7 +6,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.minProperties,
+        key: vocabularyActuatorConstant.keys.minProperties,
         versions: versionConstant.jsonSchemaVersionGroups.draft04ByAdd,
         index: 45,
         matches: [
@@ -20,7 +20,7 @@ const configs = [
                     ) {
                         errorManage.pushError(context, "minPropertiesMustBeLessThanOrEqualToLimit");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

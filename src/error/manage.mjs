@@ -1,13 +1,8 @@
-import { executeConstant, typeConstant } from "../constants/share.mjs";
+import { vocabularyActuatorConstant, typeConstant } from "../constants/share.mjs";
 import { dataOperateUtil, typeUtil } from "../util/share.mjs";
-
-function getErrorLength(context) {
-    return context.errors.length;
-}
-function hasError(context) {
-    return getErrorLength(context) === 0;
-}
-
+/**
+ * @typedef {import("../../types/share")}
+ */
 /**
  *
  * @param {Context} context
@@ -29,15 +24,12 @@ function mergeError(context, errors) {
 function pushError(context, code) {
     (context.errorState.isTemp ? context.tempErrors : context.errors).push({
         instancePath: context.instancePaths.length > 0 ? "/" + context.instancePaths.join("/") : "",
-        schemaPath:
-            context.schemaPaths.length > 0
-                ? "#/" + context.schemaPaths.filter((x) => x !== executeConstant.pathKeys.ref).join("/")
-                : "#",
+        schemaPath: context.schemaPaths.filter((x) => x !== vocabularyActuatorConstant.pathKeys.ref).join("/"),
         currentSchemaKey: context.schemaData.current.key,
         currentSchemaValue: slowGetRefDataDecodeAndDeepCloe(context.schemaData.current),
         currentInstanceKey: context.instanceData.current.key,
         currentInstanceValue: slowGetRefDataDecodeAndDeepCloe(context.instanceData.current),
-        message: executeConstant.errorCodes[code],
+        message: vocabularyActuatorConstant.errorCodes[code],
         code: code,
     });
 }
@@ -80,4 +72,4 @@ function setLogError(context, isTempError) {
     }
     return false;
 }
-export { getErrorLength, hasError, pushError, mergeError, setLogError };
+export { pushError, mergeError, setLogError };

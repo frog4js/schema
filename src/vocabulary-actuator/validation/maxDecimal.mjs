@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 /**
  *
@@ -6,7 +6,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.maxDecimal,
+        key: vocabularyActuatorConstant.keys.maxDecimal,
         versions: [versionConstant.jsonSchemaVersions.draft01],
         index: 17,
         matches: [
@@ -24,7 +24,7 @@ const configs = [
                     ) {
                         errorManage.pushError(context, "maxDecimalMustBeLessThanOrEqualToLimit");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

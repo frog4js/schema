@@ -1,9 +1,9 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 
 /**
- * @typedef {import("../../../types/core")}
+ * @typedef {import("../../../types/share")}
  */
 
 /**
@@ -12,7 +12,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.additionalProperties,
+        key: vocabularyActuatorConstant.keys.additionalProperties,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 7,
         matches: [
@@ -23,7 +23,7 @@ const configs = [
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
                         const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
                             context,
-                            executeConstant.keys.properties,
+                            vocabularyActuatorConstant.keys.properties,
                         );
                         const properties = parentSchemaInfo.$ref[parentSchemaInfo.key];
                         const diffProperties = Object.keys(
@@ -34,7 +34,7 @@ const configs = [
                         }
                     }
 
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
             {
@@ -43,7 +43,7 @@ const configs = [
                 resolve: (context, { startRefOrSchemaExecute }) => {
                     const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
                         context,
-                        executeConstant.keys.properties,
+                        vocabularyActuatorConstant.keys.properties,
                     );
                     const properties = parentSchemaInfo.$ref[parentSchemaInfo.key];
 
@@ -52,11 +52,11 @@ const configs = [
                     ).filter((x) => !Object.keys(properties || {}).includes(x));
                     for (const diffProperty of diffProperties) {
                         contextManage.enterContext(context, undefined, diffProperty);
-                        startRefOrSchemaExecute(context, true);
+                        startRefOrSchemaExecute(context, false);
                         contextManage.backContext(context, undefined, diffProperty);
                     }
 
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

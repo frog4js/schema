@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 /**
  * @typedef {import("../../../types/core")}
@@ -10,7 +10,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.optional,
+        key: vocabularyActuatorConstant.keys.optional,
         versions: [versionConstant.jsonSchemaVersions.draft01, versionConstant.jsonSchemaVersions.draft02],
         index: 2,
         matches: [
@@ -21,7 +21,7 @@ const configs = [
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
                         errorManage.pushError(context, "optionalMustBeExists");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

@@ -13,7 +13,7 @@
         "release": "standard-version",
         "commit": "git -cz",
         "test": "node --test test/all-test.mjs",
-        "test:only": "node --test --test-only test/other/ajv.test.mjs",
+        "test:only": "node --test --test-only test/all-test.mjs",
         "test:coverage": "rimraf ./coverage && NODE_V8_COVERAGE=coverage node --experimental-test-coverage test/all-test.mjs"
     },
     "repository": {

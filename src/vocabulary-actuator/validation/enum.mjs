@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 
 /**
@@ -7,7 +7,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.enum,
+        key: vocabularyActuatorConstant.keys.enum,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 16,
         matches: [
@@ -22,7 +22,7 @@ const configs = [
                     ) {
                         errorManage.pushError(context, "enumMustBeEqualToOneOfTheEnumValues");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

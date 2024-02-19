@@ -1,4 +1,4 @@
-import { typeConstant, versionConstant, executeConstant } from "../../constants/share.mjs";
+import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 
 /**
@@ -7,7 +7,7 @@ import { errorManage } from "../../error/share.mjs";
  */
 const configs = [
     {
-        key: executeConstant.keys.maxItems,
+        key: vocabularyActuatorConstant.keys.maxItems,
         versions: versionConstant.jsonSchemaVersionGroups.all,
         index: 11,
         matches: [
@@ -21,7 +21,7 @@ const configs = [
                     ) {
                         errorManage.pushError(context, "maxItemsMustBeGreaterThanOrEqualToLimit");
                     }
-                    return executeConstant.ticks.nextExecute;
+                    return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
         ],

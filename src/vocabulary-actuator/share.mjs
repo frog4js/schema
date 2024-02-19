@@ -1,4 +1,5 @@
-import { validate } from "./manage.mjs";
+import { validate, startValidate } from "./manage.mjs";
 export const vocabularyActuatorManage = {
     validate,
+    startValidate,
 };
