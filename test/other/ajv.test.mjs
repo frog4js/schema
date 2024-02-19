@@ -1,7 +1,9 @@
 import { describe, it, beforeEach } from "node:test";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import { schemaManage, instanceManage } from "../../src/api/share.mjs";
+import { contextManage } from "../../src/context/share.mjs";
+import { schemaManage } from "../../src/schema/share.mjs";
+import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
 
 describe("test the ajv", () => {
     it("ajv1", () => {
@@ -9,25 +11,22 @@ describe("test the ajv", () => {
         addFormats(ajv);
 
         const schema = {
+            $id: "#/abcd",
+            $defs: {
+                a: { type: "string" },
+            },
             type: "object",
             properties: {
                 name: {
-                    default: "1",
-                },
-                age: {
-                    default: 1,
+                    $ref: "#/$defs/a",
                 },
             },
-            required: ["age", "name"],
         };
-
-        const data = {};
+        const data = { name: "22", age: { name: { name: { name: "111" } } } };
 
         const validate = ajv.compile(schema);
+        schema.type = "string";
         validate("ajv result", data);
-        console.log("ajv1", validate(data)); // true
-        console.log(validate.errors); // true
-        console.log(data); // { "foo": 1, "bar": "baz" }
     });
 
     it("ajv2", () => {
@@ -131,53 +130,43 @@ describe("test the ajv", () => {
         };
 
         const validate = ajv.compile(schema);
-
-        console.log(validate(data)); // true
-        console.log(validate.errors); // true
-        console.log(data); // { "foo": 1, "bar": "baz" }
     });
     it("diff-current", () => {
-        function generateRandomString(length) {
-            const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            let result = "";
-
-            for (let i = 0; i < length; i++) {
-                const randomIndex = Math.floor(Math.random() * characters.length);
-                result += characters.charAt(randomIndex);
-            }
-
-            return result;
-        }
-
         const json = {
-            $schema: "http://json-schema.org/draft-01/schema#",
+            $schema: "http://json-schema.org/draft-04/schema#",
             type: "object",
             $id: "User",
             title: "user properties definition",
             description: "user properties definition",
             additionalProperties: false,
-            properties: {
-                names: {
-                    type: "array",
-                    items: {
-                        type: "string",
-                    },
+            defs: {
+                a: {
+                    type: "string",
                 },
+            },
+            properties: {
+                name: { $ref: "https://github.com/index/a#/definitions/b" },
             },
         };
 
         const data = {
-            names: [],
+            name: 1,
         };
-        for (let i = 0; i < 10; i++) {
-            data.names.push(generateRandomString(500000));
-        }
-        const start = Date.now();
 
-        const schema = schemaManage.create(json);
-        instanceManage.validate(schema, data);
-
-        console.log("end====================", Date.now() - start);
+        const context = contextManage.create();
+        schemaManage.addReferenceSchema(context, {
+            $schema: "http://json-schema.org/draft-04/schema#",
+            id: "https://github.com/index/a#",
+            type: "string",
+            definitions: {
+                b: {
+                    type: "string",
+                },
+            },
+        });
+        schemaManage.setMainSchema(context, json);
+        schemaManage.compile(context);
+        vocabularyActuatorManage.validate(context, data);
     });
 
     it("diff-ajv", () => {
@@ -220,6 +209,5 @@ describe("test the ajv", () => {
         const start = Date.now();
         const validate = ajv.compile(schema);
         validate(data);
-        console.log("end====================", Date.now() - start);
     });
 });

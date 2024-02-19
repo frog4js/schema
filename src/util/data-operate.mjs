@@ -20,7 +20,7 @@ export function clone(data) {
 
 export function deepClone(data) {
     const cloneItem = (item) => {
-        if (item === null) {
+        if (item === null || item === undefined) {
             return item;
         }
         if (typeof item !== "object") {
@@ -179,4 +179,61 @@ export function fastDeepHasDuplicates(array) {
         }
     }
     return false;
+}
+
+/**
+ *
+ * @param {Object} obj
+ * @param {string}pointer
+ * @return {*}
+ */
+export function getValueByJsonPointer(obj, pointer) {
+    const parts = getPathsByJsonPointer(pointer);
+    if (parts.length === 0) {
+        return obj;
+    }
+    let current = obj;
+
+    for (let part of parts) {
+        if (current === null) {
+            return null;
+        }
+        if (current === undefined) {
+            return undefined;
+        }
+        if (typeof current !== typeConstant.typeofTypes.object) {
+            return current;
+        }
+        current = current[part];
+    }
+
+    return current;
+}
+
+/**
+ *
+ * @param {string} pointer
+ * @return {string[]}
+ */
+export function getPathsByJsonPointer(pointer) {
+    const parts = pointer
+        .substring(1)
+        .split("/")
+        .map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
+    if (parts[0] === "") {
+        parts.shift();
+    }
+    return parts;
+}
+
+/**
+ *
+ * @param {{$ref: string}} ref
+ */
+export function getPathsByRef(ref) {
+    const index = ref.$ref.indexOf("#");
+    if (index === -1) {
+        return [ref.$ref];
+    }
+    return [ref.$ref.substring(0, index + 1), ...getPathsByJsonPointer(ref.$ref.substring(index))];
 }

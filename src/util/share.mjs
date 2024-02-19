@@ -8,7 +8,16 @@ import {
     getTypeofTypeByRefData,
     getTypeofType,
 } from "./type.mjs";
-import { deepClone, clone, toString, fastDeepHasDuplicates } from "./data-operate.mjs";
+import {
+    deepClone,
+    clone,
+    toString,
+    fastDeepHasDuplicates,
+    getValueByJsonPointer,
+    getPathsByJsonPointer,
+    getPathsByRef,
+} from "./data-operate.mjs";
+import { getUUID } from "./random.mjs";
 export const typeUtil = {
     getPlatformType,
     getPlatformTypeByRefData,
@@ -25,4 +34,11 @@ export const dataOperateUtil = {
     clone,
     toString,
     fastDeepHasDuplicates,
+    getValueByJsonPointer,
+    getPathsByJsonPointer,
+    getPathsByRef,
+};
+
+export const randomUtil = {
+    getUUID,
 };

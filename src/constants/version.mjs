@@ -17,3 +17,9 @@ export const jsonSchema$schemaVersionMap = {
     "http://json-schema.org/draft-03/schema#": jsonSchemaVersions.draft03,
     "http://json-schema.org/draft-04/schema#": jsonSchemaVersions.draft04,
 };
+export const jsonSchema$schemaDraftMap = {
+    [jsonSchemaVersions.draft01]: "http://json-schema.org/draft-01/schema#",
+    [jsonSchemaVersions.draft02]: "http://json-schema.org/draft-02/schema#",
+    [jsonSchemaVersions.draft03]: "http://json-schema.org/draft-03/schema#",
+    [jsonSchemaVersions.draft04]: "http://json-schema.org/draft-04/schema#",
+};
