@@ -237,3 +237,57 @@ export function getPathsByRef(ref) {
     }
     return [ref.$ref.substring(0, index + 1), ...getPathsByJsonPointer(ref.$ref.substring(index))];
 }
+export function merge(obj1, obj2) {
+    const mergeItem = (item1, item2) => {
+        if (item1 === null || item1 === undefined) {
+            return item2;
+        }
+        if (item2 === null || item2 === undefined) {
+            return item1;
+        }
+        if (typeof item2 !== "object" || typeof item2 !== "object") {
+            return item2;
+        }
+        if (Array.isArray(item1) && !Array.isArray(item2)) {
+            return item2;
+        } else if (!Array.isArray(item1) && Array.isArray(item2)) {
+            return item2;
+        } else if (Array.isArray(item1) && Array.isArray(item2)) {
+            for (let index = 0; index < item2.length; index++) {
+                item1[index] = mergeItem(item1[index], item2[index]);
+            }
+            return item1;
+        } else {
+            for (const key of Object.keys(item2)) {
+                item1[key] = mergeItem(item1[key], item2[key]);
+            }
+            return item1;
+        }
+    };
+    return mergeItem(obj1, obj2);
+}
+
+/**
+ *
+ *     // [1, 2, 3]  [1,2,3,4]  return 1
+ *     // [1, 2, 3]  [1,2,3]  return 0
+ *     // [1, 2, 3]  [1,2] return 2
+ *     // [1, 2, 3]  [1,2, 4] return 3
+ * @param {Array}array1
+ * @param {Array}array2
+ * @return {0 | 1 | 2 |3}
+ */
+export function compareToArray(array1, array2) {
+    for (let i = 0; i < Math.max(array1.length, array2.length); i++) {
+        if (array1[i] !== array2[i]) {
+            if (i <= array1.length - 1 && i <= array2.length - 1) {
+                return 3;
+            } else if (i >= array1.length - 1 && i <= array2.length - 1) {
+                return 1;
+            } else {
+                return 2;
+            }
+        }
+    }
+    return 0;
+}

@@ -4,11 +4,12 @@ import {
     backContext,
     getParentInstance,
     getSiblingSchemaRefData,
-    getCurrentSchemaRefData,
     getSiblingInstanceRefData,
-    getCurrentInstanceRefData,
     getParentSchema,
     canEqualInstance,
+    unlock,
+    lock,
+    clone,
 } from "./manage.mjs";
 export const contextManage = {
     create,
@@ -16,9 +17,10 @@ export const contextManage = {
     backContext,
     getParentInstance,
     getSiblingSchemaRefData,
-    getCurrentSchemaRefData,
     getSiblingInstanceRefData,
-    getCurrentInstanceRefData,
     getParentSchema,
     canEqualInstance,
+    unlock,
+    lock,
+    clone,
 };

@@ -20,14 +20,14 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key] >=
                             context.schemaData.current.$ref[context.schemaData.current.key]
                         ) {
-                            errorManage.pushError(context, "maximumMustBeLessThanLimit");
+                            errorManage.pushError(context);
                         }
                     } else {
                         if (
                             context.instanceData.current.$ref[context.instanceData.current.key] >
                             context.schemaData.current.$ref[context.schemaData.current.key]
                         ) {
-                            errorManage.pushError(context, "maximumMustBeLessThanOrEqualToLimit");
+                            errorManage.pushError(context);
                         }
                     }
 

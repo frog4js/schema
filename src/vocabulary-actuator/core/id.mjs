@@ -28,7 +28,7 @@ export default [
                         context.defaultConfig.baseURI,
                     );
                     if (url.hash !== "" || url.href[url.href.length - 1] !== "#") {
-                        errorManage.pushError(context, "TODO");
+                        errorManage.pushError(context);
                     } else {
                         context.instanceData.current.$ref[context.instanceData.current.key] = url.href;
                         context.referenceSchemas[url.href] = context.instanceData.origin;

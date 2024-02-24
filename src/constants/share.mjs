@@ -12,7 +12,7 @@ import {
     jsonSchemaVersions,
     jsonSchema$schemaDraftMap,
 } from "./version.mjs";
-import { keys, ticks, pathKeys, errorCodes } from "./vocabulary-actuator.mjs";
+import { keys, ticks, pathKeys, defaultErrorMessages, flags } from "./vocabulary-actuator.mjs";
 import { states, phases } from "./context.mjs";
 
 export const typeConstant = {
@@ -33,7 +33,8 @@ export const vocabularyActuatorConstant = {
     keys,
     ticks,
     pathKeys,
-    errorCodes,
+    defaultErrorMessages,
+    flags,
 };
 export const contextConstant = {
     states,

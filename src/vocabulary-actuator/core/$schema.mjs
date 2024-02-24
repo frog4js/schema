@@ -21,8 +21,14 @@ export default [
                     );
                     context.schemaData.origin =
                         context.referenceSchemas[context.instanceData.current.$ref[context.instanceData.current.key]];
-                    context.schemaData.current = { $ref: { root: context.schemaData.origin }, key: "root" };
-                    context.schemaPaths = [];
+                    context.schemaData.current = {
+                        $ref: context.referenceSchemas,
+                        key: context.instanceData.current.$ref[context.instanceData.current.key],
+                    };
+                    context.schemaPaths = [
+                        vocabularyActuatorConstant.pathKeys.ref,
+                        vocabularyActuatorConstant.pathKeys.self,
+                    ];
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },

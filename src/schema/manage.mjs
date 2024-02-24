@@ -17,11 +17,11 @@ import { errorClass } from "../error/share.mjs";
 function switchVersion(context, draft$schema) {
     const version = versionConstant.jsonSchema$schemaVersionMap[draft$schema];
     if (!version) {
-        throw new Error("TODO11");
+        return;
     }
     const metaSchemasByVersion = metaSchemas[version];
     if (!metaSchemasByVersion) {
-        throw new Error("TODO10");
+        return;
     }
     metaSchemasByVersion.forEach((item) => (context.referenceSchemas[item.id || item.$id] = item));
     context.version = version;

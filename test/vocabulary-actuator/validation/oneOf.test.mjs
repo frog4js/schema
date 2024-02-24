@@ -50,7 +50,7 @@ describe("test the executes.oneOf module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "oneOfMustMatchExactlyOneSchemaInOneOf");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.oneOf);
         });
 
         it("should fail validation when instance is 5.5", () => {
@@ -64,7 +64,7 @@ describe("test the executes.oneOf module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "oneOfMustMatchExactlyOneSchemaInOneOf");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.oneOf);
         });
     });
 });

@@ -27,7 +27,7 @@ const configs = [
                             typeUtil.getTypeofType(items) === typeConstant.typeofTypes.array &&
                             context.instanceData.current.$ref[context.instanceData.current.key].length > items.length
                         ) {
-                            errorManage.pushError(context, "additionalItemsMustNotHaveMoreItems");
+                            errorManage.pushError(context);
                         }
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;

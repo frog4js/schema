@@ -44,10 +44,10 @@ const configs = [
                                 validResult = startRefOrSchemaExecute(context, true).length === 0;
                                 break;
                         }
-                        if (!validResult) {
-                            errorManage.pushError(context, "dependenciesMustBeTheRightDependency");
-                        }
                         contextManage.backContext(context, key);
+                        if (!validResult) {
+                            errorManage.pushError(context);
+                        }
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

@@ -19,7 +19,7 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        errorManage.pushError(context, "optionalMustBeExists");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

@@ -38,7 +38,7 @@ describe("test the executes.additionalItems module", () => {
             );
 
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "additionalItemsMustNotHaveMoreItems");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.additionalItems);
         });
 
         it("should pass when no additional items are provided", () => {
@@ -144,7 +144,7 @@ describe("test the executes.additionalItems module", () => {
             );
 
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.type);
         });
 
         it("should pass validation when no additional items are present", () => {

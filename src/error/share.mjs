@@ -1,8 +1,8 @@
-import { pushError, mergeError, setLogError } from "./manage.mjs";
+import { pushError, mergeError } from "./manage.mjs";
 import { SchemaInvalidError } from "./schema-invalid-error.mjs";
 import { DefaultConfigError } from "./default-config-error.mjs";
 import { SystemError } from "./system-error.mjs";
-export const errorManage = { pushError, mergeError, setLogError };
+export const errorManage = { pushError, mergeError };
 export const errorClass = {
     DefaultConfigError,
     SchemaInvalidError,

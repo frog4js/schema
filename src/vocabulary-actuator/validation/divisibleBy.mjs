@@ -21,7 +21,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key] %
                             context.schemaData.current.$ref[context.schemaData.current.key];
                         if (val !== 0) {
-                            errorManage.pushError(context, "divisibleByMustBeDivisible");
+                            errorManage.pushError(context);
                         }
                     }
 

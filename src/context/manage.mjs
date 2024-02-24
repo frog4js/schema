@@ -17,17 +17,15 @@ import { defaultConfigManage } from "../default-config/share.mjs";
 function create(defaultConfig) {
     if (defaultConfig) {
         defaultConfigManage.validate(defaultConfig);
-        defaultConfig = Object.assign(defaultConfigManage.getSystemDefaultConfig(), defaultConfig);
+        defaultConfig = dataOperateUtil.merge(
+            dataOperateUtil.deepClone(defaultConfigManage.getSystemDefaultConfig()),
+            defaultConfig,
+        );
     } else {
         defaultConfig = defaultConfigManage.getSystemDefaultConfig();
     }
     const context = {
         errors: [],
-        tempErrors: [],
-        errorState: {
-            isTemp: false,
-            lockKey: null,
-        },
         startTime: Date.now(),
         endTime: Date.now(),
         instancePaths: [],
@@ -40,6 +38,7 @@ function create(defaultConfig) {
         state: contextConstant.states.init,
         phase: contextConstant.phases.schemaValidate,
         waitValidateRefs: [],
+        locks: [],
     };
     schemaManage.switchVersion(context, defaultConfig.$schema);
     return context;
@@ -48,27 +47,60 @@ function create(defaultConfig) {
 /**
  *
  * @param {Context} context
- * @return {RefData}
+ * @return {Context}
  */
-function getCurrentInstanceRefData(context) {
+function clone(context) {
+    return {
+        errors: [],
+        startTime: Date.now(),
+        endTime: Date.now(),
+        instancePaths: [],
+        schemaPaths: [],
+        version: context.version,
+        defaultConfig: context.defaultConfig,
+        schemaData: {},
+        instanceData: {},
+        referenceSchemas: Object.assign({}, context.referenceSchemas),
+        state: contextConstant.states.init,
+        phase: contextConstant.phases.schemaValidate,
+        waitValidateRefs: [],
+        locks: [],
+    };
+}
+/**
+ *
+ * @param {Context} context
+ */
+function refererCurrentInstance(context) {
     if (context.instancePaths.length === 0) {
-        return {
+        context.instanceData.current = {
             $ref: { root: context.instanceData.origin },
             key: "root",
         };
+        return;
     }
     const current = getParentInstance(context);
-    return { $ref: current, key: context.instancePaths[context.instancePaths.length - 1] };
+
+    if (!context.instanceData.current) {
+        context.instanceData.current = { $ref: current, key: context.instancePaths[context.instancePaths.length - 1] };
+    } else {
+        context.instanceData.current.$ref = current;
+        context.instanceData.current.key = context.instancePaths[context.instancePaths.length - 1];
+    }
 }
 
 /**
  *
  * @param {Context} context
- * @return {RefData}
  */
-function getCurrentSchemaRefData(context) {
+function refererCurrentSchema(context) {
     const current = getParentSchema(context);
-    return { $ref: current, key: context.schemaPaths[context.schemaPaths.length - 1] };
+    if (!context.schemaData.current) {
+        context.schemaData.current = { $ref: current, key: context.schemaPaths[context.schemaPaths.length - 1] };
+    } else {
+        context.schemaData.current.$ref = current;
+        context.schemaData.current.key = context.schemaPaths[context.schemaPaths.length - 1];
+    }
 }
 
 /**
@@ -137,16 +169,14 @@ function enterContext(context, schemaKey, instanceKey) {
         if (instanceKey !== undefined) {
             context.instancePaths.push(instanceKey);
         }
-        if (schemaKey !== vocabularyActuatorConstant.pathKeys.ref) {
-            context.instanceData.current = getCurrentInstanceRefData(context);
-        }
+        refererCurrentInstance(context);
     }
     {
         if (schemaKey !== undefined) {
             context.schemaPaths.push(schemaKey);
         }
         if (schemaKey !== vocabularyActuatorConstant.pathKeys.ref) {
-            context.schemaData.current = getCurrentSchemaRefData(context);
+            refererCurrentSchema(context);
         }
     }
 }
@@ -154,11 +184,11 @@ function enterContext(context, schemaKey, instanceKey) {
 function backContext(context, schemaKey, instanceKey) {
     if (instanceKey !== undefined) {
         context.instancePaths.pop();
-        context.instanceData.current = getCurrentInstanceRefData(context);
+        refererCurrentInstance(context);
     }
     if (schemaKey !== undefined) {
         context.schemaPaths.pop();
-        context.schemaData.current = getCurrentSchemaRefData(context);
+        refererCurrentSchema(context);
     }
 }
 /**
@@ -190,15 +220,52 @@ function canEqualInstance(context) {
     }
     return true;
 }
+
+/**
+ *
+ * @param {Context} context
+ */
+function lock(context) {
+    const current = dataOperateUtil.deepClone(context.schemaPaths);
+    if (context.locks.length === 0) {
+        context.locks.push({
+            paths: current,
+            errors: [],
+        });
+        return true;
+    }
+    const lastLock = context.locks[context.locks.length - 1];
+    const result = dataOperateUtil.compareToArray(current, lastLock.paths);
+    if (result === 0) {
+        return true;
+    }
+    if (result === 2) {
+        context.locks.push({
+            paths: current,
+            errors: [],
+        });
+        return true;
+    }
+    return false;
+}
+/**
+ *
+ * @param {Context} context
+ * @return {{errors: Array, paths: Array<string>}}
+ */
+function unlock(context) {
+    return context.locks.pop();
+}
 export {
     create,
     enterContext,
     backContext,
     getParentInstance,
     getSiblingSchemaRefData,
-    getCurrentSchemaRefData,
     getSiblingInstanceRefData,
-    getCurrentInstanceRefData,
     getParentSchema,
     canEqualInstance,
+    lock,
+    unlock,
+    clone,
 };

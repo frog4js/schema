@@ -38,7 +38,7 @@ describe("test the executes.maxProperties module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "maxPropertiesMustBeGreaterThanOrEqualToLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.maxProperties);
         });
     });
 });

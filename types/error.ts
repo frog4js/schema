@@ -6,5 +6,4 @@ export type ExecuteError = {
     currentInstanceKey: string;
     currentInstanceValue: any;
     message: string;
-    code: string;
 };

@@ -4,8 +4,6 @@ import { contextManage } from "../../src/context/share.mjs";
 import { vocabularyActuatorConstant, versionConstant } from "../../src/constants/share.mjs";
 import { schemaManage } from "../../src/schema/share.mjs";
 import {
-    getCurrentInstanceRefData,
-    getCurrentSchemaRefData,
     getParentInstance,
     getParentSchema,
     getSiblingInstanceRefData,
@@ -170,35 +168,6 @@ describe("test the context manage module", () => {
             ]);
         });
     });
-    describe("test the getCurrentInstanceRefData function", () => {
-        /**
-         * @type {Context}
-         */
-        let context;
-        beforeEach(() => {
-            context = contextManage.create();
-            schemaManage.setMainSchema(context, schema);
-            schemaManage.compile(context);
-            context.instanceData.origin = { array: [{ name: true, age: 1 }] };
-        });
-        it("should return root reference data when instancePaths is empty", () => {
-            const result = getCurrentInstanceRefData(context);
-            assert.deepEqual(result, {
-                $ref: { root: context.instanceData.origin },
-                key: "root",
-            });
-        });
-
-        it("should return current and key reference data when instancePaths is not empty", () => {
-            contextManage.enterContext(context, undefined, "array");
-            const result = getCurrentInstanceRefData(context);
-
-            assert.deepEqual(result, {
-                $ref: context.instanceData.origin,
-                key: "array",
-            });
-        });
-    });
 
     describe("test the getParentInstance function ", () => {
         /**
@@ -219,36 +188,6 @@ describe("test the context manage module", () => {
             const result = getParentInstance(context);
 
             assert.deepEqual(result, context.instanceData.origin.array[0]);
-        });
-    });
-
-    describe("test the getCurrentSchemaRefData function", () => {
-        /**
-         * @type {Context}
-         */
-        let context;
-        beforeEach(() => {
-            context = contextManage.create();
-            schemaManage.setMainSchema(context, schema);
-            schemaManage.compile(context);
-            context.instanceData.origin = { array: [{ name: true, age: 1 }] };
-        });
-        it("should return root reference data when schemaPaths is empty", () => {
-            const result = getCurrentSchemaRefData(context);
-            assert.deepEqual(result, {
-                $ref: context.referenceSchemas,
-                key: vocabularyActuatorConstant.pathKeys.self,
-            });
-        });
-
-        it("should return current and key reference data when schemaPaths is not empty", () => {
-            contextManage.enterContext(context, "type");
-            const result = getCurrentSchemaRefData(context);
-
-            assert.deepEqual(result, {
-                $ref: context.schemaData.origin,
-                key: "type",
-            });
         });
     });
 
@@ -324,6 +263,124 @@ describe("test the context manage module", () => {
             let data = getSiblingInstanceRefData(context, "name");
             assert.equal(data.key, "name");
             assert.equal(data.$ref[data.key], true);
+        });
+    });
+    describe("test the lock function", () => {
+        /**
+         * @type {Context}
+         */
+        let context;
+        beforeEach(() => {
+            context = contextManage.create();
+            schemaManage.setMainSchema(context, {
+                anyOf: [
+                    { type: "string" },
+                    {
+                        anyOf: [
+                            {
+                                type: "object",
+                                additionalProperties: { type: "string" },
+                            },
+                            {
+                                type: "object",
+                                additionalProperties: { type: "number" },
+                            },
+                        ],
+                    },
+                    {
+                        type: "number",
+                    },
+                    {
+                        type: "boolean",
+                    },
+                ],
+            });
+            schemaManage.compile(context);
+            context.instanceData.origin = { name: 1 };
+        });
+
+        it("should lock when no previous locks exist", () => {
+            contextManage.enterContext(context, "anyOf");
+            contextManage.enterContext(context, 0);
+            const result = contextManage.lock(context);
+            assert.strictEqual(result, true);
+            assert.deepStrictEqual(context.locks, [
+                {
+                    paths: [
+                        vocabularyActuatorConstant.pathKeys.ref,
+                        vocabularyActuatorConstant.pathKeys.self,
+                        "anyOf",
+                        0,
+                    ],
+                    errors: [],
+                },
+            ]);
+        });
+
+        it("should lock when current paths are same as last lock", () => {
+            contextManage.enterContext(context, "anyOf");
+            contextManage.enterContext(context, 1);
+            let result = contextManage.lock(context);
+            assert.strictEqual(result, true);
+            result = contextManage.lock(context);
+            assert.strictEqual(result, true);
+            assert.deepStrictEqual(context.locks, [
+                {
+                    paths: [
+                        vocabularyActuatorConstant.pathKeys.ref,
+                        vocabularyActuatorConstant.pathKeys.self,
+                        "anyOf",
+                        1,
+                    ],
+                    errors: [],
+                },
+            ]);
+        });
+
+        it("should lock when current paths are superset of last lock", () => {
+            contextManage.enterContext(context, "anyOf");
+            contextManage.enterContext(context, 1);
+            let result = contextManage.lock(context);
+            assert.strictEqual(result, true);
+            contextManage.enterContext(context, "anyOf");
+            contextManage.enterContext(context, 0);
+            result = contextManage.lock(context);
+            assert.strictEqual(result, true);
+            assert.deepStrictEqual(context.locks, [
+                {
+                    paths: [
+                        vocabularyActuatorConstant.pathKeys.ref,
+                        vocabularyActuatorConstant.pathKeys.self,
+                        "anyOf",
+                        1,
+                    ],
+                    errors: [],
+                },
+                {
+                    paths: [
+                        vocabularyActuatorConstant.pathKeys.ref,
+                        vocabularyActuatorConstant.pathKeys.self,
+                        "anyOf",
+                        1,
+                        "anyOf",
+                        0,
+                    ],
+                    errors: [],
+                },
+            ]);
+        });
+
+        it("should not lock when current paths are different from last lock", () => {
+            contextManage.enterContext(context, "anyOf");
+            contextManage.enterContext(context, 1);
+            contextManage.enterContext(context, "anyOf");
+            contextManage.enterContext(context, 0);
+            let result = contextManage.lock(context);
+            assert.strictEqual(result, true);
+            contextManage.backContext(context, 0);
+            contextManage.backContext(context, "anyOf");
+            result = contextManage.lock(context);
+            assert.strictEqual(result, false);
         });
     });
 });

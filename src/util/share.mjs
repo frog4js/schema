@@ -16,6 +16,8 @@ import {
     getValueByJsonPointer,
     getPathsByJsonPointer,
     getPathsByRef,
+    merge,
+    compareToArray,
 } from "./data-operate.mjs";
 import { getUUID } from "./random.mjs";
 export const typeUtil = {
@@ -37,6 +39,8 @@ export const dataOperateUtil = {
     getValueByJsonPointer,
     getPathsByJsonPointer,
     getPathsByRef,
+    merge,
+    compareToArray,
 };
 
 export const randomUtil = {

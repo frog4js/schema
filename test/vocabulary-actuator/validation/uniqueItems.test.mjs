@@ -36,7 +36,7 @@ describe("test the executes.uniqueItems module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "divisibleByMustNotHaveDuplicateItems");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.uniqueItems);
         });
 
         it("should pass validation when uniqueItems is false", () => {

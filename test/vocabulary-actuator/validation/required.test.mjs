@@ -38,7 +38,7 @@ describe("test the executes.required module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "requiredMustBeExists");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.required);
         });
     });
     describe("test the resolve(array) function", () => {
@@ -74,7 +74,7 @@ describe("test the executes.required module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "requiredMustBeExists");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.required);
         });
     });
 });

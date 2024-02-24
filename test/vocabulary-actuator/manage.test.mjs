@@ -32,7 +32,7 @@ describe("test the vocabulary actuator manage module", () => {
             };
             contextManage.enterContext(context, "properties");
             contextManage.enterContext(context, "isStringRef", "isStringRef");
-            const errors = startRefOrSchemaExecute(context);
+            const errors = startRefOrSchemaExecute(context, true);
             assert.equal(errors.length, 0);
         });
 

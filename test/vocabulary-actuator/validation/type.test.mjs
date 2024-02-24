@@ -69,7 +69,7 @@ describe("test the executes.type module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.type);
         });
         it("should fail when validating a decimal number with type 'boolean'", () => {
             const context = execResolve(
@@ -85,7 +85,7 @@ describe("test the executes.type module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.type);
         });
     });
     describe("test the resolve(array) function", () => {
@@ -135,7 +135,7 @@ describe("test the executes.type module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.type);
         });
 
         it("should pass when validating a number within maximum limit with type ['string', {type: 'number', maximum: 10}]\n", () => {
@@ -187,7 +187,7 @@ describe("test the executes.type module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "typeMustBeOfTheType");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.type);
         });
     });
 });

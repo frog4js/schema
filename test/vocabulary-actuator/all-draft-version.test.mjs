@@ -3,6 +3,7 @@ import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mj
 import { schemaManage } from "../../src/schema/share.mjs";
 import { contextManage } from "../../src/context/share.mjs";
 import * as assert from "assert";
+import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
 /**
  * @typedef {import("../../types/share")}
@@ -147,7 +148,7 @@ describe("test the all draft version", () => {
         it("should fail when instance is empty object", () => {
             const { errors } = vocabularyActuatorManage.validate(context, {});
             assert.equal(
-                errors.every((x) => x.code === "optionalMustBeExists"),
+                errors.every((x) => x.currentSchemaKey === vocabularyActuatorConstant.keys.optional),
                 true,
             );
             assert.equal(errors.length > 1, true);
@@ -567,7 +568,7 @@ describe("test the all draft version", () => {
             vocabularyActuatorManage.validate(context, {
                 updatedAt: "1122",
             });
-            assert.equal(filerErrorLength(context, undefined, ["updatedAt"]), 1);
+            assert.equal(filerErrorLength(context, undefined, ["dependencies"]), 1);
         });
 
         it("should not report error when both 'updatedAt' and 'createdAt' are provided", () => {

@@ -22,7 +22,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         )
                     ) {
-                        errorManage.pushError(context, "divisibleByMustNotHaveDuplicateItems");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
