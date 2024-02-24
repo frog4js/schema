@@ -19,7 +19,7 @@ const configs = [
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         )
                     ) {
-                        errorManage.pushError(context, "patternMustMatchPattern");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

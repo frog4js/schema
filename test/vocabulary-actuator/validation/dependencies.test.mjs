@@ -35,7 +35,7 @@ describe("test the executes.dependencies module", () => {
                 vocabularyActuatorConstant.ticks.nextExecute,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "dependenciesMustBeTheRightDependency");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.dependencies);
         });
         it("should fail when 'email' and 'gender' dependencies are missing for 'age' property", () => {
             const context = execResolve(
@@ -68,7 +68,7 @@ describe("test the executes.dependencies module", () => {
                 vocabularyActuatorConstant.ticks.nextExecute,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "dependenciesMustBeTheRightDependency");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.dependencies);
         });
 
         it("should fail when 'area' property does not match the specified pattern", () => {
@@ -105,7 +105,7 @@ describe("test the executes.dependencies module", () => {
                 vocabularyActuatorConstant.ticks.nextExecute,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "dependenciesMustBeTheRightDependency");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.dependencies);
         });
 
         it("should pass when all dependencies are met and 'area' property matches the pattern", () => {

@@ -22,7 +22,7 @@ const configs = [
                         const errors = startRefOrSchemaExecute(context, true);
                         contextManage.backContext(context, index);
                         if (errors.length > 0) {
-                            errorManage.pushError(context, "allOfMustMatchSchemasInAllOf");
+                            errorManage.pushError(context);
                             break;
                         }
                     }

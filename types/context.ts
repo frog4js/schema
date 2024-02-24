@@ -7,11 +7,10 @@ export type RefData = {
 };
 export type Context = {
     errors: Array<ExecuteError>;
-    tempErrors: Array<ExecuteError>;
-    errorState: {
-        isTemp: boolean;
-        lockKey: string;
-    };
+    locks: Array<{
+        paths: Array<string>;
+        errors: Array<ExecuteError>;
+    }>;
     startTime: number;
     endTime: number;
     instancePaths: Array<string | number>;
@@ -25,6 +24,7 @@ export type Context = {
     instanceData: {
         origin?: any;
         current?: RefData;
+        locale?: string;
     };
     referenceSchemas: Record<string, Schema>;
     defaultConfig: DefaultConfig;
@@ -36,5 +36,10 @@ export type Context = {
     }[];
     // cache: Record<string, Record<string, any>>
 };
-type DefaultConfig = { $schema?: string; baseURI?: string };
+type DefaultConfig = {
+    $schema?: string;
+    baseURI?: string;
+    errorMessages?: Record<string, Record<string, string>>;
+    locale?: string;
+};
 // function create(defaultConfig: DefaultConfig): Context;

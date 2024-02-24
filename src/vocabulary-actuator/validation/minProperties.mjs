@@ -18,7 +18,7 @@ const configs = [
                         Object.keys(context.instanceData.current.$ref[context.instanceData.current.key]).length <
                         context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        errorManage.pushError(context, "minPropertiesMustBeLessThanOrEqualToLimit");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

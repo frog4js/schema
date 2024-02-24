@@ -52,7 +52,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'date'", () => {
@@ -86,7 +86,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'time'", () => {
@@ -120,7 +120,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'utc-millisec'", () => {
@@ -154,7 +154,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'regex'", () => {
@@ -187,7 +187,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'color'", () => {
@@ -254,7 +254,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'uri'", () => {
@@ -287,7 +287,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'uri'", () => {
@@ -320,7 +320,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'ipv4'", () => {
@@ -353,7 +353,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
 
         it("should pass when format value is 'ipv6'", () => {
@@ -386,7 +386,7 @@ describe("test the executes.format module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "formatMustMatchTheDefinitionOfFormat");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
     });
 });

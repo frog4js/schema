@@ -3,7 +3,7 @@ import { schemaManage } from "../schema/share.mjs";
 import { contextManage } from "../context/share.mjs";
 import { vocabularyActuatorManage } from "../vocabulary-actuator/share.mjs";
 import { errorClass } from "../error/share.mjs";
-import { versionConstant } from "../constants/share.mjs";
+import { versionConstant, vocabularyActuatorConstant } from "../constants/share.mjs";
 /**
  * @typedef import("../../types/share")
  */
@@ -14,6 +14,8 @@ import { versionConstant } from "../constants/share.mjs";
 const systemDefault = {
     baseURI: "https://github.com/frog4js#",
     $schema: versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersionGroups.lastVersions[0]],
+    errorMessages: vocabularyActuatorConstant.defaultErrorMessages,
+    locale: "en-gb",
 };
 /**
  *
@@ -30,6 +32,18 @@ const defaultConfigSchema = {
         $schema: {
             type: "string",
             enum: schemaManage.getAll$schemaDrafts(),
+        },
+        errorMessages: {
+            type: "object",
+            additionalProperties: {
+                type: "object",
+                additionalProperties: {
+                    type: "string",
+                },
+            },
+        },
+        locale: {
+            type: "string",
         },
     },
     additionalProperties: false,
@@ -61,5 +75,5 @@ export function validate(defaultConfig) {
  * @return {DefaultConfig}
  */
 export function getSystemDefaultConfig() {
-    return dataOperateUtil.deepClone(systemDefault);
+    return systemDefault;
 }

@@ -36,7 +36,7 @@ describe("test the executes.minLength module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "minLengthMustBeLessThanOrEqualToLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.minLength);
         });
     });
 });

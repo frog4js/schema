@@ -16,7 +16,7 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
-                        errorManage.pushError(context, "requiredMustBeExists");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
@@ -39,7 +39,7 @@ const configs = [
 
                     const result = requiredKeys.every((key) => instanceKeys.has(key));
                     if (!result) {
-                        errorManage.pushError(context, "requiredMustBeExists");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

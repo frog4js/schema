@@ -147,7 +147,7 @@ const configs = [
                         );
                     }
                     if (!result) {
-                        errorManage.pushError(context, "formatMustMatchTheDefinitionOfFormat");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

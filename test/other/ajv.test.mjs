@@ -4,6 +4,7 @@ import addFormats from "ajv-formats";
 import { contextManage } from "../../src/context/share.mjs";
 import { schemaManage } from "../../src/schema/share.mjs";
 import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
+import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
 describe("test the ajv", () => {
     it("ajv1", () => {
@@ -11,22 +12,17 @@ describe("test the ajv", () => {
         addFormats(ajv);
 
         const schema = {
-            $id: "#/abcd",
-            $defs: {
-                a: { type: "string" },
-            },
+            // $schema: "http://json-schema.org/draft-03/schema#",
             type: "object",
-            properties: {
-                name: {
-                    $ref: "#/$defs/a",
-                },
+            dependencies: {
+                age: ["email", "gender"],
             },
         };
-        const data = { name: "22", age: { name: { name: { name: "111" } } } };
+        const data = {};
 
         const validate = ajv.compile(schema);
-        schema.type = "string";
-        validate("ajv result", data);
+        validate(data);
+        console.log(validate.errors);
     });
 
     it("ajv2", () => {
@@ -139,13 +135,27 @@ describe("test the ajv", () => {
             title: "user properties definition",
             description: "user properties definition",
             additionalProperties: false,
-            defs: {
+            definitions: {
                 a: {
                     type: "string",
                 },
             },
             properties: {
-                name: { $ref: "https://github.com/index/a#/definitions/b" },
+                name: {
+                    type: "number",
+                    default: 22,
+                },
+                age: {
+                    type: "object",
+                    properties: {
+                        a: {
+                            $ref: "#/definitions/a",
+                        },
+                    },
+                    default: {
+                        a: "222",
+                    },
+                },
             },
         };
 
@@ -154,19 +164,8 @@ describe("test the ajv", () => {
         };
 
         const context = contextManage.create();
-        schemaManage.addReferenceSchema(context, {
-            $schema: "http://json-schema.org/draft-04/schema#",
-            id: "https://github.com/index/a#",
-            type: "string",
-            definitions: {
-                b: {
-                    type: "string",
-                },
-            },
-        });
         schemaManage.setMainSchema(context, json);
-        schemaManage.compile(context);
-        vocabularyActuatorManage.validate(context, data);
+        console.log(context.instanceData.origin[vocabularyActuatorConstant.flags.isSchema]);
     });
 
     it("diff-ajv", () => {

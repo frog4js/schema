@@ -44,7 +44,7 @@ const configs = [
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
                 resolve: (context) => {
                     if (!signTypeExecute(context, context.schemaData.current.$ref[context.schemaData.current.key])) {
-                        errorManage.pushError(context, "typeMustBeOfTheType");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
@@ -71,7 +71,7 @@ const configs = [
                         }
                     }
                     if (!status) {
-                        errorManage.pushError(context, "typeMustBeOfTheType");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

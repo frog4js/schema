@@ -38,7 +38,7 @@ describe("test the executes.maximum module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "maximumMustBeLessThanOrEqualToLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.maximum);
         });
 
         it("should pass when validating an integer with maximum constraint and maximumCanEqual option set to true", () => {
@@ -75,7 +75,7 @@ describe("test the executes.maximum module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "maximumMustBeLessThanLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.maximum);
         });
 
         it("should pass when validating an integer with maximum constraint and exclusiveMaximum option set to false", () => {
@@ -112,7 +112,7 @@ describe("test the executes.maximum module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "maximumMustBeLessThanLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.maximum);
         });
     });
 });

@@ -28,7 +28,7 @@ const configs = [
                         }
                     }
                     if (!status) {
-                        errorManage.pushError(context, "anyOfMustMatchASchemaInAnyOf");
+                        errorManage.pushError(context);
                     }
 
                     return vocabularyActuatorConstant.ticks.nextExecute;

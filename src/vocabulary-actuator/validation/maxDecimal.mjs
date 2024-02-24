@@ -22,7 +22,7 @@ const configs = [
                         stringInstance[1] &&
                         stringInstance[1].length > context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        errorManage.pushError(context, "maxDecimalMustBeLessThanOrEqualToLimit");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

@@ -3,6 +3,27 @@ import { dataOperateUtil, typeUtil } from "../util/share.mjs";
 /**
  * @typedef {import("../../types/share")}
  */
+
+/**
+ *
+ * @param {string} str
+ * @param {Record<string, *>}variables
+ * @return {*}
+ */
+function replaceTemplateString(str, variables) {
+    return str.replace(/\$\{(.*?)\}/g, (match, key) => {
+        let value = variables;
+        try {
+            for (let item of key.split(".")) {
+                value = value[item];
+            }
+        } catch (e) {
+            value = "(unknown)";
+        }
+        return value;
+    });
+}
+
 /**
  *
  * @param {Context} context
@@ -19,19 +40,27 @@ function mergeError(context, errors) {
 /**
  *
  * @param {Context} context
- * @param {string} code
  */
-function pushError(context, code) {
-    (context.errorState.isTemp ? context.tempErrors : context.errors).push({
+function pushError(context) {
+    const error = {
         instancePath: context.instancePaths.length > 0 ? "/" + context.instancePaths.join("/") : "",
         schemaPath: context.schemaPaths.filter((x) => x !== vocabularyActuatorConstant.pathKeys.ref).join("/"),
         currentSchemaKey: context.schemaData.current.key,
         currentSchemaValue: slowGetRefDataDecodeAndDeepCloe(context.schemaData.current),
         currentInstanceKey: context.instanceData.current.key,
         currentInstanceValue: slowGetRefDataDecodeAndDeepCloe(context.instanceData.current),
-        message: vocabularyActuatorConstant.errorCodes[code],
-        code: code,
-    });
+        message: null,
+    };
+    const messageStr =
+        context.defaultConfig.errorMessages?.[context.schemaData.current.key]?.[context.instanceData.locale];
+    if (messageStr) {
+        error.message = replaceTemplateString(messageStr, error);
+    }
+    if (context.locks.length) {
+        context.locks[context.locks.length - 1].errors.push(error);
+    } else {
+        context.errors.push(error);
+    }
 }
 
 /**
@@ -51,25 +80,4 @@ function slowGetRefDataDecodeAndDeepCloe(refData) {
     return isObject ? dataOperateUtil.deepClone(refData.$ref?.[refData.key]) : refData.$ref?.[refData.key];
 }
 
-/**
- *
- * @param {Context} context
- * @param {boolean} isTempError
- */
-function setLogError(context, isTempError) {
-    if (isTempError === true && context.errorState.isTemp === false) {
-        context.errorState.isTemp = true;
-        context.errorState.lockKey = context.schemaPaths.join("/");
-        return true;
-    } else if (
-        isTempError === false &&
-        context.errorState.isTemp === true &&
-        context.schemaPaths.join("/") === context.errorState.lockKey
-    ) {
-        context.errorState.isTemp = false;
-        context.errorState.lockKey = "";
-        return true;
-    }
-    return false;
-}
-export { pushError, mergeError, setLogError };
+export { pushError, mergeError };

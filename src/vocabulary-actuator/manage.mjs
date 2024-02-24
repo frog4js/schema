@@ -6,23 +6,25 @@
 import { contextConstant, vocabularyActuatorConstant, typeConstant, versionConstant } from "../constants/share.mjs";
 import coreConfigs from "./core/share.mjs";
 import { contextManage } from "../context/share.mjs";
-import referenceConfigs from "./reference/share.mjs";
+import specialConfigs from "./special/share.mjs";
 import { dataOperateUtil, typeUtil } from "../util/share.mjs";
 import validationConfigs from "./validation/share.mjs";
-import { errorManage } from "../error/share.mjs";
+import { errorClass, errorManage } from "../error/share.mjs";
 
 /**
  *
  * @param {Context} context
  * @param {*}instance
+ * @param {string} [locale]
  * @return {{errors: Array<ExecuteError>, valid: boolean}}
  */
-function validate(context, instance) {
+function validate(context, instance, locale) {
     if (!context.schemaData.origin) {
-        throw new Error("TODO");
+        return { valid: false, errors: [{ message: "instance is null" }] };
     }
     context.phase = contextConstant.phases.instanceValidate;
     context.instanceData.origin = instance;
+    context.instanceData.locale = locale || context.defaultConfig.locale;
     startValidate(context);
     return {
         valid: !(context.errors.length > 0),
@@ -37,7 +39,7 @@ function validate(context, instance) {
  */
 function startRefOrSchemaExecute(context, isTryExecute) {
     const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
-    isTryExecute === true && errorManage.setLogError(context, true);
+    isTryExecute === true && contextManage.lock(context);
     if (typeof schemaValue.$ref === typeConstant.typeofTypes.string) {
         const paths = dataOperateUtil.getPathsByRef(schemaValue);
         paths.unshift(vocabularyActuatorConstant.pathKeys.ref);
@@ -47,12 +49,10 @@ function startRefOrSchemaExecute(context, isTryExecute) {
     } else {
         startValidateValidation(context);
     }
-    if (isTryExecute && errorManage.setLogError(context, false)) {
-        const errors = context.tempErrors;
-        context.tempErrors = [];
-        return errors;
+    if (isTryExecute) {
+        return contextManage.unlock(context).errors;
     } else {
-        return [];
+        return null;
     }
 }
 
@@ -61,6 +61,21 @@ function startRefOrSchemaExecute(context, isTryExecute) {
  * @param {Context} context
  */
 function startValidateValidation(context) {
+    if (
+        context.phase === contextConstant.phases.schemaValidate &&
+        typeUtil.getTypeofType(context.instanceData.current.$ref?.[context.instanceData.current.key]) ===
+            typeConstant.typeofTypes.object &&
+        context.schemaData.current.$ref === context.referenceSchemas
+    ) {
+        Object.defineProperty(
+            context.instanceData.current.$ref[context.instanceData.current.key],
+            vocabularyActuatorConstant.flags.isSchema,
+            {
+                value: true,
+                enumerable: false,
+            },
+        );
+    }
     executeLoop: for (let execute of validationConfigs) {
         if (!execute.versions.includes(context.version)) {
             continue;
@@ -136,9 +151,19 @@ function startValidateCore(context) {
 
 function startValidateSchemaSpecialValue(context) {
     restoreStartState(context);
-
-    const each = (keyOrIndex, item) => {
+    const each = (keyOrIndex, item, isSchema) => {
         const itemType = typeUtil.getTypeofType(item);
+        if (isSchema === true) {
+            specialConfigs.forEach((config) => {
+                if (config.versions.includes(context.version) && keyOrIndex === config.key) {
+                    config.matches.forEach((match) => {
+                        if (!match.instanceTypes || match.instanceTypes.includes(itemType)) {
+                            match.resolve(context);
+                        }
+                    });
+                }
+            });
+        }
         if (itemType === typeConstant.typeofTypes.array) {
             item.map((subItem, index) => {
                 contextManage.enterContext(context, undefined, index);
@@ -146,22 +171,11 @@ function startValidateSchemaSpecialValue(context) {
                 contextManage.backContext(context, undefined, index);
             });
         } else if (itemType === typeConstant.typeofTypes.object) {
+            const isSchemaInItem = item[vocabularyActuatorConstant.flags.isSchema];
             for (const key of Object.keys(item)) {
                 contextManage.enterContext(context, undefined, key);
-                each(key, item[key]);
+                each(key, item[key], item[vocabularyActuatorConstant.flags.isSchema], isSchemaInItem);
                 contextManage.backContext(context, undefined, key);
-            }
-        } else {
-            if (typeof keyOrIndex === typeConstant.typeofTypes.string) {
-                referenceConfigs.forEach((config) => {
-                    if (config.versions.includes(context.version) && keyOrIndex === config.key) {
-                        config.matches.forEach((match) => {
-                            if (!match.instanceTypes || match.instanceTypes.includes(itemType)) {
-                                match.resolve(context);
-                            }
-                        });
-                    }
-                });
             }
         }
     };
@@ -173,16 +187,19 @@ function startValidateSchemaSpecialValue(context) {
  * @param {Context} context
  */
 function startValidate(context) {
+    context.locks = [];
     if (context.phase === contextConstant.phases.instanceValidate) {
         if (context.state !== contextConstant.states.compile) {
-            throw new Error("TODO2");
+            throw new errorClass.SystemError("state is init");
         }
     } else if (context.phase === contextConstant.phases.schemaValidate) {
         startValidateCore(context);
-        startValidateSchemaSpecialValue(context);
     }
     restoreStartState(context);
     startValidateValidation(context);
+    if (context.phase === contextConstant.phases.schemaValidate) {
+        startValidateSchemaSpecialValue(context);
+    }
 }
 
 /**
@@ -193,10 +210,6 @@ function restoreStartState(context) {
     context.instanceData.current = { $ref: { root: context.instanceData.origin }, key: "root" };
     context.instancePaths = [];
     context.errors = [];
-    context.tempErrors = [];
-    context.errorState = {
-        isTemp: false,
-        lockKey: "",
-    };
+    context.locks = [];
 }
 export { validate, startValidate, startRefOrSchemaExecute };

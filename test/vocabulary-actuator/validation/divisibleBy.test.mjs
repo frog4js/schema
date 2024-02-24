@@ -52,7 +52,7 @@ describe("test the executes.divisibleBy module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "divisibleByMustBeDivisible");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.divisibleBy);
         });
     });
 });

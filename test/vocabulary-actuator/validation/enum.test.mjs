@@ -36,7 +36,7 @@ describe("test the executes.enum module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "enumMustBeEqualToOneOfTheEnumValues");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.enum);
         });
 
         it("should pass when property enum value is included in enum array", () => {
@@ -73,7 +73,7 @@ describe("test the executes.enum module", () => {
                 ["name"],
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "enumMustBeEqualToOneOfTheEnumValues");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.enum);
         });
     });
 });

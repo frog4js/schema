@@ -38,7 +38,7 @@ describe("test the executes.minimum module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "minimumMustBeLessThanOrEqualToLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.minimum);
         });
 
         it("should pass when validating an integer with minimum constraint and minimumCanEqual option set to true", () => {
@@ -75,7 +75,7 @@ describe("test the executes.minimum module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "minimumMustBeLessThanLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.minimum);
         });
         it("should pass when validating an integer with minimum constraint and exclusiveMinimum option set to false", () => {
             const context = execResolve(
@@ -111,7 +111,7 @@ describe("test the executes.minimum module", () => {
                 undefined,
             );
             assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "minimumMustBeLessThanLimit");
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.minimum);
         });
     });
 });

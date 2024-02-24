@@ -26,7 +26,7 @@ const configs = [
                         contextManage.backContext(context, index);
                     }
                     if (matchCount !== 1) {
-                        errorManage.pushError(context, "oneOfMustMatchExactlyOneSchemaInOneOf");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

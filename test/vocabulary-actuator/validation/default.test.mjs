@@ -17,35 +17,15 @@ describe("test the executes.default module", () => {
                 undefined,
                 vocabularyActuatorConstant.keys.default,
                 0,
-                0,
-                [vocabularyActuatorConstant.keys.default],
-                undefined,
-                {
-                    phase: "schemaValidate",
-                },
-            );
-            assert.equal(context.errors.length, 0);
-            assert.equal(context.instanceData.origin.name, "test");
-        });
-
-        it.skip("default value failed validation when the instance is undefined", () => {
-            const context = execResolve(
-                {
-                    type: "object",
-                    default: true,
-                },
-                undefined,
-                vocabularyActuatorConstant.keys.default,
-                0,
-                0,
+                1,
                 [vocabularyActuatorConstant.keys.default],
                 undefined,
                 {
                     phase: contextConstant.phases.schemaValidate,
                 },
             );
-            assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "defaultMustComplyWithSchema");
+            assert.equal(context.errors.length, 0);
+            assert.equal(context.instanceData.origin.name, "test");
         });
 
         it("default value passes validation when the instance property is undefined", () => {
@@ -64,65 +44,17 @@ describe("test the executes.default module", () => {
                 { other: true },
                 vocabularyActuatorConstant.keys.default,
                 0,
-                0,
+                1,
                 [vocabularyActuatorConstant.keys.properties, "child", vocabularyActuatorConstant.keys.default],
                 ["child"],
                 {
-                    phase: "schemaValidate",
+                    phase: contextConstant.phases.instanceValidate,
                 },
             );
 
             assert.equal(context.errors.length, 0);
             assert.equal(context.instanceData.origin.child.name, "test1");
             assert.equal(context.instanceData.origin.other, true);
-        });
-
-        it("default value passes validation when the instance is undefined and default value is array", () => {
-            const context = execResolve(
-                {
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: { name: { type: "string" } },
-                    },
-                    default: [{ name: "test" }, { name: "test1" }],
-                },
-                undefined,
-                vocabularyActuatorConstant.keys.default,
-                0,
-                0,
-                [vocabularyActuatorConstant.keys.default],
-                undefined,
-                {
-                    phase: "schemaValidate",
-                },
-            );
-            assert.equal(context.errors.length, 0);
-            assert.equal(context.instanceData.origin.length, 2);
-        });
-
-        it.skip("default value failed validation when the instance is undefined and default value is array", () => {
-            const context = execResolve(
-                {
-                    type: "array",
-                    items: {
-                        type: "object",
-                        properties: { name: { type: "string" } },
-                    },
-                    default: [{ name: 1 }, { name: 2 }],
-                },
-                undefined,
-                vocabularyActuatorConstant.keys.default,
-                0,
-                0,
-                [vocabularyActuatorConstant.keys.default],
-                undefined,
-                {
-                    phase: contextConstant.phases.schemaValidate,
-                },
-            );
-            assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].code, "defaultMustComplyWithSchema");
         });
     });
 
@@ -136,11 +68,11 @@ describe("test the executes.default module", () => {
                 undefined,
                 vocabularyActuatorConstant.keys.default,
                 0,
-                1,
+                2,
                 [vocabularyActuatorConstant.keys.default],
                 undefined,
                 {
-                    phase: "schemaValidate",
+                    phase: contextConstant.phases.schemaValidate,
                 },
             );
             assert.equal(context.errors.length, 0);
@@ -158,11 +90,11 @@ describe("test the executes.default module", () => {
                 {},
                 vocabularyActuatorConstant.keys.default,
                 0,
-                1,
+                2,
                 [vocabularyActuatorConstant.keys.properties, "name", vocabularyActuatorConstant.keys.default],
                 ["name"],
                 {
-                    phase: "schemaValidate",
+                    phase: contextConstant.phases.schemaValidate,
                 },
             );
             assert.equal(context.errors.length, 0);

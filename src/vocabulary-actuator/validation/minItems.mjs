@@ -18,7 +18,7 @@ const configs = [
                         context.instanceData.current.$ref[context.instanceData.current.key].length <
                         context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
-                        errorManage.pushError(context, "minItemsMustBeLessThanOrEqualToLimit");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

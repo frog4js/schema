@@ -22,7 +22,7 @@ const configs = [
                 resolve: (context) => {
                     const instanceType = typeUtil.getTypeofTypeByRefData(context.instanceData.current);
                     if (instanceType === context.schemaData.current.$ref[context.schemaData.current.key]) {
-                        errorManage.pushError(context, "disallowMustNotBeDisallowType");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
@@ -32,7 +32,7 @@ const configs = [
                 resolve: (context) => {
                     const instanceType = typeUtil.getTypeofTypeByRefData(context.instanceData.current);
                     if (context.schemaData.current.$ref[context.schemaData.current.key].includes(instanceType)) {
-                        errorManage.pushError(context, "disallowMustNotBeDisallowType");
+                        errorManage.pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

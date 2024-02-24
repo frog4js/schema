@@ -202,4 +202,142 @@ describe("test the data operate module", () => {
             assert.equal(result, true);
         });
     });
+
+    describe("test the merge function", () => {
+        it("should merge two objects correctly", () => {
+            const obj1 = {
+                a: 1,
+                b: {
+                    c: 2,
+                    d: [3, 4],
+                    e: {
+                        f: 5,
+                    },
+                },
+            };
+            const obj2 = {
+                a: 10,
+                b: {
+                    c: 20,
+                    d: [30, 40],
+                    e: {
+                        f: 50,
+                        g: 60,
+                    },
+                },
+                h: 70,
+            };
+
+            const expectedResult = {
+                a: 10,
+                b: {
+                    c: 20,
+                    d: [30, 40],
+                    e: {
+                        f: 50,
+                        g: 60,
+                    },
+                },
+                h: 70,
+            };
+
+            assert.deepStrictEqual(dataOperateUtil.merge(obj1, obj2), expectedResult);
+        });
+
+        it("should handle null and undefined values correctly", () => {
+            const obj1 = {
+                a: 1,
+                b: null,
+            };
+
+            const obj2 = {
+                a: null,
+                b: {
+                    c: undefined,
+                },
+            };
+
+            const expectedResult = {
+                a: 1,
+                b: {
+                    c: undefined,
+                },
+            };
+
+            assert.deepStrictEqual(dataOperateUtil.merge(obj1, obj2), expectedResult);
+        });
+
+        it("should merge arrays correctly", () => {
+            const arr1 = [1, 2, [3, 4]];
+            const arr2 = [10, 20, [30, 40, [50, 60]]];
+            const expectedArrResult = [10, 20, [30, 40, [50, 60]]];
+
+            assert.deepStrictEqual(dataOperateUtil.merge(arr1, arr2), expectedArrResult);
+        });
+
+        it("should merge objects with different key types correctly", () => {
+            const obj1 = {
+                a: 1,
+                b: {
+                    c: 2,
+                    d: [3, 4],
+                    e: {
+                        f: 5,
+                    },
+                },
+                g: new Date(),
+            };
+
+            const obj2 = {
+                a: 10,
+                b: {
+                    c: 20,
+                    d: [30, 40],
+                    e: {
+                        f: 50,
+                        g: 60,
+                    },
+                },
+                h: "hello world",
+            };
+
+            const expectedResult = {
+                a: 10,
+                b: {
+                    c: 20,
+                    d: [30, 40],
+                    e: {
+                        f: 50,
+                        g: 60,
+                    },
+                },
+                g: obj1.g,
+                h: "hello world",
+            };
+
+            assert.deepStrictEqual(dataOperateUtil.merge(obj1, obj2), expectedResult);
+        });
+    });
+
+    describe("test the compareToArray function", () => {
+        it("equal arrays", () => {
+            assert.equal(dataOperateUtil.compareToArray([1, 2, 3], [1, 2, 3]), 0);
+            assert.equal(dataOperateUtil.compareToArray([], []), 0);
+        });
+
+        it("array2 is a superset of array1", () => {
+            assert.equal(dataOperateUtil.compareToArray([1, 2], [1, 2, 3]), 1);
+            assert.equal(dataOperateUtil.compareToArray([1, 2, 3], [1, 2, 3, 4]), 1);
+        });
+
+        it("array1 is a superset of array2", () => {
+            assert.equal(dataOperateUtil.compareToArray([1, 2, 3], [1, 2]), 2);
+            assert.equal(dataOperateUtil.compareToArray([1, 2, 3, 4], [1, 2, 3]), 2);
+        });
+
+        it("arrays have different elements", () => {
+            assert.equal(dataOperateUtil.compareToArray([1, 2, 3], [1, 2, 4]), 3);
+            assert.equal(dataOperateUtil.compareToArray([], [1]), 1);
+        });
+    });
 });
