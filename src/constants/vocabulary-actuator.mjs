@@ -3,6 +3,8 @@ export const keys = {
 
     $schema: "$schema",
     id: "id",
+    $id: "$id",
+
     definitions: "definitions",
 
     type: "type",
@@ -44,6 +46,8 @@ export const keys = {
     minProperties: "minProperties",
     maxProperties: "maxProperties",
     multipleOf: "multipleOf",
+    propertyNames: "propertyNames",
+    const: "const",
 };
 
 export const ticks = {
@@ -164,7 +168,15 @@ export const defaultErrorMessages = {
         "zh-cn": "必须被整除",
         "en-gb": "must be divisible",
     },
+    [keys.const]: {
+        "zh-cn": "必须等于常量值",
+        "en-gb": "must be equal to constant",
+    },
+    [keys.propertyNames]: {
+        "zh-cn": "必须是有效的值",
+        "en-gb": "must be valid",
+    },
 };
 export const flags = {
-    isSchema: "_$frog4js_is_schema",
+    isSchema: "$_frog4js_is_schema",
 };

@@ -6,7 +6,7 @@ import { schemaManage } from "../../src/schema/share.mjs";
 import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
 import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
-describe("test the ajv", () => {
+describe.only("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
         addFormats(ajv);
@@ -14,11 +14,11 @@ describe("test the ajv", () => {
         const schema = {
             // $schema: "http://json-schema.org/draft-03/schema#",
             type: "object",
-            dependencies: {
-                age: ["email", "gender"],
+            propertyNames: {
+                format: "email",
             },
         };
-        const data = {};
+        const data = { a: 2 };
 
         const validate = ajv.compile(schema);
         validate(data);

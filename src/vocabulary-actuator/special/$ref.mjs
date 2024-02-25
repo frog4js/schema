@@ -1,6 +1,6 @@
 import { vocabularyActuatorConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
 /**
- * @typedef {import("../../../types/share").JSONSchema.VocabularyActuatorConfig} VocabularyActuatorConfig
+ * @typedef {import("../../../types/share")}
  */
 /**
  * @type {VocabularyActuatorConfig[]}

@@ -9,9 +9,9 @@ import { errorManage } from "../../error/share.mjs";
  */
 export default [
     {
-        key: vocabularyActuatorConstant.keys.id,
-        versions: versionConstant.jsonSchemaVersionGroups.all,
-        index: -19,
+        key: vocabularyActuatorConstant.keys.$id,
+        versions: versionConstant.jsonSchemaVersionGroups.draft06ByAdd,
+        index: -18,
         matches: [
             {
                 instanceTypes: typeConstant.typeofTypeGroups.empty,
