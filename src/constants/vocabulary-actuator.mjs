@@ -48,6 +48,8 @@ export const keys = {
     multipleOf: "multipleOf",
     propertyNames: "propertyNames",
     const: "const",
+    contains: "contains",
+    examples: "examples",
 };
 
 export const ticks = {
@@ -58,6 +60,7 @@ export const ticks = {
 export const pathKeys = {
     ref: -100,
     self: "#",
+    objectKey: -101,
 };
 export const defaultErrorMessages = {
     [keys.additionalProperties]: {
@@ -176,7 +179,12 @@ export const defaultErrorMessages = {
         "zh-cn": "必须是有效的值",
         "en-gb": "must be valid",
     },
+    [keys.contains]: {
+        "zh-cn": "必须至少包含1个有效项",
+        "en-gb": "must contain at least one valid item",
+    },
 };
 export const flags = {
     isSchema: "$_frog4js_is_schema",
+    originId: "$_frog4js_origin_id",
 };

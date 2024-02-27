@@ -1,6 +1,7 @@
 import { vocabularyActuatorConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
-import { dataOperateUtil, randomUtil } from "../../util/share.mjs";
+import { dataOperateUtil, randomUtil, urlUtil } from "../../util/share.mjs";
 import { errorManage } from "../../error/share.mjs";
+import { getPseudoRandomString } from "../../util/random.mjs";
 /**
  * @typedef {import("../../../types/share")}
  */
@@ -10,28 +11,41 @@ import { errorManage } from "../../error/share.mjs";
 export default [
     {
         key: vocabularyActuatorConstant.keys.id,
-        versions: versionConstant.jsonSchemaVersionGroups.all,
+        versions: [
+            versionConstant.jsonSchemaVersions.draft01,
+            versionConstant.jsonSchemaVersions.draft02,
+            versionConstant.jsonSchemaVersions.draft03,
+            versionConstant.jsonSchemaVersions.draft04,
+            versionConstant.jsonSchemaVersions.draft05,
+        ],
         index: -19,
         matches: [
             {
                 instanceTypes: typeConstant.typeofTypeGroups.empty,
                 resolve: (context) => {
-                    context.instanceData.current.$ref[context.instanceData.current.key] = randomUtil.getUUID() + "#";
+                    context.instanceData.current.$ref[context.instanceData.current.key] =
+                        randomUtil.getPseudoRandomString();
                     return vocabularyActuatorConstant.ticks.nextMatch;
                 },
             },
             {
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
-                    const url = new URL(
-                        context.instanceData.current.$ref[context.instanceData.current.key],
-                        context.defaultConfig.baseURI,
+                    const originId = context.instanceData.current.$ref[context.instanceData.current.key];
+                    Object.defineProperty(
+                        context.instanceData.current.$ref,
+                        vocabularyActuatorConstant.flags.originId,
+                        {
+                            value: originId,
+                            enumerable: false,
+                        },
                     );
-                    if (url.hash !== "" || url.href[url.href.length - 1] !== vocabularyActuatorConstant.pathKeys.self) {
+                    const id = urlUtil.calculateId(originId, context.defaultConfig.baseURI);
+                    if (!id) {
                         errorManage.pushError(context);
                     } else {
-                        context.instanceData.current.$ref[context.instanceData.current.key] = url.href;
-                        context.referenceSchemas[url.href] = context.instanceData.origin;
+                        context.instanceData.current.$ref[context.instanceData.current.key] = id;
+                        context.referenceSchemas[id] = context.instanceData.origin;
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

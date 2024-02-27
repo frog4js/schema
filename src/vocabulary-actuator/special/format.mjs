@@ -36,7 +36,6 @@ const v4Tov5FormatKeys = [
     "hostname",
     "uri",
     "uri-reference",
-    "regex",
 ];
 const v6FormatKeys = [
     "json-schema-system-base-URI",
@@ -47,7 +46,6 @@ const v6FormatKeys = [
     "hostname",
     "uri",
     "uri-reference",
-    "regex",
     "uri-template",
     "json-pointer",
 ];

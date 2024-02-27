@@ -115,4 +115,40 @@ describe("test the executes.maximum module", () => {
             assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.maximum);
         });
     });
+    describe("test the resolve(draft-06) function", () => {
+        it("should pass when validating a number with maximum constraint equal to limit", () => {
+            const context = execResolve(
+                {
+                    $schema: "http://json-schema.org/draft-01/schema#",
+                    type: "number",
+                    maximum: 3,
+                },
+                3,
+                vocabularyActuatorConstant.keys.maximum,
+                1,
+                0,
+                [vocabularyActuatorConstant.keys.maximum],
+                undefined,
+            );
+            assert.equal(context.errors.length, 0);
+        });
+
+        it("should fail when validating a number above the maximum constraint", () => {
+            const context = execResolve(
+                {
+                    $schema: "http://json-schema.org/draft-01/schema#",
+                    type: "number",
+                    maximum: 3.1,
+                },
+                3.11,
+                vocabularyActuatorConstant.keys.maximum,
+                1,
+                0,
+                [vocabularyActuatorConstant.keys.maximum],
+                undefined,
+            );
+            assert.equal(context.errors.length, 1);
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.maximum);
+        });
+    });
 });

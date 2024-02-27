@@ -1,6 +1,5 @@
 /**
  * @typedef {import("../../types/share")}
-
  */
 
 import { contextConstant, vocabularyActuatorConstant, typeConstant, versionConstant } from "../constants/share.mjs";
@@ -188,6 +187,7 @@ function startValidateSchemaSpecialValue(context) {
  */
 function startValidate(context) {
     context.locks = [];
+    context.errors = [];
     if (context.phase === contextConstant.phases.instanceValidate) {
         if (context.state !== contextConstant.states.compile) {
             throw new errorClass.SystemError("state is init");
@@ -209,7 +209,6 @@ function startValidate(context) {
 function restoreStartState(context) {
     context.instanceData.current = { $ref: { root: context.instanceData.origin }, key: "root" };
     context.instancePaths = [];
-    context.errors = [];
     context.locks = [];
 }
 export { validate, startValidate, startRefOrSchemaExecute };

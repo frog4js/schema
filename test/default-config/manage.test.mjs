@@ -22,7 +22,7 @@ describe("test the default-config manage module", () => {
         it("should pass when config is valid", () => {
             defaultConfigManage.validate({
                 $schema: "http://json-schema.org/draft-01/schema#",
-                baseURI: "http://x.com#",
+                baseURI: "http://x.com/",
                 locale: "zh-cn",
                 errorMessages: {
                     enum: {

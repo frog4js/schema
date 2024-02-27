@@ -19,6 +19,9 @@ export default [
                         context,
                         context.instanceData.current.$ref[context.instanceData.current.key],
                     );
+                    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] =
+                        context.referenceSchemas[context.instanceData.current.$ref[context.instanceData.current.key]];
+
                     context.schemaData.origin =
                         context.referenceSchemas[context.instanceData.current.$ref[context.instanceData.current.key]];
                     context.schemaData.current = {

@@ -11,24 +11,25 @@ import { pushError } from "../../error/manage.mjs";
  */
 const configs = [
     {
-        key: vocabularyActuatorConstant.keys.propertyNames,
+        key: vocabularyActuatorConstant.keys.contains,
         versions: versionConstant.jsonSchemaVersionGroups.draft06ByAdd,
-        index: 63,
+        index: 64,
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
-                instanceTypes: [typeConstant.typeofTypes.object],
+                instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: (context, { startRefOrSchemaExecute }) => {
                     const instanceValue = context.instanceData.current.$ref[context.instanceData.current.key];
-                    const errors = [];
-                    for (const instanceKey of Object.keys(instanceValue)) {
-                        contextManage.enterContext(context, undefined, vocabularyActuatorConstant.pathKeys.objectKey);
-                        contextManage.enterContext(context, undefined, instanceKey);
-                        errors.push(...startRefOrSchemaExecute(context, true));
-                        contextManage.backContext(context, undefined, vocabularyActuatorConstant.pathKeys.objectKey);
-                        contextManage.backContext(context, undefined, instanceKey);
+                    let status = false;
+                    for (let index = 0; index < instanceValue.length; index++) {
+                        contextManage.enterContext(context, undefined, index);
+                        const errors = startRefOrSchemaExecute(context, true);
+                        if (errors.length === 0) {
+                            status = true;
+                        }
+                        contextManage.backContext(context, undefined, index);
                     }
-                    if (errors.length > 0) {
+                    if (!status) {
                         pushError(context);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;

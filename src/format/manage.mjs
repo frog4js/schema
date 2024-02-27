@@ -2,7 +2,6 @@
  *
  * @typedef import("../types/share")
  */
-import { vocabularyActuatorConstant } from "../constants/share.mjs";
 
 /**
  *
@@ -13,10 +12,9 @@ const builtInFormats = {
         validate: (refData) => {
             try {
                 const url = new URL(refData.$ref[refData.key]);
-                return !(
-                    url.hash.length > 0 ||
-                    refData.$ref[refData.key][refData.$ref[refData.key].length - 1] !==
-                        vocabularyActuatorConstant.pathKeys.self
+                return (
+                    url.pathname[url.pathname.length - 1] === "/" &&
+                    `${url.origin}${url.pathname}` === refData.$ref[refData.key]
                 );
             } catch (e) {
                 return false;
@@ -110,7 +108,7 @@ export function validate(context) {
     if (formatDefinition.regex) {
         result = formatDefinition.regex.test(context.instanceData.current.$ref[context.instanceData.current.key]);
     } else if (formatDefinition.validate) {
-        result = formatDefinition.validate(context.instanceData.current.$ref[context.instanceData.current.key]);
+        result = formatDefinition.validate(context.instanceData.current);
     } else if (formatDefinition.regexes) {
         result = formatDefinition.regexes.every((regex) =>
             regex.test(context.instanceData.current.$ref[context.instanceData.current.key]),
@@ -130,9 +128,9 @@ export function getFormatDefinition(context, refData, keysByVersion) {
     if (keysByVersion && !keysByVersion.includes(refData.$ref[refData.key])) {
         return false;
     }
-    let valid = builtInFormats[context.schemaData.current.$ref[context.schemaData.current.key]];
+    let valid = builtInFormats[refData.$ref[refData.key]];
     if (!valid) {
-        valid = draftFormats[context.schemaData.current.$ref[context.schemaData.current.key]];
+        valid = draftFormats[refData.$ref[refData.key]];
     }
     if (!valid) {
         return false;

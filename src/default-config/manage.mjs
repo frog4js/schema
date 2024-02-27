@@ -1,4 +1,3 @@
-import { dataOperateUtil } from "../util/share.mjs";
 import { schemaManage } from "../schema/share.mjs";
 import { contextManage } from "../context/share.mjs";
 import { vocabularyActuatorManage } from "../vocabulary-actuator/share.mjs";
@@ -12,7 +11,7 @@ import { versionConstant, vocabularyActuatorConstant } from "../constants/share.
  * @type {DefaultConfig}
  */
 const systemDefault = {
-    baseURI: "https://github.com/frog4js#",
+    baseURI: "https://github.com/frog4js/",
     $schema: versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersionGroups.lastVersions[0]],
     errorMessages: vocabularyActuatorConstant.defaultErrorMessages,
     locale: "en-gb",
@@ -22,7 +21,7 @@ const systemDefault = {
  * @type {Schema}
  */
 const defaultConfigSchema = {
-    id: "/default-config#",
+    $id: "default-config",
     type: "object",
     properties: {
         baseURI: {
