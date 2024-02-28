@@ -1,7 +1,7 @@
 import { vocabularyActuatorConstant, typeConstant, versionConstant } from "../../constants/share.mjs";
 import { schemaManage } from "../../schema/share.mjs";
 /**
- * @typedef {import("../../../types/share").JSONSchema.VocabularyActuatorConfig} VocabularyActuatorConfig
+ * @typedef {import("../../../types/share")}
  */
 /**
  * @type {VocabularyActuatorConfig[]}
@@ -19,6 +19,9 @@ export default [
                         context,
                         context.instanceData.current.$ref[context.instanceData.current.key],
                     );
+                    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] =
+                        context.referenceSchemas[context.instanceData.current.$ref[context.instanceData.current.key]];
+
                     context.schemaData.origin =
                         context.referenceSchemas[context.instanceData.current.$ref[context.instanceData.current.key]];
                     context.schemaData.current = {

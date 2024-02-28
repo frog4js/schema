@@ -19,7 +19,8 @@ import {
     merge,
     compareToArray,
 } from "./data-operate.mjs";
-import { getUUID } from "./random.mjs";
+import { getPseudoRandomString } from "./random.mjs";
+import { calculateId, calculateIdAndPointer } from "./url.mjs";
 export const typeUtil = {
     getPlatformType,
     getPlatformTypeByRefData,
@@ -44,5 +45,10 @@ export const dataOperateUtil = {
 };
 
 export const randomUtil = {
-    getUUID,
+    getPseudoRandomString,
+};
+
+export const urlUtil = {
+    calculateId,
+    calculateIdAndPointer,
 };

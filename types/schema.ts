@@ -81,9 +81,9 @@ type ValidationV4 = Exclude<ValidationV3, "contentEncoding" | "divisibleBy"> & {
     additionalItems?: boolean | ChildSchemaV4;
     patternProperties?: Record<string, ChildSchemaV4>;
     dependencies?: Record<string, Array<string> | ChildSchemaV4>;
-    anyOf?: Schema | Array<ChildSchemaV4>;
-    oneOf?: Schema | Array<ChildSchemaV4>;
-    allOf?: Schema | Array<ChildSchemaV4>;
+    anyOf?: Array<ChildSchemaV4>;
+    oneOf?: Array<ChildSchemaV4>;
+    allOf?: Array<ChildSchemaV4>;
     requires?: Array<string>;
     minProperties?: number;
     maxProperties?: number;
@@ -93,4 +93,34 @@ type ChildSchemaV4 = ValidationV4 | Reference;
 type SchemaV4 = CoreV4 & ValidationV4;
 //  ============= v4
 
-export type Schema = SchemaV1 | SchemaV2 | SchemaV3 | SchemaV4;
+//  ============= v5
+type SchemaV5 = CoreV4 & ValidationV4;
+//  ============= v5
+
+//  ============= v4
+type CoreV6 = {
+    $schema?: string;
+    $id?: string;
+    definitions?: Record<string, ChildSchemaV6>;
+};
+type ValidationV6 = ValidationV4 & {
+    properties?: Record<string, ChildSchemaV6>;
+    items?: ChildSchemaV6 | Array<ChildSchemaV6>;
+    additionalProperties?: boolean | ChildSchemaV6;
+    additionalItems?: boolean | ChildSchemaV6;
+    patternProperties?: Record<string, ChildSchemaV6>;
+    dependencies?: Record<string, Array<string> | ChildSchemaV6>;
+    anyOf?: Array<ChildSchemaV6>;
+    oneOf?: Array<ChildSchemaV6>;
+    allOf?: Array<ChildSchemaV6>;
+    propertyNames?: ChildSchemaV6;
+    const?: any;
+    examples?: Array<any>;
+    exclusiveMinimum?: number;
+    exclusiveMaximum?: number;
+};
+type ChildSchemaV6 = ValidationV6 | Reference;
+type SchemaV6 = CoreV6 & ValidationV6;
+//  ============= v6
+
+export type Schema = SchemaV1 | SchemaV2 | SchemaV3 | SchemaV4 | SchemaV5 | SchemaV6;

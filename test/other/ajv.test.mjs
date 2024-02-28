@@ -6,19 +6,26 @@ import { schemaManage } from "../../src/schema/share.mjs";
 import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
 import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
-describe("test the ajv", () => {
+describe.only("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });
         addFormats(ajv);
-
+        ajv.addSchema({
+            $id: "#/$defs/aa1",
+            type: "string",
+        });
         const schema = {
-            // $schema: "http://json-schema.org/draft-03/schema#",
             type: "object",
-            dependencies: {
-                age: ["email", "gender"],
+            $defs: {
+                aa: {},
+            },
+            properties: {
+                name: {
+                    $ref: "#/$defs/aa",
+                },
             },
         };
-        const data = {};
+        const data = { name: 1 };
 
         const validate = ajv.compile(schema);
         validate(data);
@@ -208,5 +215,30 @@ describe("test the ajv", () => {
         const start = Date.now();
         const validate = ajv.compile(schema);
         validate(data);
+    });
+    it("per", () => {
+        const context = { ref: { k: "1" }, key: "k" };
+        function getData(ctx) {
+            return ctx.ref[ctx.key];
+        }
+
+        function test1() {
+            const start = Date.now();
+            for (let i = 0; i < 1000000; i++) {
+                getData(context).match(/a/);
+            }
+            console.log("test1", Date.now() - start);
+        }
+        function test2() {
+            const start = Date.now();
+            for (let i = 0; i < 1000000; i++) {
+                context.ref[context.key].match(/a/);
+            }
+            console.log("test2", Date.now() - start);
+        }
+        test2();
+        test1();
+        test1();
+        test2();
     });
 });

@@ -153,7 +153,14 @@ function getParentInstance(context) {
     let current = context.instanceData.origin;
     for (let i = 0; i < context.instancePaths.length - 1; i++) {
         const keyOrIndex = context.instancePaths[i];
-        current = current[keyOrIndex];
+        if (keyOrIndex === vocabularyActuatorConstant.pathKeys.objectKey) {
+            current = Object.keys(current).reduce((acc, key) => {
+                acc[key] = key;
+                return acc;
+            }, {});
+        } else {
+            current = current[keyOrIndex];
+        }
     }
     return current;
 }

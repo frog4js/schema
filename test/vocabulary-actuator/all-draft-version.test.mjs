@@ -3,12 +3,12 @@ import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mj
 import { schemaManage } from "../../src/schema/share.mjs";
 import { contextManage } from "../../src/context/share.mjs";
 import * as assert from "assert";
-import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
+import { versionConstant, vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
 /**
  * @typedef {import("../../types/share")}
  */
-describe("test the all draft version", () => {
+describe.only("test the all draft version", () => {
     /**
      *
      * @param {Context} context
@@ -32,6 +32,7 @@ describe("test the all draft version", () => {
             return state;
         }).length;
     }
+
     describe("schema is draft-01", () => {
         let context;
         before(() => {
@@ -600,96 +601,91 @@ describe("test the all draft version", () => {
             context = contextManage.create({
                 $schema: "http://json-schema.org/draft-04/schema#",
             });
-            try {
-                schemaManage.setMainSchema(context, {
-                    type: "object",
-                    title: "user properties definition",
-                    description: "user properties definition",
-                    additionalProperties: false,
-                    definitions: {
-                        UserGroup: {
-                            type: "object",
-                            properties: {
-                                groupName: { type: "string" },
-                            },
+            schemaManage.setMainSchema(context, {
+                type: "object",
+                title: "user properties definition",
+                description: "user properties definition",
+                additionalProperties: false,
+                definitions: {
+                    UserGroup: {
+                        type: "object",
+                        properties: {
+                            groupName: { type: "string" },
                         },
                     },
-                    required: ["name", "age"],
-                    properties: {
-                        name: {
-                            type: "string",
-                            maxLength: 20,
-                            minLength: 1,
-                            not: {
-                                pattern: "^[a-zA-z]{1,}",
-                            },
-                            title: "user name",
+                },
+                required: ["name", "age"],
+                properties: {
+                    name: {
+                        type: "string",
+                        maxLength: 20,
+                        minLength: 1,
+                        not: {
+                            pattern: "^[a-zA-z]{1,}",
                         },
-                        gender: {
-                            type: "string",
-                            oneOf: [
-                                {
-                                    enum: ["man"],
-                                },
-                                {
-                                    enum: ["woman"],
-                                },
-                            ],
-                            title: "user gender, man or woman",
-                        },
-                        age: {
-                            type: "integer",
-                            allOf: [
-                                {
-                                    maximum: 100,
-                                },
-                                {
-                                    minimum: 1,
-                                },
-                            ],
-                            default: 1,
-                        },
-                        email: {
-                            anyOf: [
-                                {
-                                    type: "string",
-                                    format: "email",
-                                },
-                                {
-                                    type: "string",
-                                    maxLength: 3,
-                                },
-                            ],
-                        },
-                        createdAt: {
-                            type: "integer",
-                        },
-                        updatedAt: {
-                            type: "integer",
-                        },
-                        userGroups: {
-                            type: "array",
-                            items: {
-                                $ref: "#/definitions/UserGroup",
-                            },
-                            uniqueItems: true,
-                            maxItems: 5,
-                            minItems: 1,
-                        },
-                        balance: {
-                            type: "integer",
-                            multipleOf: 2,
-                            default: 0,
-                        },
+                        title: "user name",
                     },
-                    dependencies: {
-                        updatedAt: ["createdAt"],
+                    gender: {
+                        type: "string",
+                        oneOf: [
+                            {
+                                enum: ["man"],
+                            },
+                            {
+                                enum: ["woman"],
+                            },
+                        ],
+                        title: "user gender, man or woman",
                     },
-                });
-            } catch (e) {
-                console.log("22222222", e);
-            }
-
+                    age: {
+                        type: "integer",
+                        allOf: [
+                            {
+                                maximum: 100,
+                            },
+                            {
+                                minimum: 1,
+                            },
+                        ],
+                        default: 1,
+                    },
+                    email: {
+                        anyOf: [
+                            {
+                                type: "string",
+                                format: "email",
+                            },
+                            {
+                                type: "string",
+                                maxLength: 3,
+                            },
+                        ],
+                    },
+                    createdAt: {
+                        type: "integer",
+                    },
+                    updatedAt: {
+                        type: "integer",
+                    },
+                    userGroups: {
+                        type: "array",
+                        items: {
+                            $ref: "#/definitions/UserGroup",
+                        },
+                        uniqueItems: true,
+                        maxItems: 5,
+                        minItems: 1,
+                    },
+                    balance: {
+                        type: "integer",
+                        multipleOf: 2,
+                        default: 0,
+                    },
+                },
+                dependencies: {
+                    updatedAt: ["createdAt"],
+                },
+            });
             schemaManage.compile(context);
         });
 
@@ -725,6 +721,219 @@ describe("test the all draft version", () => {
                 email: "xxxxxxx",
             });
             assert.equal(filerErrorLength(context, ["email"], ["anyOf"]), 1);
+        });
+    });
+    describe("schema is draft-05 change", () => {
+        let context;
+        before(() => {
+            context = contextManage.create({
+                $schema: "http://json-schema.org/draft-05/schema#",
+            });
+
+            schemaManage.setMainSchema(context, {
+                type: "object",
+                title: "user properties definition",
+                description: "user properties definition",
+                additionalProperties: false,
+                definitions: {
+                    UserGroup: {
+                        type: "object",
+                        properties: {
+                            groupName: { type: "string" },
+                        },
+                    },
+                },
+                required: ["name", "age"],
+                properties: {
+                    name: {
+                        type: "string",
+                        maxLength: 20,
+                        minLength: 1,
+                        not: {
+                            pattern: "^[a-zA-z]{1,}",
+                        },
+                        title: "user name",
+                    },
+                    gender: {
+                        type: "string",
+                        oneOf: [
+                            {
+                                enum: ["man"],
+                            },
+                            {
+                                enum: ["woman"],
+                            },
+                        ],
+                        title: "user gender, man or woman",
+                    },
+                    age: {
+                        type: "integer",
+                        allOf: [
+                            {
+                                maximum: 100,
+                            },
+                            {
+                                minimum: 1,
+                            },
+                        ],
+                        default: 1,
+                    },
+                    email: {
+                        anyOf: [
+                            {
+                                type: "string",
+                                format: "email",
+                            },
+                            {
+                                type: "string",
+                                maxLength: 3,
+                            },
+                        ],
+                    },
+                    createdAt: {
+                        type: "integer",
+                    },
+                    updatedAt: {
+                        type: "integer",
+                    },
+                    userGroups: {
+                        type: "array",
+                        items: {
+                            $ref: "#/definitions/UserGroup",
+                        },
+                        uniqueItems: true,
+                        maxItems: 5,
+                        minItems: 1,
+                    },
+                    balance: {
+                        type: "integer",
+                        multipleOf: 2,
+                        default: 0,
+                    },
+                },
+                dependencies: {
+                    updatedAt: ["createdAt"],
+                },
+            });
+
+            schemaManage.compile(context);
+        });
+
+        it("should pass validation", () => {
+            vocabularyActuatorManage.validate(context, {
+                name: "1test",
+                age: 30,
+                gender: "man",
+                email: "1@xxx.com",
+                createdAt: 1,
+                updatedAt: 1,
+                userGroups: [{ groupName: "test" }],
+                balance: 10,
+            });
+            assert.equal(context.errors.length, 0);
+        });
+    });
+    describe("schema is draft-05 change", () => {
+        let context;
+        before(() => {
+            context = contextManage.create({
+                $schema: "http://json-schema.org/draft-06/schema#",
+            });
+            schemaManage.addReferenceSchema(context, {
+                $id: "UserGroup",
+                type: "object",
+                properties: {
+                    groupName: { type: "string" },
+                },
+                required: [],
+            });
+            schemaManage.setMainSchema(context, {
+                $id: "User",
+                type: "object",
+                title: "user properties definition",
+                description: "user properties definition",
+                additionalProperties: false,
+                required: ["name", "age"],
+                properties: {
+                    name: {
+                        type: "string",
+                        examples: ["test"],
+                    },
+                    gender: {
+                        type: "string",
+                        examples: ["man", "woman"],
+                    },
+                    age: {
+                        type: "integer",
+                        const: 1,
+                    },
+                    userGroups: {
+                        type: "array",
+                        items: {
+                            $ref: "UserGroup",
+                        },
+                    },
+                    extInfo: {
+                        type: "object",
+                        propertyNames: {
+                            format: "ipv4",
+                        },
+                    },
+                    balance: {
+                        type: "number",
+                        exclusiveMaximum: 3,
+                        exclusiveMinimum: 1,
+                    },
+                },
+            });
+            schemaManage.compile(context);
+        });
+
+        it("should pass validation", () => {
+            vocabularyActuatorManage.validate(context, {
+                name: "test",
+                age: 1,
+                gender: "man",
+                userGroups: [{}],
+                extInfo: {
+                    "127.0.0.1": 1,
+                    "127.0.0.2": 10,
+                },
+                balance: 2,
+            });
+            assert.equal(context.version, versionConstant.jsonSchemaVersions.draft06);
+            assert.equal(Object.keys(context.referenceSchemas).length, 4);
+            assert.equal(context.errors.length, 0);
+        });
+
+        it("should fail validation when const value is error", () => {
+            vocabularyActuatorManage.validate(context, {
+                age: 2,
+            });
+            assert.equal(filerErrorLength(context, ["age"], ["const"]), 1);
+        });
+
+        it("should fail validation when propertyNames value is error", () => {
+            vocabularyActuatorManage.validate(context, {
+                extInfo: {
+                    "127.0.0.1": "1",
+                    aaa: 2,
+                },
+            });
+            assert.equal(filerErrorLength(context, ["extInfo"], ["propertyNames"]), 1);
+        });
+
+        it("should fail validation when exclusiveMaximum value is error", () => {
+            vocabularyActuatorManage.validate(context, {
+                balance: 3,
+            });
+            assert.equal(filerErrorLength(context, ["balance"], ["exclusiveMaximum"]), 1);
+        });
+        it("should fail validation when exclusiveMinimum value is error", () => {
+            vocabularyActuatorManage.validate(context, {
+                balance: 1,
+            });
+            assert.equal(filerErrorLength(context, ["balance"], ["exclusiveMinimum"]), 1);
         });
     });
 });

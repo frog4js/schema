@@ -4,13 +4,15 @@ export const jsonSchemaVersions = {
     draft03: 3,
     draft04: 4,
     draft05: 5,
+    draft06: 6,
 };
 export const jsonSchemaVersionGroups = {
     all: Object.values(jsonSchemaVersions),
-    lastVersions: [jsonSchemaVersions.draft05],
+    lastVersions: [jsonSchemaVersions.draft06],
     draft02ByAdd: Object.values(jsonSchemaVersions).filter((x) => x >= jsonSchemaVersions.draft02),
     draft03ByAdd: Object.values(jsonSchemaVersions).filter((x) => x >= jsonSchemaVersions.draft03),
     draft04ByAdd: Object.values(jsonSchemaVersions).filter((x) => x >= jsonSchemaVersions.draft04),
+    draft06ByAdd: Object.values(jsonSchemaVersions).filter((x) => x >= jsonSchemaVersions.draft06),
 };
 export const jsonSchema$schemaVersionMap = {
     "http://json-schema.org/draft-01/schema#": jsonSchemaVersions.draft01,
@@ -18,6 +20,7 @@ export const jsonSchema$schemaVersionMap = {
     "http://json-schema.org/draft-03/schema#": jsonSchemaVersions.draft03,
     "http://json-schema.org/draft-04/schema#": jsonSchemaVersions.draft04,
     "http://json-schema.org/draft-05/schema#": jsonSchemaVersions.draft05,
+    "http://json-schema.org/draft-06/schema#": jsonSchemaVersions.draft06,
 };
 export const jsonSchema$schemaDraftMap = {
     [jsonSchemaVersions.draft01]: "http://json-schema.org/draft-01/schema#",
@@ -25,4 +28,5 @@ export const jsonSchema$schemaDraftMap = {
     [jsonSchemaVersions.draft03]: "http://json-schema.org/draft-03/schema#",
     [jsonSchemaVersions.draft04]: "http://json-schema.org/draft-04/schema#",
     [jsonSchemaVersions.draft05]: "http://json-schema.org/draft-05/schema#",
+    [jsonSchemaVersions.draft06]: "http://json-schema.org/draft-06/schema#",
 };

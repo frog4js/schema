@@ -10,15 +10,9 @@ import { getPseudoRandomString } from "../../util/random.mjs";
  */
 export default [
     {
-        key: vocabularyActuatorConstant.keys.id,
-        versions: [
-            versionConstant.jsonSchemaVersions.draft01,
-            versionConstant.jsonSchemaVersions.draft02,
-            versionConstant.jsonSchemaVersions.draft03,
-            versionConstant.jsonSchemaVersions.draft04,
-            versionConstant.jsonSchemaVersions.draft05,
-        ],
-        index: -19,
+        key: vocabularyActuatorConstant.keys.$id,
+        versions: versionConstant.jsonSchemaVersionGroups.draft06ByAdd,
+        index: -19.1,
         matches: [
             {
                 instanceTypes: typeConstant.typeofTypeGroups.empty,
@@ -32,6 +26,7 @@ export default [
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
                     const originId = context.instanceData.current.$ref[context.instanceData.current.key];
+
                     Object.defineProperty(
                         context.instanceData.current.$ref,
                         vocabularyActuatorConstant.flags.originId,

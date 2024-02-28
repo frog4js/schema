@@ -13,7 +13,7 @@ const configs = [
         index: 5,
         matches: [
             {
-                schemaTypes: [typeConstant.typeofTypes.object],
+                schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
                 resolve: (context, { startRefOrSchemaExecute }) => {
                     const currentSchemaData = context.schemaData.current.$ref[context.schemaData.current.key];

@@ -1,27 +1,11 @@
 import { describe, it, beforeEach } from "node:test";
 
 import * as assert from "assert";
-import { vocabularyActuatorConstant } from "../../../src/constants/share.mjs";
+import { versionConstant, vocabularyActuatorConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
 
-describe("test the executes.format module", () => {
+describe.only("test the executes.format module", () => {
     describe("test the resolve function", () => {
-        it("should pass when format value is 'error-format'", () => {
-            const context = execResolve(
-                {
-                    type: "string",
-                    format: "error-format",
-                },
-                "",
-                vocabularyActuatorConstant.keys.format,
-                0,
-                0,
-                [vocabularyActuatorConstant.keys.format],
-                undefined,
-            );
-            assert.equal(context.errors.length, 0);
-        });
-
         it("should pass when format value is 'date-time'", () => {
             const context = execResolve(
                 {
@@ -58,6 +42,7 @@ describe("test the executes.format module", () => {
         it("should pass when format value is 'date'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "date",
                 },
@@ -92,6 +77,7 @@ describe("test the executes.format module", () => {
         it("should pass when format value is 'time'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "time",
                 },
@@ -126,6 +112,7 @@ describe("test the executes.format module", () => {
         it("should pass when format value is 'utc-millisec'", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: "string",
                     format: "utc-millisec",
                 },
@@ -160,6 +147,7 @@ describe("test the executes.format module", () => {
         it("should pass when format value is 'regex'", () => {
             const context = execResolve(
                 {
+                    $schema: versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersions.draft03],
                     type: "string",
                     format: "regex",
                 },
@@ -176,6 +164,7 @@ describe("test the executes.format module", () => {
         it("should fail when format value is 'regex'", () => {
             const context = execResolve(
                 {
+                    $schema: versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersions.draft03],
                     type: "string",
                     format: "regex",
                 },
@@ -193,6 +182,7 @@ describe("test the executes.format module", () => {
         it("should pass when format value is 'color'", () => {
             const context = execResolve(
                 {
+                    $schema: versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersions.draft02],
                     type: "string",
                     format: "color",
                 },
@@ -209,6 +199,7 @@ describe("test the executes.format module", () => {
         it("should pass when format value is 'style'", () => {
             const context = execResolve(
                 {
+                    $schema: versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersions.draft01],
                     type: "string",
                     format: "style",
                 },
@@ -387,6 +378,40 @@ describe("test the executes.format module", () => {
             );
             assert.equal(context.errors.length, 1);
             assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
+        });
+        it("should fail when format value is 'json-schema-system-base-URI'", () => {
+            const context = execResolve(
+                {
+                    $schema: "http://json-schema.org/draft-03/schema#",
+                    type: "string",
+                    format: "json-schema-system-base-URI",
+                },
+                "error/",
+                vocabularyActuatorConstant.keys.format,
+                0,
+                0,
+                [vocabularyActuatorConstant.keys.format],
+                undefined,
+            );
+
+            const context1 = execResolve(
+                {
+                    $schema: "http://json-schema.org/draft-06/schema#",
+                    type: "string",
+                    format: "json-schema-system-base-URI",
+                },
+                "http://xxx.com/a",
+                vocabularyActuatorConstant.keys.format,
+                0,
+                0,
+                [vocabularyActuatorConstant.keys.format],
+                undefined,
+            );
+            assert.equal(context.errors.length, 1);
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
+
+            assert.equal(context1.errors.length, 1);
+            assert.equal(context1.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
         });
     });
 });

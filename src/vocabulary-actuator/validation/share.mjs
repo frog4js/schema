@@ -29,6 +29,11 @@ import notConfigs from "./not.mjs";
 import minPropertiesConfigs from "./minProperties.mjs";
 import maxPropertiesConfigs from "./maxProperties.mjs";
 import multipleOfConfigs from "./multipleOf.mjs";
+import constConfigs from "./const.mjs";
+import propertyNamesConfigs from "./propertyNames.mjs";
+import containsConfigs from "./contains.mjs";
+import exclusiveMaximumConfigs from "./exclusiveMaximum.mjs";
+import exclusiveMinimumConfigs from "./exclusiveMinimum.mjs";
 export default [
     ...optionalConfigs,
     ...requiresConfigs,
@@ -61,4 +66,9 @@ export default [
     ...minPropertiesConfigs,
     ...maxPropertiesConfigs,
     ...multipleOfConfigs,
+    ...constConfigs,
+    ...propertyNamesConfigs,
+    ...containsConfigs,
+    ...exclusiveMinimumConfigs,
+    ...exclusiveMaximumConfigs,
 ].sort((item1, item2) => item1.index - item2.index);

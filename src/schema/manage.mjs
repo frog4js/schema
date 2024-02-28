@@ -1,12 +1,11 @@
 import { vocabularyActuatorManage } from "../vocabulary-actuator/share.mjs";
 import metaSchemas from "../meta-schemas/share.mjs";
-import { dataOperateUtil, typeUtil } from "../util/share.mjs";
+import { dataOperateUtil, typeUtil, urlUtil } from "../util/share.mjs";
 import { contextConstant, vocabularyActuatorConstant, typeConstant, versionConstant } from "../constants/share.mjs";
 import { errorClass } from "../error/share.mjs";
 
 /**
- * @typedef {import("../../types/context").JSONSchema.Context} Context
- * @typedef {import("../../types/schema").JSONSchema.Schema} Schema
+ * @typedef {import("../../types/share")}
  */
 
 /**
@@ -72,25 +71,23 @@ function setMainSchema(context, schema) {
  */
 function compile(context) {
     if (context.state !== contextConstant.states.init) {
-        throw new errorClass.SystemError(`state does not equal init. current state is${context.state}`);
+        throw new errorClass.SystemError(`state does not equal init. current state is ${context.state}`);
     }
     if (!context.schemaData.main) {
         throw new errorClass.SystemError(`main schema not set`);
     }
     for (const waitValidateRef of context.waitValidateRefs) {
-        const paths = dataOperateUtil.getPathsByRef({ $ref: waitValidateRef.$ref });
         let current;
-        if (paths[0] === vocabularyActuatorConstant.pathKeys.self) {
+        if (waitValidateRef.$ref[0] === vocabularyActuatorConstant.pathKeys.self) {
             current = dataOperateUtil.getValueByJsonPointer(waitValidateRef.schema, waitValidateRef.$ref);
         } else {
-            current = dataOperateUtil.getValueByJsonPointer(
-                context.referenceSchemas[paths.shift()],
-                "#" + paths.join("/"),
-            );
+            const result = urlUtil.calculateIdAndPointer(waitValidateRef.$ref, context.defaultConfig.baseURI);
+            if (result && context.referenceSchemas[result.id]) {
+                current = dataOperateUtil.getValueByJsonPointer(context.referenceSchemas[result.id], result.pointer);
+            }
         }
-
         if (typeUtil.getTypeofType(current) !== typeConstant.typeofTypes.object) {
-            throw new errorClass.SystemError(`${waitValidateRef.$ref} not found or is not a valid schema.`);
+            throw new errorClass.SystemError(`${waitValidateRef.$ref} not found or is not a valid schema`);
         }
     }
     context.state = contextConstant.states.compile;
@@ -114,4 +111,4 @@ function getLast$schemaDraft() {
 function getAll$schemaDrafts() {
     return Object.values(versionConstant.jsonSchema$schemaDraftMap);
 }
-export { setMainSchema, addReferenceSchema, switchVersion, compile, getLast$schemaDraft, getAll$schemaDrafts };
+export { setMainSchema, addReferenceSchema, switchVersion, compile, getAll$schemaDrafts, getLast$schemaDraft };

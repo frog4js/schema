@@ -59,7 +59,7 @@ describe("test the executes.patternProperties module", () => {
                         "name|age": {
                             type: "string",
                         },
-                        "[": {
+                        "^count": {
                             type: "number",
                         },
                     },
@@ -67,7 +67,7 @@ describe("test the executes.patternProperties module", () => {
                 {
                     name: "test",
                     age: 1,
-                    "[": "1",
+                    "-count": "1",
                 },
                 vocabularyActuatorConstant.keys.patternProperties,
                 0,

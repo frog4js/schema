@@ -148,7 +148,7 @@ function getTypeofType(value) {
 
 /**
  *
- * @param {RefData} value
+ * @param {*} value
  * @return {string}
  */
 function getTypeofTypeByRefData(value) {
