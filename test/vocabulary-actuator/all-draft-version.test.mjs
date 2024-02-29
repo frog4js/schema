@@ -1008,6 +1008,15 @@ describe.only("test the all draft version", () => {
                             else: { maximum: 10 },
                         },
                     },
+                    format1: {
+                        format: "regex",
+                    },
+                    format2: {
+                        format: "date",
+                    },
+                    format3: {
+                        format: "time",
+                    },
                 },
             });
             schemaManage.compile(context);
@@ -1020,7 +1029,7 @@ describe.only("test the all draft version", () => {
             assert.equal(valid, true);
         });
 
-        it("should pass validation when age.0 is invalid", () => {
+        it("should fail validation when age.0 is invalid", () => {
             const { valid, errors } = vocabularyActuatorManage.validate(context, {
                 ages: [10.1, 2, 3],
             });
@@ -1028,12 +1037,23 @@ describe.only("test the all draft version", () => {
             assert.equal(errors[0].currentSchemaKey, "maximum");
         });
 
-        it("should pass validation when age.1 is invalid", () => {
+        it("should fail validation when age.1 is invalid", () => {
             const { valid, errors } = vocabularyActuatorManage.validate(context, {
                 ages: [10, 0, 3],
             });
             assert.equal(valid, false);
             assert.equal(errors[0].currentSchemaKey, "minimum");
+        });
+        it("should fail validation when format is invalid", () => {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, {
+                format1: "[",
+                format2: "[",
+                format3: "[",
+            });
+            assert.equal(valid, false);
+            assert.equal(errors[0].currentSchemaKey, "format");
+            assert.equal(errors[1].currentSchemaKey, "format");
+            assert.equal(errors[2].currentSchemaKey, "format");
         });
     });
 });

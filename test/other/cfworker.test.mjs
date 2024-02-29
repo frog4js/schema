@@ -5,14 +5,17 @@ describe.only("test the hyprtjump json schema", () => {
     it("test1", async () => {
         const validator = new Validator(
             {
-                type: "object",
-                then: { required: ["bar"] },
-                else: { required: ["baz"] },
+                properties: {
+                    name: {
+                        writeOnly: true,
+                    },
+                },
             },
             "draft-07",
         );
-
-        const result = validator.validate({});
+        const data = { name: "1" };
+        const result = validator.validate(data);
+        console.log(data.name);
         console.log("hyprtjump", JSON.stringify(result));
     });
 });

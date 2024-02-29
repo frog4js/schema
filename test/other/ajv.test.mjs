@@ -15,12 +15,17 @@ describe.only("test the ajv", () => {
             type: "string",
         });
         const schema = {
-            not: true,
+            properties: {
+                name: {
+                    readOnly: true,
+                },
+            },
         };
-        const data = {};
-
+        const data = { name: "1" };
+        data.name = 2;
         const validate = ajv.compile(schema);
         validate(data);
+
         console.log(validate.errors);
     });
 
