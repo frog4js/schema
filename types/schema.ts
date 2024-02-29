@@ -97,7 +97,7 @@ type SchemaV4 = CoreV4 & ValidationV4;
 type SchemaV5 = CoreV4 & ValidationV4;
 //  ============= v5
 
-//  ============= v4
+//  ============= v6
 type CoreV6 = {
     $schema?: string;
     $id?: string;
@@ -119,8 +119,29 @@ type ValidationV6 = ValidationV4 & {
     exclusiveMinimum?: number;
     exclusiveMaximum?: number;
 };
-type ChildSchemaV6 = ValidationV6 | Reference;
+type ChildSchemaV6 = ValidationV6 | Reference | boolean;
 type SchemaV6 = CoreV6 & ValidationV6;
 //  ============= v6
 
-export type Schema = SchemaV1 | SchemaV2 | SchemaV3 | SchemaV4 | SchemaV5 | SchemaV6;
+//  ============= v7
+type CoreV7 = {
+    $schema?: string;
+    $id?: string;
+    definitions?: Record<string, ChildSchemaV6>;
+};
+type ValidationV7 = ValidationV6 & {
+    properties?: Record<string, ChildSchemaV7>;
+    items?: ChildSchemaV7 | Array<ChildSchemaV7>;
+    additionalProperties?: boolean | ChildSchemaV7;
+    additionalItems?: boolean | ChildSchemaV7;
+    patternProperties?: Record<string, ChildSchemaV7>;
+    dependencies?: Record<string, Array<string> | ChildSchemaV7>;
+    anyOf?: Array<ChildSchemaV7>;
+    oneOf?: Array<ChildSchemaV7>;
+    allOf?: Array<ChildSchemaV7>;
+    propertyNames?: ChildSchemaV7;
+};
+type ChildSchemaV7 = ValidationV7 | Reference | boolean;
+type SchemaV7 = CoreV7 & ValidationV7;
+//  ============= v7
+export type Schema = SchemaV1 | SchemaV2 | SchemaV3 | SchemaV4 | SchemaV5 | SchemaV6 | SchemaV7;

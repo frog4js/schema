@@ -1,9 +1,7 @@
 import { contextConstant, typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
-import { errorManage } from "../../error/share.mjs";
-import { dataOperateUtil } from "../../util/share.mjs";
 import { contextManage } from "../../context/share.mjs";
-import { vocabularyActuatorManage } from "../share.mjs";
 import { pushError } from "../../error/manage.mjs";
+import { errorManage } from "../../error/share.mjs";
 
 /**
  *
@@ -31,6 +29,15 @@ const configs = [
                     }
                     if (!status) {
                         pushError(context);
+                    }
+                    return vocabularyActuatorConstant.ticks.nextExecute;
+                },
+            },
+            {
+                schemaTypes: [typeConstant.jsonTypes.boolean],
+                resolve: (context) => {
+                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
+                        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

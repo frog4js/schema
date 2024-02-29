@@ -70,7 +70,6 @@ describe("test the executes.requires module", () => {
                 [vocabularyActuatorConstant.keys.properties, "age", vocabularyActuatorConstant.keys.requires],
                 ["age"],
                 [],
-                undefined,
                 vocabularyActuatorConstant.ticks.endExecute,
             );
             assert.equal(context.errors.length, 0);

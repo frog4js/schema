@@ -11,6 +11,10 @@ export type Context = {
         paths: Array<string>;
         errors: Array<ExecuteError>;
     }>;
+    caches: Array<{
+        paths: Array<string>;
+        data: Record<string, any>;
+    }>;
     startTime: number;
     endTime: number;
     instancePaths: Array<string | number>;

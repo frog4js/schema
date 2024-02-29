@@ -4,7 +4,7 @@ import * as assert from "assert";
 import { versionConstant, vocabularyActuatorConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
 
-describe.only("test the executes.format module", () => {
+describe("test the executes.format module", () => {
     describe("test the resolve function", () => {
         it("should pass when format value is 'date-time'", () => {
             const context = execResolve(

@@ -34,6 +34,9 @@ import propertyNamesConfigs from "./propertyNames.mjs";
 import containsConfigs from "./contains.mjs";
 import exclusiveMaximumConfigs from "./exclusiveMaximum.mjs";
 import exclusiveMinimumConfigs from "./exclusiveMinimum.mjs";
+import ifConfigs from "./if.mjs";
+import thenConfigs from "./then.mjs";
+import elseConfigs from "./else.mjs";
 export default [
     ...optionalConfigs,
     ...requiresConfigs,
@@ -71,4 +74,7 @@ export default [
     ...containsConfigs,
     ...exclusiveMinimumConfigs,
     ...exclusiveMaximumConfigs,
+    ...ifConfigs,
+    ...thenConfigs,
+    ...elseConfigs,
 ].sort((item1, item2) => item1.index - item2.index);

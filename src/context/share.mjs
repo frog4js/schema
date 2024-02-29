@@ -10,6 +10,9 @@ import {
     unlock,
     lock,
     clone,
+    setCache,
+    clearCache,
+    getCache,
 } from "./manage.mjs";
 export const contextManage = {
     create,
@@ -23,4 +26,7 @@ export const contextManage = {
     unlock,
     lock,
     clone,
+    setCache,
+    clearCache,
+    getCache,
 };

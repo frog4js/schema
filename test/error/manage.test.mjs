@@ -4,7 +4,7 @@ import { errorManage } from "../../src/error/share.mjs";
 import { contextManage } from "../../src/context/share.mjs";
 import { schemaManage } from "../../src/schema/share.mjs";
 
-describe.only("test the error manage module", () => {
+describe("test the error manage module", () => {
     describe("test the pushError function", () => {
         it("should pass when locale is en-gb and schemaKey is enum", () => {
             const context = contextManage.create();

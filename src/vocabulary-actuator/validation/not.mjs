@@ -23,6 +23,15 @@ const configs = [
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
+            {
+                schemaTypes: [typeConstant.jsonTypes.boolean],
+                resolve: (context) => {
+                    if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
+                        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+                    }
+                    return vocabularyActuatorConstant.ticks.nextExecute;
+                },
+            },
         ],
     },
 ];

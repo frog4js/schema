@@ -18,6 +18,7 @@ import validationConfigs from "../../../src/vocabulary-actuator/validation/share
  * @param {Array<string>} [instanceKeys]
  * @param {*} [configs]
  * @param {number} [expectResult]
+ * @param {Array<{paths: [], data: Record<string, *>}>} [caches]
  */
 export function execResolve(
     schema,
@@ -29,6 +30,7 @@ export function execResolve(
     instanceKeys,
     configs,
     expectResult,
+    caches,
 ) {
     const context = contextManage.create();
     if (configs?.phase) {
@@ -46,6 +48,9 @@ export function execResolve(
         instanceKeys.forEach((key) => contextManage.enterContext(context, undefined, key));
     }
     const filterExecuteConfigs = validationConfigs.filter((x) => x.key === executeKey);
+    if (caches) {
+        context.caches = caches;
+    }
     const result = filterExecuteConfigs[versionIndex].matches[matchIndex].resolve(context, {
         startRefOrSchemaExecute,
     });
