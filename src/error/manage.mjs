@@ -40,8 +40,9 @@ function mergeError(context, errors) {
 /**
  *
  * @param {Context} context
+ * @param {string} [errorMessageKey]
  */
-function pushError(context) {
+function pushError(context, errorMessageKey) {
     const error = {
         instancePath: context.instancePaths.length > 0 ? "/" + context.instancePaths.join("/") : "",
         schemaPath: context.schemaPaths.filter((x) => x !== vocabularyActuatorConstant.pathKeys.ref).join("/"),
@@ -52,7 +53,9 @@ function pushError(context) {
         message: null,
     };
     const messageStr =
-        context.defaultConfig.errorMessages?.[context.schemaData.current.key]?.[context.instanceData.locale];
+        context.defaultConfig.errorMessages?.[errorMessageKey || context.schemaData.current.key]?.[
+            context.instanceData.locale
+        ];
     if (messageStr) {
         error.message = replaceTemplateString(messageStr, error);
     }

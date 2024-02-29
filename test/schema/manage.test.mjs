@@ -11,7 +11,7 @@ import { getLast$schemaDraft } from "../../src/schema/manage.mjs";
  * @typedef {import("../types/share")}
  */
 
-describe.only("test the schema manage module", () => {
+describe("test the schema manage module", () => {
     describe("test the addReferenceSchema function", () => {
         /**
          * @type {Context}
@@ -202,7 +202,7 @@ describe.only("test the schema manage module", () => {
                 },
             });
             schemaManage.compile(context);
-            assert.equal(Object.keys(context.referenceSchemas).length, 7);
+            assert.equal(Object.keys(context.referenceSchemas).length, 8);
             assert.equal(
                 context.referenceSchemas["#"].$id,
                 urlUtil.calculateId("User", defaultConfigManage.getSystemDefaultConfig().baseURI),
@@ -225,7 +225,7 @@ describe.only("test the schema manage module", () => {
         });
         it("should fail when switch draft-not-fount version", () => {
             schemaManage.switchVersion(context, "http://json-schema.org/draft-not-fount/schema#");
-            assert.equal(context.version, versionConstant.jsonSchemaVersions.draft06);
+            assert.equal(context.version, versionConstant.jsonSchemaVersions.draft07);
         });
     });
     describe("test the getLast$schemaDraft function", () => {

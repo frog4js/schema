@@ -45,5 +45,21 @@ const configs = [
             },
         ],
     },
+    {
+        key: vocabularyActuatorConstant.keys.items,
+        versions: versionConstant.jsonSchemaVersionGroups.draft06ByAdd,
+        index: 6.1,
+        matches: [
+            {
+                schemaTypes: [typeConstant.jsonTypes.boolean],
+                resolve: (context) => {
+                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
+                        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+                    }
+                    return vocabularyActuatorConstant.ticks.nextExecute;
+                },
+            },
+        ],
+    },
 ];
 export default configs;

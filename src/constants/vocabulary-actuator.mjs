@@ -50,6 +50,12 @@ export const keys = {
     const: "const",
     contains: "contains",
     examples: "examples",
+    if: "if",
+    then: "then",
+    else: "else",
+};
+export const errorMessageKeys = {
+    schemaIsFalse: "schemaIsFalse",
 };
 
 export const ticks = {
@@ -182,6 +188,10 @@ export const defaultErrorMessages = {
     [keys.contains]: {
         "zh-cn": "必须至少包含1个有效项",
         "en-gb": "must contain at least one valid item",
+    },
+    [errorMessageKeys.schemaIsFalse]: {
+        "zh-cn": "约束的值为false",
+        "en-gb": "boolean schema is false",
     },
 };
 export const flags = {

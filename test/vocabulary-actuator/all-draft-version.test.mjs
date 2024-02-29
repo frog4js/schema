@@ -833,7 +833,7 @@ describe.only("test the all draft version", () => {
             assert.equal(context.errors.length, 0);
         });
     });
-    describe("schema is draft-05 change", () => {
+    describe("schema is draft-06 change", () => {
         let context;
         before(() => {
             context = contextManage.create({
@@ -934,6 +934,126 @@ describe.only("test the all draft version", () => {
                 balance: 1,
             });
             assert.equal(filerErrorLength(context, ["balance"], ["exclusiveMinimum"]), 1);
+        });
+        it("should pass validation when sub schema is false", () => {
+            const context1 = contextManage.create({
+                $schema: "http://json-schema.org/draft-06/schema#",
+            });
+            schemaManage.setMainSchema(context1, {
+                $id: "User",
+                type: "object",
+                properties: {
+                    validItems: {
+                        type: "array",
+                        items: false,
+                    },
+                    validAnyOf: {
+                        anyOf: [false],
+                    },
+                    validContains: {
+                        contains: false,
+                    },
+                    validAdditionalProperties: {
+                        additionalProperties: false,
+                    },
+                    validPropertyNames: {
+                        propertyNames: false,
+                    },
+                    validNot: {
+                        not: true,
+                    },
+                },
+            });
+            schemaManage.compile(context1);
+            vocabularyActuatorManage.validate(context1, {
+                validItems: [],
+                validAnyOf: "1",
+                validContains: false,
+                validAdditionalProperties: {
+                    a: 1,
+                },
+                validPropertyNames: {
+                    a: 1,
+                },
+                validNot: 1,
+            });
+            assert.equal(filerErrorLength(context1, ["validItems"], ["items"]), 1);
+            assert.equal(filerErrorLength(context1, ["validAnyOf"], ["anyOf"]), 1);
+            assert.equal(filerErrorLength(context1, ["validContains"], ["contains"]), 1);
+            assert.equal(filerErrorLength(context1, ["validAdditionalProperties"], ["additionalProperties"]), 1);
+            assert.equal(filerErrorLength(context1, ["validPropertyNames"], ["propertyNames"]), 1);
+            assert.equal(filerErrorLength(context1, ["validNot"], ["not"]), 1);
+        });
+    });
+    describe("schema is draft-07 change", () => {
+        let context;
+        before(() => {
+            context = contextManage.create({
+                $schema: "http://json-schema.org/draft-07/schema#",
+            });
+
+            schemaManage.setMainSchema(context, {
+                $id: "User",
+                type: "object",
+                title: "user properties definition",
+                description: "user properties definition",
+                additionalProperties: false,
+                properties: {
+                    ages: {
+                        type: "array",
+                        items: {
+                            type: ["integer", "number"],
+                            if: { type: "integer" },
+                            then: { minimum: 1 },
+                            else: { maximum: 10 },
+                        },
+                    },
+                    format1: {
+                        format: "regex",
+                    },
+                    format2: {
+                        format: "date",
+                    },
+                    format3: {
+                        format: "time",
+                    },
+                },
+            });
+            schemaManage.compile(context);
+        });
+
+        it("should pass validation", () => {
+            const { valid } = vocabularyActuatorManage.validate(context, {
+                ages: [1, 9.9],
+            });
+            assert.equal(valid, true);
+        });
+
+        it("should fail validation when age.0 is invalid", () => {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, {
+                ages: [10.1, 2, 3],
+            });
+            assert.equal(valid, false);
+            assert.equal(errors[0].currentSchemaKey, "maximum");
+        });
+
+        it("should fail validation when age.1 is invalid", () => {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, {
+                ages: [10, 0, 3],
+            });
+            assert.equal(valid, false);
+            assert.equal(errors[0].currentSchemaKey, "minimum");
+        });
+        it("should fail validation when format is invalid", () => {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, {
+                format1: "[",
+                format2: "[",
+                format3: "[",
+            });
+            assert.equal(valid, false);
+            assert.equal(errors[0].currentSchemaKey, "format");
+            assert.equal(errors[1].currentSchemaKey, "format");
+            assert.equal(errors[2].currentSchemaKey, "format");
         });
     });
 });

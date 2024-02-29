@@ -3,6 +3,7 @@ import { schemaManage } from "../schema/share.mjs";
 import { dataOperateUtil } from "../util/share.mjs";
 import { jsonSchema$schemaVersionMap } from "../constants/version.mjs";
 import { defaultConfigManage } from "../default-config/share.mjs";
+import { deepClone } from "../util/data-operate.mjs";
 
 /**
  * @typedef {import("../../types/share")}
@@ -65,6 +66,7 @@ function clone(context) {
         phase: contextConstant.phases.schemaValidate,
         waitValidateRefs: [],
         locks: [],
+        caches: [],
     };
 }
 /**
@@ -190,6 +192,7 @@ function enterContext(context, schemaKey, instanceKey) {
 
 function backContext(context, schemaKey, instanceKey) {
     if (instanceKey !== undefined) {
+        clearCache(context);
         context.instancePaths.pop();
         refererCurrentInstance(context);
     }
@@ -263,6 +266,57 @@ function lock(context) {
 function unlock(context) {
     return context.locks.pop();
 }
+
+/**
+ *
+ * @param {Context}context
+ * @param {string}key
+ * @param {*}value
+ */
+function setCache(context, key, value) {
+    for (const cache of context.caches) {
+        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
+        if (result === 0) {
+            cache.data[key] = value;
+            return;
+        }
+    }
+    context.caches.push({
+        paths: dataOperateUtil.deepClone(context.instancePaths),
+        data: {
+            [key]: value,
+        },
+    });
+}
+
+/**
+ *
+ * @param {Context} context
+ * @param {string} key
+ * @return {* | undefined}
+ */
+function getCache(context, key) {
+    for (const cache of context.caches) {
+        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
+        if (result === 0) {
+            return cache.data[key];
+        }
+    }
+    return undefined;
+}
+/**
+ *
+ * @param {Context}context
+ */
+function clearCache(context) {
+    const index = context.caches.findIndex((cache) => {
+        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
+        return result === 0;
+    });
+    if (index !== -1) {
+        context.caches.splice(index, 1);
+    }
+}
 export {
     create,
     enterContext,
@@ -275,4 +329,7 @@ export {
     lock,
     unlock,
     clone,
+    setCache,
+    clearCache,
+    getCache,
 };

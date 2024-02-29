@@ -49,6 +49,21 @@ const v6FormatKeys = [
     "uri-template",
     "json-pointer",
 ];
+const v7FormatKeys = [
+    "json-schema-system-base-URI",
+    "date-time",
+    "email",
+    "ipv4",
+    "ipv6",
+    "hostname",
+    "uri",
+    "uri-reference",
+    "uri-template",
+    "json-pointer",
+    "regex",
+    "date",
+    "time",
+];
 function isValidFormat(context, keysByVersion) {
     const formatDefinition = formatManage.getFormatDefinition(context, context.instanceData.current, keysByVersion);
     if (formatDefinition === false) {
@@ -90,13 +105,27 @@ export default [
     },
     {
         key: vocabularyActuatorConstant.keys.format,
-        versions: jsonSchemaVersionGroups.draft06ByAdd,
+        versions: [jsonSchemaVersions.draft06],
         index: -10.3,
         matches: [
             {
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
                     isValidFormat(context, v6FormatKeys);
+                    return vocabularyActuatorConstant.ticks.nextExecute;
+                },
+            },
+        ],
+    },
+    {
+        key: vocabularyActuatorConstant.keys.format,
+        versions: jsonSchemaVersionGroups.draft07ByAdd,
+        index: -10.4,
+        matches: [
+            {
+                instanceTypes: [typeConstant.typeofTypes.string],
+                resolve: (context) => {
+                    isValidFormat(context, v7FormatKeys);
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },

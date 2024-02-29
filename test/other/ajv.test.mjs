@@ -8,27 +8,24 @@ import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
 describe.only("test the ajv", () => {
     it("ajv1", () => {
-        const ajv = new Ajv({ useDefaults: true, allErrors: true });
+        const ajv = new Ajv({ useDefaults: true, allErrors: true, strict: false });
         addFormats(ajv);
         ajv.addSchema({
             $id: "#/$defs/aa1",
             type: "string",
         });
         const schema = {
-            type: "object",
-            $defs: {
-                aa: {},
-            },
             properties: {
                 name: {
-                    $ref: "#/$defs/aa",
+                    readOnly: true,
                 },
             },
         };
-        const data = { name: 1 };
-
+        const data = { name: "1" };
+        data.name = 2;
         const validate = ajv.compile(schema);
         validate(data);
+
         console.log(validate.errors);
     });
 

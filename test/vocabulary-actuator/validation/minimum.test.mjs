@@ -4,7 +4,7 @@ import * as assert from "assert";
 import { vocabularyActuatorConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
 
-describe.only("test the executes.minimum module", () => {
+describe("test the executes.minimum module", () => {
     describe("test the resolve function", () => {
         it("should pass when validating a number with minimum constraint equal to limit", () => {
             const context = execResolve(

@@ -34,11 +34,12 @@ function validate(context, instance, locale) {
  *
  * @param {Context} context
  * @param {boolean} [isTryExecute]
- * @return {ExecuteError[]}
+ * @return {ExecuteError[] | boolean}
  */
 function startRefOrSchemaExecute(context, isTryExecute) {
     const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
     isTryExecute === true && contextManage.lock(context);
+    const errorCount = context.errors.length;
     if (typeof schemaValue.$ref === typeConstant.typeofTypes.string) {
         const paths = dataOperateUtil.getPathsByRef(schemaValue);
         paths.unshift(vocabularyActuatorConstant.pathKeys.ref);
@@ -50,8 +51,10 @@ function startRefOrSchemaExecute(context, isTryExecute) {
     }
     if (isTryExecute) {
         return contextManage.unlock(context).errors;
+    } else if (context.errors.length > errorCount) {
+        return true;
     } else {
-        return null;
+        return false;
     }
 }
 
@@ -60,6 +63,12 @@ function startRefOrSchemaExecute(context, isTryExecute) {
  * @param {Context} context
  */
 function startValidateValidation(context) {
+    if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === true) {
+        return;
+    } else if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === false) {
+        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+        return;
+    }
     if (
         context.phase === contextConstant.phases.schemaValidate &&
         typeUtil.getTypeofType(context.instanceData.current.$ref?.[context.instanceData.current.key]) ===
@@ -109,7 +118,6 @@ function startValidateValidation(context) {
         }
         contextManage.backContext(context, execute.key);
     }
-    context.endTime = Date.now();
 }
 
 /**
@@ -188,6 +196,7 @@ function startValidateSchemaSpecialValue(context) {
 function startValidate(context) {
     context.locks = [];
     context.errors = [];
+    context.caches = [];
     if (context.phase === contextConstant.phases.instanceValidate) {
         if (context.state !== contextConstant.states.compile) {
             throw new errorClass.SystemError("state is init");
