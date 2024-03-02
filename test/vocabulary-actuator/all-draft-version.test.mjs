@@ -8,7 +8,7 @@ import { versionConstant, vocabularyActuatorConstant } from "../../src/constants
 /**
  * @typedef {import("../../types/share")}
  */
-describe.only("test the all draft version", () => {
+describe("test the all draft version", () => {
     /**
      *
      * @param {Context} context

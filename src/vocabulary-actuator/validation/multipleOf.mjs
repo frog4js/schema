@@ -15,10 +15,14 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.number],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] !== 0) {
-                        const val =
+                        const remainder =
                             context.instanceData.current.$ref[context.instanceData.current.key] %
                             context.schemaData.current.$ref[context.schemaData.current.key];
-                        if (val !== 0) {
+                        if (
+                            Math.abs(0 - remainder) >= 1.1920929e-7 &&
+                            Math.abs(context.schemaData.current.$ref[context.schemaData.current.key] - remainder) >=
+                                1.1920929e-7
+                        ) {
                             errorManage.pushError(context);
                         }
                     }

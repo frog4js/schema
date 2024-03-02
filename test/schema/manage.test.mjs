@@ -5,12 +5,31 @@ import { contextManage } from "../../src/context/share.mjs";
 import { urlUtil } from "../../src/util/share.mjs";
 import { defaultConfigManage } from "../../src/default-config/share.mjs";
 import { contextConstant, versionConstant } from "../../src/constants/share.mjs";
-import { getLast$schemaDraft } from "../../src/schema/manage.mjs";
+import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
 
 /**
  * @typedef {import("../types/share")}
  */
 
+describe.only("", () => {
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-04/schema#",
+        });
+        const schema = {
+            properties: {
+                foo: {
+                    type: "integer",
+                    default: [],
+                },
+            },
+        };
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        const { valid } = vocabularyActuatorManage.validate(context, "f");
+        console.log(valid);
+    });
+});
 describe("test the schema manage module", () => {
     describe("test the addReferenceSchema function", () => {
         /**
@@ -72,7 +91,7 @@ describe("test the schema manage module", () => {
             assert.equal(context.schemaData.main, undefined);
         });
     });
-    describe("test the addReferenceSchema function", () => {
+    describe("test the setMainSchema function", () => {
         /**
          * @type {Context}
          */

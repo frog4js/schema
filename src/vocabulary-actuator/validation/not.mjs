@@ -12,12 +12,10 @@ const configs = [
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
-                    if (Object.keys(context.schemaData.current.$ref[context.schemaData.current.key]).length > 0) {
-                        const errors = startRefOrSchemaExecute(context, true);
-                        if (errors.length === 0) {
-                            errorManage.pushError(context);
-                        }
+                resolve: (context, { startSubSchemaExecute }) => {
+                    const errors = startSubSchemaExecute(context, true);
+                    if (errors.length === 0) {
+                        errorManage.pushError(context);
                     }
 
                     return vocabularyActuatorConstant.ticks.nextExecute;

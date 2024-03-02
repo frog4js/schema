@@ -15,12 +15,12 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const schemaArrayLength = context.schemaData.current.$ref[context.schemaData.current.key].length;
                     let status = false;
                     for (let index = 0; index < schemaArrayLength; index++) {
                         contextManage.enterContext(context, index);
-                        const errors = startRefOrSchemaExecute(context, true);
+                        const errors = startSubSchemaExecute(context, true);
                         contextManage.backContext(context, index);
                         if (errors.length === 0) {
                             status = true;

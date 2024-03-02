@@ -18,6 +18,8 @@ import {
     getPathsByRef,
     merge,
     compareToArray,
+    fastDeepEqual,
+    fastDeepIncludes,
 } from "./data-operate.mjs";
 import { getPseudoRandomString } from "./random.mjs";
 import { calculateId, calculateIdAndPointer } from "./url.mjs";
@@ -42,6 +44,8 @@ export const dataOperateUtil = {
     getPathsByRef,
     merge,
     compareToArray,
+    fastDeepEqual,
+    fastDeepIncludes,
 };
 
 export const randomUtil = {

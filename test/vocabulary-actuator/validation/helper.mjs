@@ -2,7 +2,7 @@
  * @typedef {import("../../../types/core")}
  */
 
-import { startRefOrSchemaExecute } from "../../../src/vocabulary-actuator/manage.mjs";
+import { startSubSchemaExecute } from "../../../src/vocabulary-actuator/manage.mjs";
 import { contextManage } from "../../../src/context/share.mjs";
 import * as assert from "assert";
 import { schemaManage } from "../../../src/schema/share.mjs";
@@ -52,7 +52,7 @@ export function execResolve(
         context.caches = caches;
     }
     const result = filterExecuteConfigs[versionIndex].matches[matchIndex].resolve(context, {
-        startRefOrSchemaExecute,
+        startSubSchemaExecute,
     });
     if (expectResult) {
         assert.equal(result, expectResult);

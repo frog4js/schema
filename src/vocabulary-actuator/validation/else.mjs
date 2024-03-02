@@ -26,9 +26,9 @@ const configs = [
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     if (contextManage.getCache(context, vocabularyActuatorConstant.keys.if) === false) {
-                        const result = startRefOrSchemaExecute(context, false);
+                        const result = startSubSchemaExecute(context, false);
                         if (result === true) {
                             errorManage.pushError(context);
                         }

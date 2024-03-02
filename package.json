@@ -14,7 +14,8 @@
         "commit": "git -cz",
         "test": "node --test test/all-test.mjs",
         "test:only": "node --test --test-only test/all-test.mjs",
-        "test:coverage": "rimraf ./coverage && NODE_V8_COVERAGE=coverage node --experimental-test-coverage test/all-test.mjs"
+        "test:coverage": "rimraf ./coverage && NODE_V8_COVERAGE=coverage node --experimental-test-coverage test/all-test.mjs",
+        "test:suite": "node --test json-schema-test-suite/suite-runner.test.mjs"
     },
     "repository": {
         "type": "git",

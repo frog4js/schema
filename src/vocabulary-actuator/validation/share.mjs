@@ -1,3 +1,4 @@
+import $refConfigs from "./$ref.mjs";
 import optionalConfigs from "./optional.mjs";
 import requiresConfigs from "./requires.mjs";
 import defaultConfigs from "./default.mjs";
@@ -38,6 +39,7 @@ import ifConfigs from "./if.mjs";
 import thenConfigs from "./then.mjs";
 import elseConfigs from "./else.mjs";
 export default [
+    ...$refConfigs,
     ...optionalConfigs,
     ...requiresConfigs,
     ...defaultConfigs,

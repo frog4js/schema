@@ -6,7 +6,7 @@ import { schemaManage } from "../../src/schema/share.mjs";
 import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
 import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
-describe.only("test the ajv", () => {
+describe("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true, strict: false });
         addFormats(ajv);

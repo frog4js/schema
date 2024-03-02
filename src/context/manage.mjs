@@ -4,6 +4,7 @@ import { dataOperateUtil } from "../util/share.mjs";
 import { jsonSchema$schemaVersionMap } from "../constants/version.mjs";
 import { defaultConfigManage } from "../default-config/share.mjs";
 import { deepClone } from "../util/data-operate.mjs";
+import { switchVersion } from "../schema/manage.mjs";
 
 /**
  * @typedef {import("../../types/share")}
@@ -146,6 +147,10 @@ function getParentSchema(context) {
             current = context.referenceSchemas;
         } else {
             current = current[keyOrIndex];
+        }
+        if (context.schemaPaths[i - 1] === vocabularyActuatorConstant.pathKeys.ref) {
+            context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = current;
+            schemaManage.switchVersion(context, current.$schema || context.defaultConfig.$schema);
         }
     }
     return current;

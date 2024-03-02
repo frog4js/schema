@@ -52,7 +52,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
                 instanceTypes: typeConstant.typeofTypeGroups.exist,
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const types = context.schemaData.current.$ref[context.schemaData.current.key];
                     let status;
                     let i = 0;
@@ -61,7 +61,7 @@ const configs = [
                         if (typeof type === typeConstant.typeofTypes.string) {
                             status = signTypeExecute(context, type);
                         } else if (typeof type === typeConstant.typeofTypes.object) {
-                            const errors = startRefOrSchemaExecute(context, true);
+                            const errors = startSubSchemaExecute(context, true);
                             status = errors.length === 0;
                         }
                         contextManage.backContext(context, i, undefined);

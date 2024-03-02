@@ -16,7 +16,7 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
                     if (
-                        context.instanceData.current.$ref[context.instanceData.current.key].length <
+                        Array.from(context.instanceData.current.$ref[context.instanceData.current.key]).length <
                         context.schemaData.current.$ref[context.schemaData.current.key]
                     ) {
                         errorManage.pushError(context);

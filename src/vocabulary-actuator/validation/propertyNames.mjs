@@ -16,13 +16,13 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const instanceValue = context.instanceData.current.$ref[context.instanceData.current.key];
                     const errors = [];
                     for (const instanceKey of Object.keys(instanceValue)) {
                         contextManage.enterContext(context, undefined, vocabularyActuatorConstant.pathKeys.objectKey);
                         contextManage.enterContext(context, undefined, instanceKey);
-                        errors.push(...startRefOrSchemaExecute(context, true));
+                        errors.push(...startSubSchemaExecute(context, true));
                         contextManage.backContext(context, undefined, vocabularyActuatorConstant.pathKeys.objectKey);
                         contextManage.backContext(context, undefined, instanceKey);
                     }

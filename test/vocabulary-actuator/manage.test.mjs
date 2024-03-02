@@ -2,9 +2,9 @@ import { beforeEach, describe, it } from "node:test";
 import { contextManage } from "../../src/context/share.mjs";
 import { schemaManage } from "../../src/schema/share.mjs";
 import assert from "assert";
-import { startRefOrSchemaExecute } from "../../src/vocabulary-actuator/manage.mjs";
+import { startSubSchemaExecute } from "../../src/vocabulary-actuator/manage.mjs";
 describe("test the vocabulary actuator manage module", () => {
-    describe("test the startRefOrSchemaExecute function", () => {
+    describe("test the startSubSchemaExecute function", () => {
         /**
          *
          * @type {Schema}
@@ -32,7 +32,7 @@ describe("test the vocabulary actuator manage module", () => {
             };
             contextManage.enterContext(context, "properties");
             contextManage.enterContext(context, "isStringRef", "isStringRef");
-            const errors = startRefOrSchemaExecute(context, true);
+            const errors = startSubSchemaExecute(context, true);
             assert.equal(errors.length, 0);
         });
 
@@ -45,7 +45,7 @@ describe("test the vocabulary actuator manage module", () => {
             };
             contextManage.enterContext(context, "properties");
             contextManage.enterContext(context, "isStringRef", "isStringRef");
-            const errors = startRefOrSchemaExecute(context, true);
+            const errors = startSubSchemaExecute(context, true);
             assert.equal(errors.length, 1);
         });
 
@@ -60,7 +60,7 @@ describe("test the vocabulary actuator manage module", () => {
             };
             contextManage.enterContext(context, "properties");
             contextManage.enterContext(context, "isRootRef", "isRootRef");
-            const errors = startRefOrSchemaExecute(context, true);
+            const errors = startSubSchemaExecute(context, true);
             assert.equal(errors.length, 1);
         });
     });

@@ -3,14 +3,14 @@ import { contextManage } from "../../context/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 import { typeUtil } from "../../util/share.mjs";
 
-function isSubSchemaResolve(context, { startRefOrSchemaExecute }) {
+function isSubSchemaResolve(context, { startSubSchemaExecute }) {
     const parentSchemaInfo = contextManage.getSiblingSchemaRefData(context, vocabularyActuatorConstant.keys.items);
     const items = parentSchemaInfo.$ref[parentSchemaInfo.key];
     if (typeUtil.getTypeofType(items) === typeConstant.typeofTypes.array) {
         const instanceCount = context.instanceData.current.$ref[context.instanceData.current.key].length;
         for (let moreItemIndex = items.length; moreItemIndex < instanceCount; moreItemIndex++) {
             contextManage.enterContext(context, undefined, moreItemIndex);
-            startRefOrSchemaExecute(context, false);
+            startSubSchemaExecute(context, false);
             contextManage.backContext(context, undefined, moreItemIndex);
         }
     }

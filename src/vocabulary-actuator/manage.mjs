@@ -30,25 +30,17 @@ function validate(context, instance, locale) {
         errors: context.errors,
     };
 }
+
 /**
  *
  * @param {Context} context
  * @param {boolean} [isTryExecute]
  * @return {ExecuteError[] | boolean}
  */
-function startRefOrSchemaExecute(context, isTryExecute) {
-    const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
+function startSubSchemaExecute(context, isTryExecute) {
     isTryExecute === true && contextManage.lock(context);
     const errorCount = context.errors.length;
-    if (typeof schemaValue.$ref === typeConstant.typeofTypes.string) {
-        const paths = dataOperateUtil.getPathsByRef(schemaValue);
-        paths.unshift(vocabularyActuatorConstant.pathKeys.ref);
-        paths.forEach((pathItem) => contextManage.enterContext(context, pathItem));
-        startValidateValidation(context);
-        paths.forEach((pathItem) => contextManage.backContext(context, pathItem));
-    } else {
-        startValidateValidation(context);
-    }
+    startValidateValidation(context);
     if (isTryExecute) {
         return contextManage.unlock(context).errors;
     } else if (context.errors.length > errorCount) {
@@ -61,12 +53,28 @@ function startRefOrSchemaExecute(context, isTryExecute) {
 /**
  *
  * @param {Context} context
+ * @return {ExecuteError[] | boolean}
+ */
+function startRefExecute(context) {
+    const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
+    const paths = dataOperateUtil.getPathsByRef(schemaValue);
+    paths.unshift(vocabularyActuatorConstant.pathKeys.ref);
+    paths.forEach((pathItem) => contextManage.enterContext(context, pathItem));
+    startValidateValidation(context);
+    paths.forEach((pathItem) => contextManage.backContext(context, pathItem));
+}
+
+/**
+ *
+ * @param {Context} context
  */
 function startValidateValidation(context) {
     if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === true) {
         return;
     } else if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === false) {
         errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+        return;
+    } else if (typeUtil.getTypeofTypeByRefData(context.schemaData.current) !== typeConstant.typeofTypes.object) {
         return;
     }
     if (
@@ -84,7 +92,11 @@ function startValidateValidation(context) {
             },
         );
     }
+    const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
     executeLoop: for (let execute of validationConfigs) {
+        if (!(execute.key in schemaValue)) {
+            continue;
+        }
         if (!execute.versions.includes(context.version)) {
             continue;
         }
@@ -106,7 +118,8 @@ function startValidateValidation(context) {
 
             if (isExec) {
                 const tick = match.resolve(context, {
-                    startRefOrSchemaExecute,
+                    startSubSchemaExecute,
+                    startRefExecute,
                 });
                 if (tick === vocabularyActuatorConstant.ticks.nextExecute) {
                     break;
@@ -141,7 +154,8 @@ function startValidateCore(context) {
             }
             if (isExec) {
                 const tick = match.resolve(context, {
-                    startRefOrSchemaExecute,
+                    startSubSchemaExecute,
+                    startRefExecute,
                 });
                 if (tick === vocabularyActuatorConstant.ticks.nextExecute) {
                     break;
@@ -220,4 +234,5 @@ function restoreStartState(context) {
     context.instancePaths = [];
     context.locks = [];
 }
-export { validate, startValidate, startRefOrSchemaExecute };
+
+export { validate, startValidate, startSubSchemaExecute };

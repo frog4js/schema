@@ -19,7 +19,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const schema = context.schemaData.current.$ref[context.schemaData.current.key];
                     const instance = context.instanceData.current.$ref[context.instanceData.current.key];
                     for (const key of Object.keys(schema)) {
@@ -41,7 +41,7 @@ const configs = [
                                 );
                                 break;
                             case typeConstant.typeofTypes.object:
-                                validResult = startRefOrSchemaExecute(context, true).length === 0;
+                                validResult = startSubSchemaExecute(context, true).length === 0;
                                 break;
                         }
                         contextManage.backContext(context, key);

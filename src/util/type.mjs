@@ -152,10 +152,10 @@ function getTypeofType(value) {
  * @return {string}
  */
 function getTypeofTypeByRefData(value) {
-    if (value.$ref?.[value.key] === null) {
+    if (value?.$ref?.[value?.key] === null) {
         return typeConstant.typeofTypes.null;
     }
-    if (value.$ref?.[value.key] === undefined) {
+    if (value?.$ref?.[value?.key] === undefined) {
         return typeConstant.typeofTypes.undefined;
     }
     if (Array.isArray(value.$ref?.[value.key])) {

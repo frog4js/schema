@@ -14,7 +14,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.typeofTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const currentSchemaData = context.schemaData.current.$ref[context.schemaData.current.key];
                     const currentInstanceData = context.instanceData.current.$ref[context.instanceData.current.key];
                     const currentSchemaKeys = Object.keys(currentSchemaData);
@@ -35,7 +35,7 @@ const configs = [
                             })
                             .forEach((currentInstanceKey) => {
                                 contextManage.enterContext(context, currentSchemaKey, currentInstanceKey);
-                                startRefOrSchemaExecute(context, false);
+                                startSubSchemaExecute(context, false);
                                 contextManage.backContext(context, currentSchemaKey, currentInstanceKey);
                             });
                     }
