@@ -26,6 +26,7 @@ const v1Tov3FormatKeys = [
     "region",
     "postal-code",
     "country",
+    "host-name",
 ];
 const v4Tov5FormatKeys = [
     "json-schema-system-base-URI",
@@ -64,9 +65,15 @@ const v7FormatKeys = [
     "date",
     "time",
 ];
+
+/**
+ *
+ * @param {Context}context
+ * @param {Array<string>} [keysByVersion]
+ */
 function isValidFormat(context, keysByVersion) {
     const formatDefinition = formatManage.getFormatDefinition(context, context.instanceData.current, keysByVersion);
-    if (formatDefinition === false) {
+    if (formatDefinition === false && context.defaultConfig.strict === true) {
         pushError(context);
     }
 }

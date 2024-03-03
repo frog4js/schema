@@ -78,7 +78,13 @@ function compile(context) {
     }
     for (const waitValidateRef of context.waitValidateRefs) {
         let current;
-        if (waitValidateRef.$ref[0] === vocabularyActuatorConstant.pathKeys.self) {
+
+        if (waitValidateRef.$ref === vocabularyActuatorConstant.pathKeys.self) {
+            current = context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self];
+        } else if (
+            waitValidateRef.$ref[0] === vocabularyActuatorConstant.pathKeys.self &&
+            waitValidateRef.$ref[1] === "/"
+        ) {
             current = dataOperateUtil.getValueByJsonPointer(waitValidateRef.schema, waitValidateRef.$ref);
         } else {
             const result = urlUtil.calculateIdAndPointer(waitValidateRef.$ref, context.defaultConfig.baseURI);

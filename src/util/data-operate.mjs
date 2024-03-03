@@ -276,7 +276,7 @@ export function getPathsByJsonPointer(pointer) {
     const parts = pointer
         .substring(1)
         .split("/")
-        .map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
+        .map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~").replace(/%25/g, "%").replace(/%22/g, '"'));
     if (parts[0] === "") {
         parts.shift();
     }

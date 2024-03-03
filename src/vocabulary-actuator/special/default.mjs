@@ -40,10 +40,15 @@ const configs = [
                     contextManage.enterContext(defaultContext, vocabularyActuatorConstant.pathKeys.ref);
                     contextManage.enterContext(defaultContext, vocabularyActuatorConstant.pathKeys.self);
                     vocabularyActuatorManage.startValidate(defaultContext);
-                    // if (defaultContext.errors.length > 0) {
-                    //     errorManage.pushError(context);
-                    // }
-                    delete context.instanceData.current.$ref[context.instanceData.current.key];
+
+                    if (defaultContext.errors.length > 0) {
+                        if (context.defaultConfig.strict === false) {
+                            delete context.instanceData.current.$ref[context.instanceData.current.key];
+                        } else {
+                            errorManage.pushError(context);
+                        }
+                    }
+
                     return vocabularyActuatorConstant.ticks.endExecute;
                 },
             },

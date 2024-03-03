@@ -45,5 +45,6 @@ type DefaultConfig = {
     baseURI?: string;
     errorMessages?: Record<string, Record<string, string>>;
     locale?: string;
+    strict?: boolean;
 };
 // function create(defaultConfig: DefaultConfig): Context;

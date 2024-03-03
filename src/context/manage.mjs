@@ -277,17 +277,18 @@ function unlock(context) {
  * @param {Context}context
  * @param {string}key
  * @param {*}value
+ * @param {Array<string| number>} [paths]
  */
-function setCache(context, key, value) {
+function setCache(context, key, value, paths) {
     for (const cache of context.caches) {
-        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
+        const result = dataOperateUtil.compareToArray(paths || context.instancePaths, cache.paths);
         if (result === 0) {
             cache.data[key] = value;
             return;
         }
     }
     context.caches.push({
-        paths: dataOperateUtil.deepClone(context.instancePaths),
+        paths: dataOperateUtil.deepClone(paths || context.instancePaths),
         data: {
             [key]: value,
         },
@@ -298,11 +299,12 @@ function setCache(context, key, value) {
  *
  * @param {Context} context
  * @param {string} key
+ * @param {Array<string| number>} paths
  * @return {* | undefined}
  */
-function getCache(context, key) {
+function getCache(context, key, paths) {
     for (const cache of context.caches) {
-        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
+        const result = dataOperateUtil.compareToArray(paths || context.instancePaths, cache.paths);
         if (result === 0) {
             return cache.data[key];
         }

@@ -66,6 +66,10 @@ export default function jsonSchemaTest(configs) {
         draft6: "$id",
         draft7: "$id",
     };
+    const remoterFilePaths = {
+        draft3: ["/integer.json", "/subSchemas.json"],
+        draft4: ["/integer.json", "/subSchemas.json", "/locationIndependentIdentifierDraft4.json", "/nested.json"],
+    };
     configs.drafts.forEach((draft) => {
         describe(draft, () => {
             eachFile(testJson[draft], "/", (fileName, suiteList) => {
@@ -76,21 +80,26 @@ export default function jsonSchemaTest(configs) {
                             context = contextManage.create({
                                 $schema: draftMap[draft],
                                 baseURI: "http://localhost:1234/",
+                                strict: false,
                             });
                             try {
                                 eachFile(remoterJson, "/", (path, schema) => {
-                                    if (path.indexOf("draft") === -1) {
+                                    if (remoterFilePaths[draft].includes(path)) {
                                         if (!schema[idKeyMap[draft]]) {
                                             schema[idKeyMap[draft]] = path;
                                         }
-                                        schemaManage.addReferenceSchema(context, schema);
+                                        try {
+                                            schemaManage.addReferenceSchema(context, schema);
+                                        } catch (e) {
+                                            console.log(e);
+                                        }
                                     }
                                 });
+                                schemaManage.setMainSchema(context, suiteItem.schema);
+                                schemaManage.compile(context);
                             } catch (e) {
                                 console.log(e);
                             }
-                            schemaManage.setMainSchema(context, suiteItem.schema);
-                            schemaManage.compile(context);
                         });
                         suiteItem.tests.forEach((test) => {
                             it(test.description, () => {

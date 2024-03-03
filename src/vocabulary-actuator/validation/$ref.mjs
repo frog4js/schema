@@ -1,6 +1,4 @@
 import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
-import { errorManage } from "../../error/share.mjs";
-import { contextManage } from "../../context/share.mjs";
 
 /**
  *

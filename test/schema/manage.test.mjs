@@ -17,10 +17,21 @@ describe.only("", () => {
             $schema: "http://json-schema.org/draft-04/schema#",
         });
         const schema = {
-            properties: {
-                foo: {
-                    type: "integer",
-                    default: [],
+            id: "http://localhost:1234/root",
+            allOf: [
+                {
+                    $ref: "http://localhost:1234/nested.json#foo",
+                },
+            ],
+            definitions: {
+                A: {
+                    id: "nested.json",
+                    definitions: {
+                        B: {
+                            id: "#foo",
+                            type: "integer",
+                        },
+                    },
                 },
             },
         };
