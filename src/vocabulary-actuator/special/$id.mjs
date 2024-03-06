@@ -40,7 +40,7 @@ function resolveId(context) {
         errorManage.pushError(context);
     } else {
         context.instanceData.current.$ref[context.instanceData.current.key] = id;
-        context.referenceSchemas[id] = context.instanceData.origin;
+        context.referenceSchemas[id] = context.instanceData.current.$ref;
         const setPaths = [...context.instancePaths];
         setPaths.pop();
         contextManage.setCache(context, vocabularyActuatorConstant.keys.$id, id, setPaths);

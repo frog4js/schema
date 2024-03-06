@@ -68,7 +68,16 @@ export default function jsonSchemaTest(configs) {
     };
     const remoterFilePaths = {
         draft3: ["/integer.json", "/subSchemas.json"],
-        draft4: ["/integer.json", "/subSchemas.json", "/locationIndependentIdentifierDraft4.json", "/nested.json"],
+        draft4: [
+            "/integer.json",
+            "/subSchemas.json",
+            "/locationIndependentIdentifierDraft4.json",
+            "/nested.json",
+            "/baseUriChange/folderInteger.json",
+            "/baseUriChangeFolder/folderInteger.json",
+            "/baseUriChangeFolderInSubschema/folderInteger.json",
+            "/name.json",
+        ],
     };
     configs.drafts.forEach((draft) => {
         describe(draft, () => {

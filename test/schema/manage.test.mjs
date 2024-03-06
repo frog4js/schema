@@ -17,27 +17,77 @@ describe.only("", () => {
             $schema: "http://json-schema.org/draft-04/schema#",
         });
         const schema = {
-            id: "http://localhost:1234/root",
-            allOf: [
-                {
-                    $ref: "http://localhost:1234/nested.json#foo",
-                },
-            ],
             definitions: {
+                refToInteger: {
+                    $ref: "#foo",
+                },
                 A: {
-                    id: "nested.json",
-                    definitions: {
-                        B: {
-                            id: "#foo",
-                            type: "integer",
-                        },
-                    },
+                    id: "#foo",
+                    type: "integer",
+                },
+            },
+            id: "/locationIndependentIdentifierDraft4.json",
+        };
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        const { valid } = vocabularyActuatorManage.validate(context, "f");
+        console.log(valid);
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-04/schema#",
+        });
+        const schema = {
+            id: "/sss.json",
+            definitions: {
+                integer: {
+                    type: "integer",
+                },
+                refToInteger: {
+                    $ref: "#/definitions/integer",
                 },
             },
         };
         schemaManage.setMainSchema(context, schema);
         schemaManage.compile(context);
         const { valid } = vocabularyActuatorManage.validate(context, "f");
+        console.log(valid);
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-04/schema#",
+        });
+        const schema = {
+            $ref: "http://json-schema.org/draft-04/schema#",
+        };
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        const { valid } = vocabularyActuatorManage.validate(context, {
+            definitions: {
+                foo: {
+                    type: 1,
+                    exclusiveMaximum: false,
+                    exclusiveMinimum: false,
+                    additionalItems: {},
+                    items: {},
+                    uniqueItems: false,
+                    additionalProperties: {},
+                    definitions: {},
+                    properties: {},
+                    patternProperties: {},
+                    not: {},
+                },
+            },
+            exclusiveMaximum: false,
+            exclusiveMinimum: false,
+            additionalItems: {},
+            items: {},
+            uniqueItems: false,
+            additionalProperties: {},
+            properties: {},
+            patternProperties: {},
+            not: {},
+        });
         console.log(valid);
     });
 });

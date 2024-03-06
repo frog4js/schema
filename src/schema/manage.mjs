@@ -78,18 +78,15 @@ function compile(context) {
     }
     for (const waitValidateRef of context.waitValidateRefs) {
         let current;
-
-        if (waitValidateRef.$ref === vocabularyActuatorConstant.pathKeys.self) {
+        if (context.referenceSchemas[waitValidateRef.$ref]) {
             current = context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self];
-        } else if (
-            waitValidateRef.$ref[0] === vocabularyActuatorConstant.pathKeys.self &&
-            waitValidateRef.$ref[1] === "/"
-        ) {
-            current = dataOperateUtil.getValueByJsonPointer(waitValidateRef.schema, waitValidateRef.$ref);
         } else {
             const result = urlUtil.calculateIdAndPointer(waitValidateRef.$ref, context.defaultConfig.baseURI);
             if (result && context.referenceSchemas[result.id]) {
                 current = dataOperateUtil.getValueByJsonPointer(context.referenceSchemas[result.id], result.pointer);
+            }
+            if (current) {
+                context.referenceSchemas[waitValidateRef.$ref] = current;
             }
         }
         if (typeUtil.getTypeofType(current) !== typeConstant.typeofTypes.object) {

@@ -54,7 +54,7 @@
 export function calculateId(paramId, baseUrl) {
     try {
         const url = new URL(paramId, baseUrl);
-        return url.origin + url.pathname + (url.hash === "" ? "#" : url.hash);
+        return url.href;
     } catch (e) {
         return false;
     }
@@ -84,7 +84,7 @@ export function calculateIdAndPointer(uriReference, baseUrl) {
         const url = new URL(uriReference, baseUrl);
         const index = url.hash.indexOf("/");
         const result = {
-            id: url.origin + url.pathname + (url.hash === "" ? "#" : url.hash),
+            id: url.origin + url.pathname,
             pointer: "#",
         };
         if (index !== -1) {

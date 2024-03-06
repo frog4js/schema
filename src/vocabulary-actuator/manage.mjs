@@ -57,8 +57,7 @@ function startSubSchemaExecute(context, isTryExecute) {
  */
 function startRefExecute(context) {
     const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
-    const paths = dataOperateUtil.getPathsByRef(schemaValue);
-    paths.unshift(vocabularyActuatorConstant.pathKeys.ref);
+    const paths = [vocabularyActuatorConstant.pathKeys.ref, schemaValue];
     paths.forEach((pathItem) => contextManage.enterContext(context, pathItem));
     startValidateValidation(context);
     paths.forEach((pathItem) => contextManage.backContext(context, pathItem));
@@ -172,19 +171,8 @@ function startValidateCore(context) {
 
 function startValidateSchemaSpecialValue(context) {
     restoreStartState(context);
-    const each = (keyOrIndex, item, isSchema) => {
+    const each = (keyOrIndex, item) => {
         const itemType = typeUtil.getTypeofType(item);
-        if (isSchema === true) {
-            specialConfigs.forEach((config) => {
-                if (config.versions.includes(context.version) && keyOrIndex === config.key) {
-                    config.matches.forEach((match) => {
-                        if (!match.instanceTypes || match.instanceTypes.includes(itemType)) {
-                            match.resolve(context);
-                        }
-                    });
-                }
-            });
-        }
         if (itemType === typeConstant.typeofTypes.array) {
             item.map((subItem, index) => {
                 contextManage.enterContext(context, undefined, index);
@@ -193,9 +181,25 @@ function startValidateSchemaSpecialValue(context) {
             });
         } else if (itemType === typeConstant.typeofTypes.object) {
             const isSchemaInItem = item[vocabularyActuatorConstant.flags.isSchema];
+            if (isSchemaInItem) {
+                specialConfigs.forEach((config) => {
+                    if (config.versions.includes(context.version) && config.key in item) {
+                        config.matches.forEach((match) => {
+                            if (
+                                !match.instanceTypes ||
+                                match.instanceTypes.includes(typeUtil.getTypeofType(item[config.key]))
+                            ) {
+                                contextManage.enterContext(context, undefined, config.key);
+                                match.resolve(context);
+                                contextManage.backContext(context, undefined, config.key);
+                            }
+                        });
+                    }
+                });
+            }
             for (const key of Object.keys(item)) {
                 contextManage.enterContext(context, undefined, key);
-                each(key, item[key], item[vocabularyActuatorConstant.flags.isSchema], isSchemaInItem);
+                each(key, item[key]);
                 contextManage.backContext(context, undefined, key);
             }
         }

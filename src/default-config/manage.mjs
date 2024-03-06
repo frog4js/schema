@@ -31,7 +31,7 @@ const defaultConfigSchema = {
         },
         $schema: {
             type: "string",
-            enum: schemaManage.getAll$schemaDrafts(),
+            enum: Object.values(versionConstant.jsonSchema$schemaDraftMap),
         },
         errorMessages: {
             type: "object",
