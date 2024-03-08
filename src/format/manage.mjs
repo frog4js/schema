@@ -2,6 +2,22 @@
  *
  * @typedef import("../types/share")
  */
+const DATE = /^(\d\d\d\d)-(\d\d)-(\d\d)$/;
+const TIME = /^(\d\d):(\d\d):(\d\d)(\.\d{0,6})?(z|[+-]\d\d(?::?\d\d)?)?$/i;
+const DATE_TIME_SEPARATOR = /t|\s/i;
+const DAYS = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const OFFSET = /([+-])(\d{2}):(\d{2})/;
+const IPV4 = /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/;
+
+/**
+ *
+ * @param {Array<number>}array
+ * @param {number}index
+ * @return {boolean}
+ */
+function isLeapYear(array, index) {
+    return array[index] % 4 === 0 && (array[index] % 100 !== 0 || array[index] % 400 === 0);
+}
 
 /**
  *
@@ -29,12 +45,61 @@ const builtInFormats = {
 const draftFormats = {
     // date-time - This should be a date in ISO 8601 format of YYYY-MM-DDThh:mm:ssZ in UTC time. This is the recommended form of date/timestamp.
     "date-time": {
-        regex: /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])T([01]\d|2[0-3]):[0-5]\d:[0-5]\d(\.\d+)?([+-]([01]\d|2[0-3]):[0-5]\d|Z)$/,
+        validate: (refData) => {
+            const dateTime = refData.$ref[refData.key].split(DATE_TIME_SEPARATOR);
+            return (
+                dateTime.length === 2 &&
+                draftFormats["date"].validate({
+                    $ref: dateTime,
+                    key: 0,
+                }) &&
+                draftFormats["time"].validate({
+                    $ref: dateTime,
+                    key: 1,
+                })
+            );
+        },
     },
     // date - This should be a date in the format of YYYY-MM-DD. It is recommended that you use the "date-time" format instead of "date" unless you need to transfer only the date part.
-    date: { regex: /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/ },
+    date: {
+        validate: (refData) => {
+            let matches = refData.$ref[refData.key].match(DATE);
+            if (!matches) return false;
+            // [other,year, month, day]
+            matches = matches.map((item, i) => (i > 0 ? +item : item));
+
+            return (
+                matches[2] >= 1 &&
+                matches[2] <= 12 &&
+                matches[3] >= 1 &&
+                matches[3] <= (matches[1] === 2 && isLeapYear(matches, 1) ? 29 : DAYS[matches[2]])
+            );
+        },
+    },
     // time - This should be a time in the format of hh:mm:ss. It is recommended that you use the "date-time" format instead of "time" unless you need to transfer only the time part.
-    time: { regex: /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/ },
+    time: {
+        validate: (refData) => {
+            let matches = refData.$ref[refData.key].match(TIME);
+            if (!matches) return false;
+            matches = matches.map((item, i) => (i > 0 && i <= 3 ? +item : item));
+            if (matches[5] && matches[5] !== "z" && matches[5] !== "Z") {
+                const offsets = matches[5].match(OFFSET)?.map((item, i) => (i >= 2 && i <= 3 ? +item : item));
+                if (!offsets) return false;
+                if (offsets[1] === "-") {
+                    matches[1] = matches[1] + offsets[2];
+                    matches[2] = matches[2] + offsets[3];
+                } else {
+                    matches[1] = matches[1] - offsets[2];
+                    matches[2] = matches[2] - offsets[3];
+                }
+            }
+            // [other, hour, minute, second, ".", "timeZone"]
+            return (
+                (matches[1] <= 23 && matches[2] <= 59 && matches[3] <= 59) ||
+                (matches[1] === 23 && matches[2] === 59 && matches[3] === 60)
+            );
+        },
+    },
     // utc-millisec - This should be the difference, measured in milliseconds, between the specified time and midnight, January 1, 1970 UTC. The value should be a number (integer or float).
     "utc-millisec": { regex: /^\d+$/ },
     // regex - A regular expression.
@@ -66,8 +131,22 @@ const draftFormats = {
         regex: /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/i,
     },
     // ip-address - This should be an ip version 4 address.  替换为ip-address
-    ipv4: { regex: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/ },
-    "ip-address": { regex: /^(?:(?:25[0-5]|2[0-4]\d|[01]?\d\d?)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d\d?)$/ },
+    ipv4: {
+        validate: (refData) => {
+            if (!IPV4.test(refData.$ref[refData.key])) {
+                return false;
+            }
+            return refData.$ref[refData.key].split(".").every((x) => !(x.length > 1 && x[0] === "0"));
+        },
+    },
+    "ip-address": {
+        validate: (refData) => {
+            if (!IPV4.test(refData.$ref[refData.key])) {
+                return false;
+            }
+            return refData.$ref[refData.key].split(".").every((x) => !(x.length > 1 && x[0] === "0"));
+        },
+    },
     //     ipv6 - This should be an ip version 6 address.
     ipv6: {
         regex: /^((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))$/i,
@@ -106,6 +185,9 @@ export function validate(context) {
     let result = false;
     const formatDefinition = getFormatDefinition(context, context.schemaData.current);
     if (formatDefinition === false) {
+        if (context.defaultConfig.strict === false) {
+            result = true;
+        }
         return result;
     }
     if (formatDefinition.regex) {

@@ -19,13 +19,14 @@ const configs = [
                     const currentInstanceData = context.instanceData.current.$ref[context.instanceData.current.key];
                     const currentSchemaKeys = Object.keys(currentSchemaData);
                     const currentInstanceKeys = Object.keys(currentInstanceData);
+                    const matchKeys = new Set();
                     for (const currentSchemaKey of currentSchemaKeys) {
                         /**
                          * @type {RegExp}
                          */
                         let currentSchemaKeyReExp;
                         try {
-                            currentSchemaKeyReExp = new RegExp(currentSchemaKey);
+                            currentSchemaKeyReExp = new RegExp(currentSchemaKey, "u");
                         } catch (e) {
                             continue;
                         }
@@ -34,11 +35,18 @@ const configs = [
                                 return currentSchemaKeyReExp.test(currentInstanceKey);
                             })
                             .forEach((currentInstanceKey) => {
+                                matchKeys.add(currentInstanceKey);
                                 contextManage.enterContext(context, currentSchemaKey, currentInstanceKey);
                                 startSubSchemaExecute(context, false);
                                 contextManage.backContext(context, currentSchemaKey, currentInstanceKey);
                             });
                     }
+                    contextManage.setCache(
+                        context,
+                        vocabularyActuatorConstant.keys.patternProperties,
+                        Array.from(matchKeys.values()),
+                    );
+
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },

@@ -7,36 +7,42 @@ import { execResolve } from "./helper.mjs";
 describe("test the executes.format module", () => {
     describe("test the resolve function", () => {
         it("should pass when format value is 'date-time'", () => {
-            const context = execResolve(
-                {
-                    type: "string",
-                    format: "date-time",
-                },
-                "2024-01-30T05:24:50.921Z",
-                vocabularyActuatorConstant.keys.format,
-                0,
-                0,
-                [vocabularyActuatorConstant.keys.format],
-                undefined,
-            );
-            assert.equal(context.errors.length, 0);
+            const data = ["2024-01-30T05:24:50.921Z", "1998-12-31T15:59:60.123-08:00", "1963-06-19T08:30:06.283185Z"];
+            for (let item of data) {
+                const context = execResolve(
+                    {
+                        type: "string",
+                        format: "date-time",
+                    },
+                    item,
+                    vocabularyActuatorConstant.keys.format,
+                    0,
+                    0,
+                    [vocabularyActuatorConstant.keys.format],
+                    undefined,
+                );
+                assert.equal(context.errors.length, 0);
+            }
         });
 
         it("should fail when format value is 'date-time'", () => {
-            const context = execResolve(
-                {
-                    type: "string",
-                    format: "date-time",
-                },
-                "2024-01-30T05:24:50.921",
-                vocabularyActuatorConstant.keys.format,
-                0,
-                0,
-                [vocabularyActuatorConstant.keys.format],
-                undefined,
-            );
-            assert.equal(context.errors.length, 1);
-            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
+            const data = ["1998-12-31T23:59:61Z", "2024-01-30T05:24:50.921"];
+            for (let item of data) {
+                const context = execResolve(
+                    {
+                        type: "string",
+                        format: "date-time",
+                    },
+                    "2024-01-30T05:24:50.921",
+                    vocabularyActuatorConstant.keys.format,
+                    0,
+                    0,
+                    [vocabularyActuatorConstant.keys.format],
+                    undefined,
+                );
+                assert.equal(context.errors.length, 1);
+                assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.format);
+            }
         });
 
         it("should pass when format value is 'date'", () => {

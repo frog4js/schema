@@ -13,9 +13,15 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 resolve: (context, { startSubSchemaExecute }) => {
-                    const errors = startSubSchemaExecute(context, true);
-                    if (errors.length === 0) {
-                        errorManage.pushError(context);
+                    if (
+                        context.instanceData.current.$ref[context.instanceData.current.key] !== undefined
+                        // &&
+                        // Object.keys(context.schemaData.current.$ref[context.schemaData.current.key]).length === 0
+                    ) {
+                        const errors = startSubSchemaExecute(context, true);
+                        if (errors.length === 0) {
+                            errorManage.pushError(context);
+                        }
                     }
 
                     return vocabularyActuatorConstant.ticks.nextExecute;

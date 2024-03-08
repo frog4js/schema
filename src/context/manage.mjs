@@ -70,6 +70,7 @@ function clone(context) {
         caches: [],
     };
 }
+
 /**
  *
  * @param {Context} context
@@ -97,7 +98,7 @@ function refererCurrentInstance(context) {
  * @param {Context} context
  */
 function refererCurrentSchema(context) {
-    const current = getParentSchema(context);
+    const current = getParentSchema(context, true);
     if (!context.schemaData.current) {
         context.schemaData.current = { $ref: current, key: context.schemaPaths[context.schemaPaths.length - 1] };
     } else {
@@ -141,11 +142,21 @@ function getSiblingSchemaRefData(context, key) {
  */
 function getParentSchema(context) {
     let current;
+    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.origin;
+    schemaManage.switchVersion(context, context.schemaData.origin.$schema || context.defaultConfig.$schema);
     for (let i = 0; i < context.schemaPaths.length - 1; i++) {
         const keyOrIndex = context.schemaPaths[i];
         if (keyOrIndex === vocabularyActuatorConstant.pathKeys.ref) {
             current = context.referenceSchemas;
         } else {
+            if (!current) {
+                console.log(
+                    "3333",
+                    context.schemaPaths,
+                    i,
+                    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self],
+                );
+            }
             current = current[keyOrIndex];
         }
         if (context.schemaPaths[i - 1] === vocabularyActuatorConstant.pathKeys.ref) {
@@ -206,6 +217,7 @@ function backContext(context, schemaKey, instanceKey) {
         refererCurrentSchema(context);
     }
 }
+
 /**
  *
  * @param {Context} context
@@ -263,6 +275,7 @@ function lock(context) {
     }
     return false;
 }
+
 /**
  *
  * @param {Context} context
@@ -311,6 +324,7 @@ function getCache(context, key, paths) {
     }
     return undefined;
 }
+
 /**
  *
  * @param {Context}context
@@ -324,6 +338,7 @@ function clearCache(context) {
         context.caches.splice(index, 1);
     }
 }
+
 export {
     create,
     enterContext,

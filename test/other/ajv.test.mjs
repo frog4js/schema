@@ -6,7 +6,7 @@ import { schemaManage } from "../../src/schema/share.mjs";
 import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
 import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
-describe("test the ajv", () => {
+describe.only("test the ajv", () => {
     it("ajv1", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true, strict: false });
         addFormats(ajv);
@@ -15,14 +15,18 @@ describe("test the ajv", () => {
             type: "string",
         });
         const schema = {
+            type: "object",
             properties: {
-                name: {
-                    readOnly: true,
+                __proto__: {
+                    type: "number",
+                },
+                constructor: {
+                    type: "number",
                 },
             },
         };
-        const data = { name: "1" };
-        data.name = 2;
+        const data = {};
+
         const validate = ajv.compile(schema);
         validate(data);
 

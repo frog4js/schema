@@ -7,7 +7,7 @@ import { errorClass } from "../error/share.mjs";
 /**
  * @typedef {import("../../types/share")}
  */
-
+const SCHEMA_TYPES = [typeConstant.typeofTypes.object, typeConstant.typeofTypes.boolean];
 /**
  *
  * @param {Context} context
@@ -73,7 +73,7 @@ function compile(context) {
     if (context.state !== contextConstant.states.init) {
         throw new errorClass.SystemError(`state does not equal init. current state is ${context.state}`);
     }
-    if (!context.schemaData.main) {
+    if (context.schemaData.main === undefined || context.schemaData.main === null) {
         throw new errorClass.SystemError(`main schema not set`);
     }
     for (const waitValidateRef of context.waitValidateRefs) {
@@ -85,11 +85,11 @@ function compile(context) {
             if (result && context.referenceSchemas[result.id]) {
                 current = dataOperateUtil.getValueByJsonPointer(context.referenceSchemas[result.id], result.pointer);
             }
-            if (current) {
+            if (SCHEMA_TYPES.includes(typeUtil.getTypeofType(current))) {
                 context.referenceSchemas[waitValidateRef.$ref] = current;
             }
         }
-        if (typeUtil.getTypeofType(current) !== typeConstant.typeofTypes.object) {
+        if (!SCHEMA_TYPES.includes(typeUtil.getTypeofType(current))) {
             throw new errorClass.SystemError(`${waitValidateRef.$ref} not found or is not a valid schema`);
         }
     }

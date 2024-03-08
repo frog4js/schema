@@ -57,7 +57,12 @@ function startSubSchemaExecute(context, isTryExecute) {
  */
 function startRefExecute(context) {
     const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
-    const paths = [vocabularyActuatorConstant.pathKeys.ref, schemaValue];
+    const paths = [vocabularyActuatorConstant.pathKeys.ref];
+    if (schemaValue.indexOf("#/") === 0) {
+        paths.push(...dataOperateUtil.getPathsByRef(schemaValue));
+    } else {
+        paths.push(schemaValue);
+    }
     paths.forEach((pathItem) => contextManage.enterContext(context, pathItem));
     startValidateValidation(context);
     paths.forEach((pathItem) => contextManage.backContext(context, pathItem));
@@ -80,7 +85,8 @@ function startValidateValidation(context) {
         context.phase === contextConstant.phases.schemaValidate &&
         typeUtil.getTypeofType(context.instanceData.current.$ref?.[context.instanceData.current.key]) ===
             typeConstant.typeofTypes.object &&
-        context.schemaData.current.$ref === context.referenceSchemas
+        context.schemaData.current.$ref === context.referenceSchemas &&
+        !context.instanceData.current.$ref[context.instanceData.current.key][vocabularyActuatorConstant.flags.isSchema]
     ) {
         Object.defineProperty(
             context.instanceData.current.$ref[context.instanceData.current.key],
@@ -138,6 +144,9 @@ function startValidateValidation(context) {
  */
 function startValidateCore(context) {
     restoreStartState(context);
+    if (context.instanceData.origin === true || context.instanceData.origin === false) {
+        return;
+    }
     executeLoop: for (let execute of coreConfigs) {
         if (!execute.versions.includes(context.version)) {
             continue;
@@ -166,7 +175,6 @@ function startValidateCore(context) {
         }
         contextManage.backContext(context, undefined, execute.key);
     }
-    context.endTime = Date.now();
 }
 
 function startValidateSchemaSpecialValue(context) {

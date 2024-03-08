@@ -84,7 +84,7 @@ export function calculateIdAndPointer(uriReference, baseUrl) {
         const url = new URL(uriReference, baseUrl);
         const index = url.hash.indexOf("/");
         const result = {
-            id: url.origin + url.pathname,
+            id: `${url.protocol}//${url.host}${url.pathname}`,
             pointer: "#",
         };
         if (index !== -1) {

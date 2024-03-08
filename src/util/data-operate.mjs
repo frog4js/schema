@@ -169,18 +169,23 @@ export function fastDeepHasDuplicates(array) {
 
     const objectTypeItems = new Set();
     const objectTypeItemKeys = new Set();
+    let objectEmptyCount = 0;
 
     const arrayTypeItems = new Set();
     let arrayMaxLength = 0;
+    let arrayEmptyCount = 0;
 
     for (const item of array) {
         const type = typeUtil.getTypeofType(item);
         let set;
         if (typeConstant.typeofTypes.object === type) {
             set = objectTypeItems;
-            Object.keys(item).forEach((k) => objectTypeItemKeys.add(k));
+            const keys = Object.keys(item);
+            keys.length === 0 && objectEmptyCount++;
+            keys.forEach((k) => objectTypeItemKeys.add(k));
         } else if (typeConstant.typeofTypes.array === type) {
             set = arrayTypeItems;
+            item.length === 0 && arrayEmptyCount++;
             if (item.length > arrayMaxLength) {
                 arrayMaxLength = item.length;
             }
@@ -201,6 +206,9 @@ export function fastDeepHasDuplicates(array) {
         // [{a: 1, b: 2}, {a:1, b:1}]  true, false => false
         // [{a: 1, b: 1}, {a:1, b:1}]  true, true => false
         let objectHasDuplicate = null;
+        if (objectEmptyCount > 1) {
+            return true;
+        }
         for (let key of objectTypeItemKeys) {
             objectHasDuplicate = true;
             const objectValues = [];
@@ -220,6 +228,9 @@ export function fastDeepHasDuplicates(array) {
         // array
         // [[1, 2], [1, 2]]  true, false => false
         let arrayHasDuplicate = null;
+        if (arrayEmptyCount > 1) {
+            return true;
+        }
         for (let index = 0; index < arrayMaxLength; index++) {
             arrayHasDuplicate = true;
             const arrayValues = [];
@@ -259,7 +270,7 @@ export function getValueByJsonPointer(obj, pointer) {
             return undefined;
         }
         if (typeof current !== typeConstant.typeofTypes.object) {
-            return current;
+            return undefined;
         }
         current = current[part];
     }

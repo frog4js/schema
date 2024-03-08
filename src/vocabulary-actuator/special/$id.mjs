@@ -13,10 +13,13 @@ import { contextManage } from "../../context/share.mjs";
  */
 function resolveId(context) {
     const originId = context.instanceData.current.$ref[context.instanceData.current.key];
-    Object.defineProperty(context.instanceData.current.$ref, vocabularyActuatorConstant.flags.originId, {
-        value: originId,
-        enumerable: false,
-    });
+    if (!context.instanceData.current.$ref[vocabularyActuatorConstant.flags.originId]) {
+        Object.defineProperty(context.instanceData.current.$ref, vocabularyActuatorConstant.flags.originId, {
+            value: originId,
+            enumerable: false,
+        });
+    }
+
     const paths = [...context.instancePaths];
     /**
      * @type {string}

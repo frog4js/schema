@@ -62,7 +62,7 @@ describe.only("", () => {
         };
         schemaManage.setMainSchema(context, schema);
         schemaManage.compile(context);
-        const { valid } = vocabularyActuatorManage.validate(context, {
+        const { valid, errors } = vocabularyActuatorManage.validate(context, {
             definitions: {
                 foo: {
                     type: 1,
@@ -88,7 +88,158 @@ describe.only("", () => {
             patternProperties: {},
             not: {},
         });
-        console.log(valid);
+        assert.equal(valid, false);
+        console.log(valid, errors);
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-04/schema#",
+        });
+        const schema = {
+            definitions: {
+                int: {
+                    type: "integer",
+                },
+            },
+            allOf: [
+                {
+                    properties: {
+                        foo: {
+                            $ref: "#/definitions/int",
+                        },
+                    },
+                },
+                {
+                    additionalProperties: {
+                        $ref: "#/definitions/int",
+                    },
+                },
+            ],
+        };
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        const { valid, errors } = vocabularyActuatorManage.validate(context, {
+            foo: "a string",
+        });
+        assert.equal(valid, false);
+        console.log(valid, errors);
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-04/schema#",
+        });
+        const schema = {
+            properties: {
+                foo: {
+                    not: {},
+                },
+            },
+        };
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, {
+                bar: 1,
+                baz: 2,
+            });
+            assert.equal(valid, true);
+        }
+        {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, {
+                foo: 1,
+                baz: 2,
+            });
+            assert.equal(valid, false);
+        }
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-04/schema#",
+        });
+        const schema = {
+            type: "object",
+            patternProperties: {
+                "\\p{Letter}cole": {},
+            },
+            additionalProperties: false,
+        };
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+
+        const { valid, errors } = vocabularyActuatorManage.validate(context, {
+            "l'ecole": "pas de vraie vie",
+        });
+        assert.equal(valid, true);
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-04/schema#",
+            strict: false,
+        });
+        const schema = {
+            id: "file:///folder/file.json",
+            definitions: {
+                foo: {
+                    type: "number",
+                },
+            },
+            allOf: [
+                {
+                    $ref: "#/definitions/foo",
+                },
+            ],
+        };
+        const data = {};
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, data);
+            assert.equal(valid, true);
+        }
+    });
+
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-06/schema#",
+            strict: false,
+        });
+        const schema = true;
+        const data = {};
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, data);
+            assert.equal(valid, true);
+        }
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-06/schema#",
+            strict: false,
+        });
+        const schema = false;
+        const data = {};
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        {
+            const { valid, errors } = vocabularyActuatorManage.validate(context, data);
+            assert.equal(valid, true);
+        }
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-06/schema#",
+            strict: false,
+        });
+        const schema = {
+            allOf: [{ $ref: "#/definitions/bool" }],
+            definitions: {
+                bool: false,
+            },
+        };
+        const data = {};
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
     });
 });
 describe("test the schema manage module", () => {
