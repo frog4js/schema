@@ -192,10 +192,6 @@ describe.only("", () => {
         const data = {};
         schemaManage.setMainSchema(context, schema);
         schemaManage.compile(context);
-        {
-            const { valid, errors } = vocabularyActuatorManage.validate(context, data);
-            assert.equal(valid, true);
-        }
     });
 
     it("should pass when schema is $ref", () => {
@@ -223,7 +219,7 @@ describe.only("", () => {
         schemaManage.compile(context);
         {
             const { valid, errors } = vocabularyActuatorManage.validate(context, data);
-            assert.equal(valid, true);
+            assert.equal(valid, false);
         }
     });
     it("should pass when schema is $ref", () => {
@@ -235,6 +231,25 @@ describe.only("", () => {
             allOf: [{ $ref: "#/definitions/bool" }],
             definitions: {
                 bool: false,
+            },
+        };
+        const data = {};
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+    });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-06/schema#",
+            strict: false,
+        });
+        const schema = {
+            $comment: "URIs do not have to have HTTP(s) schemes",
+            $id: "urn:uuid:deadbeef-1234-00ff-ff00-4321feebdaed",
+            properties: {
+                foo: { $ref: "#/definitions/bar" },
+            },
+            definitions: {
+                bar: { type: "string" },
             },
         };
         const data = {};

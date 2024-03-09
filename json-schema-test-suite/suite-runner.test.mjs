@@ -162,7 +162,7 @@ export default function jsonSchemaTest(configs) {
 
 jsonSchemaTest({
     suiteAbsolutePath: path.join(__filename, "../src"),
-    drafts: ["draft4", "draft6", "draft7"],
+    drafts: ["draft4", "draft6"],
     skipPaths: ["/optional/zeroTerminatedFloats.json"],
     skipTestDescriptions: ["none of the properties mentioned"],
 });

@@ -7,7 +7,7 @@ import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mj
 import { vocabularyActuatorConstant } from "../../src/constants/share.mjs";
 
 describe.only("test the ajv", () => {
-    it("ajv1", () => {
+    it(() => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true, strict: false });
         addFormats(ajv);
         ajv.addSchema({
@@ -15,14 +15,15 @@ describe.only("test the ajv", () => {
             type: "string",
         });
         const schema = {
+            $id: "urn:uuid:ee564b8a-7a87-4125-8c96-e9f123d6766f",
+            $defs: {
+                a: {
+                    id: "xxxx",
+                },
+            },
             type: "object",
             properties: {
-                __proto__: {
-                    type: "number",
-                },
-                constructor: {
-                    type: "number",
-                },
+                a: {},
             },
         };
         const data = {};
@@ -31,7 +32,7 @@ describe.only("test the ajv", () => {
         validate(data);
 
         console.log(validate.errors);
-    });
+    }, "ajv1");
 
     it("ajv2", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });

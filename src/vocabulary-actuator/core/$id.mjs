@@ -17,7 +17,6 @@ export default [
             versionConstant.jsonSchemaVersions.draft03,
             versionConstant.jsonSchemaVersions.draft04,
             versionConstant.jsonSchemaVersions.draft05,
-            versionConstant.jsonSchemaVersions.draft06,
         ],
         index: -19.1,
         matches: [

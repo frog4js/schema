@@ -46,52 +46,150 @@
  * urn:uuid:ee564b8a-7a87-4125-8c96-e9f123d6766f
  *
  */
+const UUID_PROTOCOL = /^urn:uuid:/;
+const STANDARD_PROTOCOL = /^(http|https|ftp|file):\/\//;
+const COLON_SEPARATION = ":";
+const SLASH_SEPARATION = "/";
+const HASH = "#";
+const QUESTION_MARK = "?";
 
 /*
  * @param {string} paramId
  * @param {string} baseUrl
  */
 export function calculateId(paramId, baseUrl) {
-    try {
-        const url = new URL(paramId, baseUrl);
-        return url.href;
-    } catch (e) {
-        return false;
+    const regexResult = [
+        UUID_PROTOCOL.test(paramId),
+        STANDARD_PROTOCOL.test(paramId),
+        UUID_PROTOCOL.test(baseUrl),
+        STANDARD_PROTOCOL.test(baseUrl),
+    ];
+    if (regexResult[0] || regexResult[1]) {
+        return paramId;
     }
-
-    // let url;
-    // try {
-    //     url = new URL(paramId);
-    // }catch (e) {
-    //     try {
-    //         url = new URL(baseUrl + "/" + encodeURIComponent(paramId));
-    //     }catch (e1) {
-    //
-    //     }
-    // }
-    // if (!url) {
-    //     return false;
-    // }
-    // return `${url.protocol}//${url.host}${url.pathname}${vocabularyActuatorConstant.pathKeys.self}`;
+    if (regexResult[2]) {
+        const index = baseUrl.indexOf(HASH);
+        if (index === -1) {
+            if (paramId[0] !== HASH) {
+                return baseUrl + HASH + paramId;
+            } else {
+                return baseUrl + paramId;
+            }
+        } else {
+            if (paramId[0] !== HASH) {
+                return baseUrl.substring(0, index) + HASH + paramId;
+            } else {
+                return baseUrl.substring(0, index) + paramId;
+            }
+        }
+    }
+    if (regexResult[3]) {
+        try {
+            const url = new URL(paramId, baseUrl);
+            return url.href;
+        } catch (e) {
+            return false;
+        }
+        // const thirdSlashIndex = baseUrl.indexOf(SLASH_SEPARATION, baseUrl.indexOf(SLASH_SEPARATION, baseUrl.indexOf(SLASH_SEPARATION) + 1) + 1);
+        // const replace = (index) => {
+        //     let url = baseUrl;
+        //     if (index !== -1) {
+        //         url = baseUrl.substring(0, index);
+        //     }
+        //     if (url[url.length -1] !== SLASH_SEPARATION) {
+        //         return url + SLASH_SEPARATION + paramId;
+        //     }
+        //     return url + paramId;
+        // }
+        //
+        // if (paramId[0] === HASH) {
+        //     const index = baseUrl.indexOf(HASH);
+        //     return replace(index);
+        // }
+        //
+        // if (paramId[0] === QUESTION_MARK) {
+        //     const index = baseUrl.indexOf(SLASH_SEPARATION);
+        //     return replace(index);
+        //
+        // }
+        // if (paramId[0] === SLASH_SEPARATION) {
+        //     return replace(thirdSlashIndex);
+        // }
+        //
+        // return baseUrl + SLASH_SEPARATION+ paramId;
+    }
+    return false;
 }
+
 /*
  * @param {string} paramId
  * @param {string} baseUrl
  * @return {false | {id: string, pointer: string}}
  */
 export function calculateIdAndPointer(uriReference, baseUrl) {
-    try {
-        const url = new URL(uriReference, baseUrl);
-        const index = url.hash.indexOf("/");
-        const result = {
-            id: `${url.protocol}//${url.host}${url.pathname}`,
-            pointer: "#",
-        };
-        if (index !== -1) {
-            result.pointer = "#" + url.hash.slice(index);
+    const regexResult = [
+        UUID_PROTOCOL.test(uriReference),
+        STANDARD_PROTOCOL.test(uriReference),
+        UUID_PROTOCOL.test(baseUrl),
+        STANDARD_PROTOCOL.test(baseUrl),
+    ];
+    if (regexResult[0]) {
+        const index = uriReference.indexOf(HASH);
+        if (index === -1) {
+            return {
+                id: uriReference.substring(0, index),
+                pointer: HASH,
+            };
+        } else {
+            return {
+                id: uriReference.substring(0, index),
+                pointer: uriReference.substring(index),
+            };
         }
-        return result;
-    } catch (e) {
-        return false;
     }
+    if (regexResult[2]) {
+        const index = baseUrl.indexOf(HASH);
+        if (index !== -1) {
+            if (uriReference[0] !== HASH) {
+                return {
+                    id: uriReference,
+                    pointer: HASH + uriReference,
+                };
+            } else {
+                return {
+                    id: uriReference,
+                    pointer: uriReference,
+                };
+            }
+        } else {
+            if (uriReference[0] !== HASH) {
+                return {
+                    id: uriReference.substring(0, index),
+                    pointer: HASH + uriReference,
+                };
+            } else {
+                return {
+                    id: uriReference.substring(0, index),
+                    pointer: uriReference,
+                };
+            }
+        }
+    }
+    if (regexResult[3]) {
+        try {
+            const url = new URL(uriReference, baseUrl);
+            const index = url.hash.indexOf(SLASH_SEPARATION);
+            const result = {
+                id: `${url.protocol}${SLASH_SEPARATION}${SLASH_SEPARATION}${url.host}${url.pathname}`,
+                pointer: HASH,
+            };
+            if (index !== -1) {
+                result.pointer = HASH + url.hash.slice(index);
+            }
+            return result;
+        } catch (e) {
+            return false;
+        }
+    }
+    return false;
 }
