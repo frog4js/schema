@@ -69,40 +69,50 @@ export default function jsonSchemaTest(configs) {
         draft7: "$id",
     };
     const remoterFilePaths = {
-        draft3: ["/integer.json", "/subSchemas.json"],
+        draft3: [/^\/integer\.json$/, /^\/subSchemas\.json$/],
         draft4: [
-            "/integer.json",
-            "/subSchemas.json",
-            "/locationIndependentIdentifierDraft4.json",
-            "/nested.json",
-            "/baseUriChange/folderInteger.json",
-            "/baseUriChangeFolder/folderInteger.json",
-            "/baseUriChangeFolderInSubschema/folderInteger.json",
-            "/name.json",
+            /^\/integer\.json$/,
+            /^\/subSchemas\.json$/,
+            /^\/locationIndependentIdentifierDraft4\.json$/,
+            /^\/nested\.json$/,
+            /^\/baseUriChange\/folderInteger\.json$/,
+            /^\/baseUriChangeFolder\/folderInteger\.json$/,
+            /^\/baseUriChangeFolderInSubschema\/folderInteger\.json$/,
+            /^\/name.json$/,
         ],
         draft6: [
-            "/integer.json",
-            "/subSchemas.json",
-            "/locationIndependentIdentifierDraft4.json",
-            "/nested.json",
-            "/baseUriChange/folderInteger.json",
-            "/baseUriChangeFolder/folderInteger.json",
-            "/baseUriChangeFolderInSubschema/folderInteger.json",
-            "/name.json",
-            "/draft6/detached-ref.json",
+            /^\/integer\.json$/,
+            /^\/subSchemas\.json$/,
+            /^\/locationIndependentIdentifierDraft4\.json$/,
+            /^\/nested\.json$/,
+            /^\/baseUriChange\/folderInteger\.json$/,
+            /^\/baseUriChangeFolder\/folderInteger\.json$/,
+            /^\/baseUriChangeFolderInSubschema\/folderInteger\.json$/,
+            /^\/name\.json$/,
+            /^\/draft6\/detached-ref\.json$/,
+            /^\/ref-and-definitions\.json$/,
+            /^\/locationIndependentIdentifierPre2019\.json$/,
+            /^\/locationIndependentIdentifier\.json$/,
+            /^\/nested\/foo-ref-string\.json$/,
+            /^\/nested\/string\.json$/,
         ],
         draft7: [
-            "/integer.json",
-            "/subSchemas.json",
-            "/locationIndependentIdentifierDraft4.json",
-            "/nested.json",
-            "/baseUriChange/folderInteger.json",
-            "/baseUriChangeFolder/folderInteger.json",
-            "/baseUriChangeFolderInSubschema/folderInteger.json",
-            "/name.json",
-            "/draft7/detached-ref.json",
-            "/draft7/ignore-dependentRequired.json",
-        ],
+            /^\/integer\.json$/,
+            /^\/subSchemas\.json$/,
+            /^\/locationIndependentIdentifierDraft4\.json$/,
+            /^\/nested\.json$/,
+            /^\/baseUriChange\/folderInteger\.json$/,
+            /^\/baseUriChangeFolder\/folderInteger\.json$/,
+            /^\/baseUriChangeFolderInSubschema\/folderInteger\.json$/,
+            /^\/name\.json$/,
+            /^\/draft7\/detached-ref\.json$/,
+            /^\/draft7\/ignore-dependentRequired\.json$/,
+            /^\/ref-and-definitions\.json$/,
+            /^\/locationIndependentIdentifierPre2019\.json$/,
+            /^\/locationIndependentIdentifier\.json$/,
+            /^\/nested\/foo-ref-string\.json$/,
+            /^\/nested\/string\.json$/,
+        ].map((x) => new RegExp(x)),
     };
     configs.drafts.forEach((draft) => {
         describe(draft, () => {
@@ -118,7 +128,7 @@ export default function jsonSchemaTest(configs) {
                             });
                             try {
                                 eachFile(remoterJson, "/", (path, schema) => {
-                                    if (remoterFilePaths[draft].includes(path)) {
+                                    if (remoterFilePaths[draft].some((re) => re.test(path))) {
                                         if (!schema[idKeyMap[draft]]) {
                                             schema[idKeyMap[draft]] = path;
                                         }
@@ -162,8 +172,8 @@ export default function jsonSchemaTest(configs) {
 
 jsonSchemaTest({
     suiteAbsolutePath: path.join(__filename, "../src"),
-    drafts: ["draft4", "draft6"],
-    skipPaths: ["/optional/zeroTerminatedFloats.json"],
+    drafts: ["draft4", "draft6", "draft7"],
+    skipPaths: ["/optional/zeroTerminatedFloats.json", "/optional/cross-draft.json"],
     skipTestDescriptions: ["none of the properties mentioned"],
 });
 

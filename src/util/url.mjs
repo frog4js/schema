@@ -46,7 +46,7 @@
  * urn:uuid:ee564b8a-7a87-4125-8c96-e9f123d6766f
  *
  */
-const UUID_PROTOCOL = /^urn:uuid:/;
+const UUID_PROTOCOL = /^urn:/;
 const STANDARD_PROTOCOL = /^(http|https|ftp|file):\/\//;
 const COLON_SEPARATION = ":";
 const SLASH_SEPARATION = "/";

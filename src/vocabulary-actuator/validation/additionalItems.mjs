@@ -63,6 +63,26 @@ const configs = [
         index: 7.1,
         matches: [
             {
+                schemaTypes: [typeConstant.jsonTypes.boolean],
+                instanceTypes: [typeConstant.typeofTypes.array],
+                resolve: (context) => {
+                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
+                        const parentSchemaInfo = contextManage.getSiblingSchemaRefData(
+                            context,
+                            vocabularyActuatorConstant.keys.items,
+                        );
+                        const items = parentSchemaInfo.$ref[parentSchemaInfo.key];
+                        if (
+                            typeUtil.getTypeofType(items) === typeConstant.typeofTypes.array &&
+                            context.instanceData.current.$ref[context.instanceData.current.key].length > items.length
+                        ) {
+                            errorManage.pushError(context);
+                        }
+                    }
+                    return vocabularyActuatorConstant.ticks.nextExecute;
+                },
+            },
+            {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: isSubSchemaResolve,

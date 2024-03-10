@@ -2,6 +2,7 @@ import { contextConstant, typeConstant, versionConstant, vocabularyActuatorConst
 import { contextManage } from "../../context/share.mjs";
 import { pushError } from "../../error/manage.mjs";
 import { errorManage } from "../../error/share.mjs";
+import { typeUtil } from "../../util/share.mjs";
 
 /**
  *
@@ -35,8 +36,13 @@ const configs = [
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.boolean],
+                instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: (context) => {
-                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
+                    if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
+                        if (context.instanceData.current.$ref[context.instanceData.current.key].length === 0) {
+                            pushError(context);
+                        }
+                    } else if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
                         errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;

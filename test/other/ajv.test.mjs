@@ -14,19 +14,8 @@ describe.only("test the ajv", () => {
             $id: "#/$defs/aa1",
             type: "string",
         });
-        const schema = {
-            $id: "urn:uuid:ee564b8a-7a87-4125-8c96-e9f123d6766f",
-            $defs: {
-                a: {
-                    id: "xxxx",
-                },
-            },
-            type: "object",
-            properties: {
-                a: {},
-            },
-        };
-        const data = {};
+        const schema = { contains: true };
+        const data = [];
 
         const validate = ajv.compile(schema);
         validate(data);

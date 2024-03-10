@@ -256,6 +256,18 @@ describe.only("", () => {
         schemaManage.setMainSchema(context, schema);
         schemaManage.compile(context);
     });
+    it("should pass when schema is $ref", () => {
+        const context = contextManage.create({
+            $schema: "http://json-schema.org/draft-06/schema#",
+            strict: false,
+        });
+        const schema = { contains: true };
+        const data = [];
+        schemaManage.setMainSchema(context, schema);
+        schemaManage.compile(context);
+        const { valid, errors } = vocabularyActuatorManage.validate(context, data);
+        assert.equal(valid, false);
+    });
 });
 describe("test the schema manage module", () => {
     describe("test the addReferenceSchema function", () => {
