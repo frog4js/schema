@@ -14,14 +14,17 @@ describe.only("test the ajv", () => {
             $id: "#/$defs/aa1",
             type: "string",
         });
-        const schema = { contains: true };
-        const data = [];
+        const schema = {
+            type: "array",
+            items: false,
+        };
+        const data = [1, "foo", true];
 
         const validate = ajv.compile(schema);
         validate(data);
 
         console.log(validate.errors);
-    }, "ajv1");
+    });
 
     it("ajv2", () => {
         const ajv = new Ajv({ useDefaults: true, allErrors: true });

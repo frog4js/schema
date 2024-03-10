@@ -76,7 +76,9 @@ function startValidateValidation(context) {
     if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === true) {
         return;
     } else if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === false) {
-        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+        if (context.instanceData.current?.$ref?.[context.instanceData.current.key] !== undefined) {
+            errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+        }
         return;
     } else if (typeUtil.getTypeofTypeByRefData(context.schemaData.current) !== typeConstant.typeofTypes.object) {
         return;

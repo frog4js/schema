@@ -43,6 +43,9 @@ const configs = [
                             case typeConstant.typeofTypes.object:
                                 validResult = startSubSchemaExecute(context, true).length === 0;
                                 break;
+                            case typeConstant.typeofTypes.boolean:
+                                validResult = startSubSchemaExecute(context, true).length === 0;
+                                break;
                         }
                         contextManage.backContext(context, key);
                         if (!validResult) {

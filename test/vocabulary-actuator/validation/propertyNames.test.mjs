@@ -42,5 +42,31 @@ describe("test the executes.propertyNames module", () => {
             assert.equal(context.errors.length, 1);
             assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.propertyNames);
         });
+
+        it("should pass validation when schema is true", () => {
+            const context = execResolve(
+                { propertyNames: true },
+                {},
+                vocabularyActuatorConstant.keys.propertyNames,
+                0,
+                1,
+                [vocabularyActuatorConstant.keys.propertyNames],
+                undefined,
+            );
+            assert.equal(context.errors.length, 0);
+        });
+
+        it("should pass validation when schema is false", () => {
+            const context = execResolve(
+                { propertyNames: false },
+                {},
+                vocabularyActuatorConstant.keys.propertyNames,
+                0,
+                1,
+                [vocabularyActuatorConstant.keys.propertyNames],
+                undefined,
+            );
+            assert.equal(context.errors.length, 0);
+        });
     });
 });

@@ -1,6 +1,7 @@
 import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
 import { contextManage } from "../../context/share.mjs";
+
 /**
  * @typedef {import("../../../types/share")}
  */
@@ -9,7 +10,7 @@ import { contextManage } from "../../context/share.mjs";
  * @param {Context}context
  * @param {function}startSubSchemaExecute
  */
-function objectResolve(context, startSubSchemaExecute) {
+function subSchemaResolve(context, startSubSchemaExecute) {
     let index = 0;
     const instanceData = context.instanceData.current.$ref[context.instanceData.current.key];
     for (const instanceItem of instanceData) {
@@ -19,6 +20,7 @@ function objectResolve(context, startSubSchemaExecute) {
         index++;
     }
 }
+
 /**
  *
  * @param {Context}context
@@ -34,6 +36,7 @@ function arrayResolve(context, startSubSchemaExecute) {
         index++;
     }
 }
+
 /**
  * @type {Array<VocabularyActuatorConfig>}
  */
@@ -53,7 +56,7 @@ const configs = [
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: (context, { startSubSchemaExecute }) => {
-                    objectResolve(context, startSubSchemaExecute);
+                    subSchemaResolve(context, startSubSchemaExecute);
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
@@ -74,10 +77,9 @@ const configs = [
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.boolean],
-                resolve: (context) => {
-                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
-                    }
+                instanceTypes: [typeConstant.typeofTypes.array],
+                resolve: (context, { startSubSchemaExecute }) => {
+                    subSchemaResolve(context, startSubSchemaExecute);
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },
@@ -85,7 +87,7 @@ const configs = [
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: (context, { startSubSchemaExecute }) => {
-                    objectResolve(context, startSubSchemaExecute);
+                    subSchemaResolve(context, startSubSchemaExecute);
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },

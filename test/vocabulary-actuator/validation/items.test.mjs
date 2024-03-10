@@ -81,4 +81,51 @@ describe("test the executes.items module", () => {
             assert.equal(context.errors.length, 2);
         });
     });
+    describe("test the resolve(boolean) function", () => {
+        it("should pass when schema items is false and instance value is empty array", () => {
+            const context = execResolve(
+                {
+                    type: "array",
+                    items: false,
+                },
+                [],
+                vocabularyActuatorConstant.keys.items,
+                1,
+                0,
+                [vocabularyActuatorConstant.keys.items],
+                undefined,
+            );
+            assert.equal(context.errors.length, 0);
+        });
+        it("should fail when schema items is false and instance value is any non-empty array", () => {
+            const context = execResolve(
+                {
+                    type: "array",
+                    items: false,
+                },
+                [1, "foo", true],
+                vocabularyActuatorConstant.keys.items,
+                1,
+                0,
+                [vocabularyActuatorConstant.keys.items],
+                undefined,
+            );
+            assert.equal(context.errors.length, 3);
+        });
+        it("should pass when schema items is [true, false] and instance value is [1]", () => {
+            const context = execResolve(
+                {
+                    type: "array",
+                    items: [true, false],
+                },
+                [1],
+                vocabularyActuatorConstant.keys.items,
+                1,
+                0,
+                [vocabularyActuatorConstant.keys.items],
+                undefined,
+            );
+            assert.equal(context.errors.length, 0);
+        });
+    });
 });

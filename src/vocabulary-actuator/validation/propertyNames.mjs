@@ -34,9 +34,10 @@ const configs = [
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.boolean],
-                resolve: (context) => {
-                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+                instanceTypes: [typeConstant.typeofTypes.object],
+                resolve: (context, { startSubSchemaExecute }) => {
+                    if (Object.keys(context.instanceData.current.$ref[context.instanceData.current.key]).length > 0) {
+                        startSubSchemaExecute(context, false);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
