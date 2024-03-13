@@ -41,7 +41,7 @@ export type Context = {
     }[];
     // cache: Record<string, Record<string, any>>
 };
-type DefaultConfig = {
+export type DefaultConfig = {
     $schema?: string;
     baseURI?: string;
     errorMessages?: Record<string, Record<string, string>>;

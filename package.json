@@ -1,7 +1,7 @@
 {
     "name": "@frog4js/schema",
     "version": "1.0.0",
-    "main": "index.js",
+    "types": "types/index.d.ts",
     "description": "Fast and hook-base web framework, for Node.js schema package",
     "engines": {
         "node": ">= 16.0.0"
@@ -15,7 +15,9 @@
         "test": "node --test test/all-test.mjs",
         "test:only": "node --test --test-only test/all-test.mjs",
         "test:coverage": "rimraf ./coverage && NODE_V8_COVERAGE=coverage node --experimental-test-coverage test/all-test.mjs",
-        "test:suite": "node --test json-schema-test-suite/suite-runner.test.mjs"
+        "test:suite": "node --test json-schema-test-suite/suite-runner.test.mjs",
+        "build": "rimraf ./built && frog build",
+        "publish": "npm run build && frog publish"
     },
     "repository": {
         "type": "git",
@@ -45,5 +47,16 @@
         ]
     },
     "prettier": "@frog4js/devkit-prettier",
-    "dependencies": {}
+    "dependencies": {},
+    "exports": {
+        "./context": {
+            "import": "./src/context/index.mjs"
+        },
+        "./vocabulary-actuator": {
+            "import": "./src/vocabulary-actuator/index.mjs"
+        },
+        "./schema": {
+            "import": "./src/schema/index.mjs"
+        }
+    }
 }

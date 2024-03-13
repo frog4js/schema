@@ -1,6 +1,5 @@
 type Reference = { $ref: string };
 type CoreV3 = {
-    $schema?: string;
     id?: string;
 };
 
@@ -33,7 +32,7 @@ type ValidationV1 = {
     disallow?: BasicTypeV3 | Array<BasicTypeV3>;
 };
 type ChildSchemaV1 = ValidationV1 | Reference;
-type SchemaV1 = CoreV3 & ValidationV1;
+type SchemaV1 = CoreV3 & ValidationV1 & { $schema: "http://json-schema.org/draft-01/schema#" };
 //  ============= v1
 
 //  ============= v2
@@ -47,7 +46,7 @@ type ValidationV2 = Exclude<ValidationV1, "maxDecimal"> & {
     uniqueItems?: boolean;
 };
 type ChildSchemaV2 = ValidationV2 | Reference;
-type SchemaV2 = CoreV3 & ValidationV2;
+type SchemaV2 = CoreV3 & ValidationV2 & { $schema: "http://json-schema.org/draft-01/schema#" };
 //  ============= v2
 
 //  ============= v3
@@ -64,12 +63,11 @@ type ValidationV3 = Exclude<ValidationV2, "maximumCanEqual" | "minimumCanEqual">
     exclusiveMaximum?: boolean;
 };
 type ChildSchemaV3 = ValidationV3 | Reference;
-type SchemaV3 = CoreV3 & ValidationV3;
+type SchemaV3 = CoreV3 & ValidationV3 & { $schema: "http://json-schema.org/draft-01/schema#" };
 //  ============= v3
 
 //  ============= v4
 type CoreV4 = {
-    $schema?: string;
     id?: string;
     definitions?: Record<string, ChildSchemaV4>;
 };
@@ -90,16 +88,15 @@ type ValidationV4 = Exclude<ValidationV3, "contentEncoding" | "divisibleBy"> & {
     multipleOf?: number;
 };
 type ChildSchemaV4 = ValidationV4 | Reference;
-type SchemaV4 = CoreV4 & ValidationV4;
+type SchemaV4 = CoreV4 & ValidationV4 & { $schema: "http://json-schema.org/draft-04/schema#" };
 //  ============= v4
 
 //  ============= v5
-type SchemaV5 = CoreV4 & ValidationV4;
+type SchemaV5 = CoreV4 & ValidationV4 & { $schema: "http://json-schema.org/draft-05/schema#" };
 //  ============= v5
 
 //  ============= v6
 type CoreV6 = {
-    $schema?: string;
     $id?: string;
     definitions?: Record<string, ChildSchemaV6>;
 };
@@ -120,12 +117,12 @@ type ValidationV6 = ValidationV4 & {
     exclusiveMaximum?: number;
 };
 type ChildSchemaV6 = ValidationV6 | Reference | boolean;
-type SchemaV6 = CoreV6 & ValidationV6;
+type SchemaV6 = CoreV6 & ValidationV6 & { $schema: "http://json-schema.org/draft-06/schema#" };
 //  ============= v6
 
 //  ============= v7
 type CoreV7 = {
-    $schema?: string;
+    $schema?: "http://json-schema.org/draft-07/schema#";
     $id?: string;
     definitions?: Record<string, ChildSchemaV6>;
 };
@@ -140,6 +137,9 @@ type ValidationV7 = ValidationV6 & {
     oneOf?: Array<ChildSchemaV7>;
     allOf?: Array<ChildSchemaV7>;
     propertyNames?: ChildSchemaV7;
+    if?: boolean | ChildSchemaV7;
+    then?: boolean | ChildSchemaV7;
+    else?: boolean | ChildSchemaV7;
 };
 type ChildSchemaV7 = ValidationV7 | Reference | boolean;
 type SchemaV7 = CoreV7 & ValidationV7;
