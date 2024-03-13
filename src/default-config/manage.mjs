@@ -15,6 +15,7 @@ const systemDefault = {
     $schema: versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersionGroups.lastVersions[0]],
     errorMessages: vocabularyActuatorConstant.defaultErrorMessages,
     locale: "en-gb",
+    strict: true,
 };
 /**
  *
@@ -30,7 +31,7 @@ const defaultConfigSchema = {
         },
         $schema: {
             type: "string",
-            enum: schemaManage.getAll$schemaDrafts(),
+            enum: Object.values(versionConstant.jsonSchema$schemaDraftMap),
         },
         errorMessages: {
             type: "object",
@@ -43,6 +44,9 @@ const defaultConfigSchema = {
         },
         locale: {
             type: "string",
+        },
+        strict: {
+            type: "boolean",
         },
     },
     additionalProperties: false,

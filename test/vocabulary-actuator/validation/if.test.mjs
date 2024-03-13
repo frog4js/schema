@@ -5,7 +5,7 @@ import { vocabularyActuatorConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
 import { contextManage } from "../../../src/context/share.mjs";
 
-describe.only("test the executes.if module", () => {
+describe("test the executes.if module", () => {
     describe("test the resolve(boolean) function", () => {
         it("should pass when if value is true", () => {
             const context = execResolve(

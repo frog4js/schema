@@ -30,22 +30,28 @@ const configs = [
                     }
                     defaultContext.schemaData.origin = schema;
                     defaultContext.schemaData.main = schema;
-                    defaultContext.schemaPaths = [
-                        vocabularyActuatorConstant.pathKeys.ref,
-                        vocabularyActuatorConstant.pathKeys.self,
-                    ];
 
                     defaultContext.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = schema;
                     defaultContext.state = contextConstant.states.compile;
-
+                    defaultContext.schemaData.current = {
+                        $ref: defaultContext.referenceSchemas,
+                        key: vocabularyActuatorConstant.pathKeys.self,
+                    };
                     defaultContext.instanceData.origin =
                         context.instanceData.current.$ref[context.instanceData.current.key];
                     defaultContext.instanceData.locale = context.instanceData.locale;
-
+                    contextManage.enterContext(defaultContext, vocabularyActuatorConstant.pathKeys.ref);
+                    contextManage.enterContext(defaultContext, vocabularyActuatorConstant.pathKeys.self);
                     vocabularyActuatorManage.startValidate(defaultContext);
+
                     if (defaultContext.errors.length > 0) {
-                        errorManage.pushError(context);
+                        if (context.defaultConfig.strict === false) {
+                            delete context.instanceData.current.$ref[context.instanceData.current.key];
+                        } else {
+                            errorManage.pushError(context);
+                        }
                     }
+
                     return vocabularyActuatorConstant.ticks.endExecute;
                 },
             },

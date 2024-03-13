@@ -4,6 +4,7 @@ import { dataOperateUtil } from "../util/share.mjs";
 import { jsonSchema$schemaVersionMap } from "../constants/version.mjs";
 import { defaultConfigManage } from "../default-config/share.mjs";
 import { deepClone } from "../util/data-operate.mjs";
+import { switchVersion } from "../schema/manage.mjs";
 
 /**
  * @typedef {import("../../types/share")}
@@ -69,6 +70,7 @@ function clone(context) {
         caches: [],
     };
 }
+
 /**
  *
  * @param {Context} context
@@ -96,7 +98,7 @@ function refererCurrentInstance(context) {
  * @param {Context} context
  */
 function refererCurrentSchema(context) {
-    const current = getParentSchema(context);
+    const current = getParentSchema(context, true);
     if (!context.schemaData.current) {
         context.schemaData.current = { $ref: current, key: context.schemaPaths[context.schemaPaths.length - 1] };
     } else {
@@ -140,12 +142,26 @@ function getSiblingSchemaRefData(context, key) {
  */
 function getParentSchema(context) {
     let current;
+    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.origin;
+    schemaManage.switchVersion(context, context.schemaData.origin.$schema || context.defaultConfig.$schema);
     for (let i = 0; i < context.schemaPaths.length - 1; i++) {
         const keyOrIndex = context.schemaPaths[i];
         if (keyOrIndex === vocabularyActuatorConstant.pathKeys.ref) {
             current = context.referenceSchemas;
         } else {
+            if (!current) {
+                console.log(
+                    "3333",
+                    context.schemaPaths,
+                    i,
+                    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self],
+                );
+            }
             current = current[keyOrIndex];
+        }
+        if (context.schemaPaths[i - 1] === vocabularyActuatorConstant.pathKeys.ref) {
+            context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = current;
+            schemaManage.switchVersion(context, current.$schema || context.defaultConfig.$schema);
         }
     }
     return current;
@@ -201,6 +217,7 @@ function backContext(context, schemaKey, instanceKey) {
         refererCurrentSchema(context);
     }
 }
+
 /**
  *
  * @param {Context} context
@@ -258,6 +275,7 @@ function lock(context) {
     }
     return false;
 }
+
 /**
  *
  * @param {Context} context
@@ -272,17 +290,32 @@ function unlock(context) {
  * @param {Context}context
  * @param {string}key
  * @param {*}value
+ * @param {number} [backSchemaLevel]
+ * @param {number} [backInstanceLevel]
  */
-function setCache(context, key, value) {
+function setCache(context, key, value, backSchemaLevel = 0, backInstanceLevel = 0) {
+    const schemaPaths = dataOperateUtil.deepClone(context.schemaPaths) || [];
+    for (let i = 0; i < backSchemaLevel; i++) {
+        schemaPaths.pop();
+    }
+    const instancePaths = dataOperateUtil.deepClone(context.instancePaths) || [];
+    for (let i = 0; i < backInstanceLevel; i++) {
+        instancePaths.pop();
+    }
     for (const cache of context.caches) {
-        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
+        let result = dataOperateUtil.compareToArray(schemaPaths, cache.schemaPaths);
+        if (result !== 0) {
+            continue;
+        }
+        result = dataOperateUtil.compareToArray(context.instancePaths, instancePaths);
         if (result === 0) {
             cache.data[key] = value;
             return;
         }
     }
     context.caches.push({
-        paths: dataOperateUtil.deepClone(context.instancePaths),
+        schemaPaths: schemaPaths,
+        instancePaths: instancePaths,
         data: {
             [key]: value,
         },
@@ -293,30 +326,47 @@ function setCache(context, key, value) {
  *
  * @param {Context} context
  * @param {string} key
+ * @param {number} [backSchemaLevel]
+ * @param {number} [backInstanceLevel]
  * @return {* | undefined}
  */
-function getCache(context, key) {
+function getCache(context, key, backSchemaLevel = 0, backInstanceLevel = 0) {
+    const schemaPaths = dataOperateUtil.deepClone(context.schemaPaths) || [];
+    for (let i = 0; i < backSchemaLevel; i++) {
+        schemaPaths.pop();
+    }
+    const instancePaths = dataOperateUtil.deepClone(context.instancePaths) || [];
+    for (let i = 0; i < backInstanceLevel; i++) {
+        instancePaths.pop();
+    }
     for (const cache of context.caches) {
-        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
+        let result = dataOperateUtil.compareToArray(schemaPaths, cache.schemaPaths);
+        if (result !== 0) {
+            continue;
+        }
+        result = dataOperateUtil.compareToArray(instancePaths, cache.instancePaths);
         if (result === 0) {
             return cache.data[key];
         }
     }
     return undefined;
 }
+
 /**
  *
  * @param {Context}context
  */
 function clearCache(context) {
     const index = context.caches.findIndex((cache) => {
-        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
-        return result === 0;
+        const result1 = dataOperateUtil.compareToArray(context.schemaPaths, cache.schemaPaths);
+        const result2 = dataOperateUtil.compareToArray(context.instancePaths, cache.instancePaths);
+        return result1 === 0 && result2 === 0;
     });
     if (index !== -1) {
         context.caches.splice(index, 1);
     }
 }
+
 export {
     create,
     enterContext,

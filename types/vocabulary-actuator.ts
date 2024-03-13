@@ -12,7 +12,8 @@ export type VocabularyActuatorConfig = {
         resolve: (
             context: Context,
             hooks: {
-                startRefOrSchemaExecute: (context: Context, isTryExecute?: boolean) => ExecuteError[];
+                startSubSchemaExecute: (context: Context, isTryExecute?: boolean) => ExecuteError[];
+                startRefExecute: (context: Context) => void;
             },
         ) => number;
     }>;

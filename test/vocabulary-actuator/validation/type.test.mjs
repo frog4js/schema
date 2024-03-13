@@ -141,6 +141,7 @@ describe("test the executes.type module", () => {
         it("should pass when validating a number within maximum limit with type ['string', {type: 'number', maximum: 10}]\n", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: [
                         "string",
                         {
@@ -163,6 +164,7 @@ describe("test the executes.type module", () => {
         it("should fail when validating a string with invalid length with type [{type: 'string', maxLength: 2}, {type: 'number', maximum: 10}, {type: 'string', minLength: 5}]", () => {
             const context = execResolve(
                 {
+                    $schema: "http://json-schema.org/draft-03/schema#",
                     type: [
                         {
                             type: "string",

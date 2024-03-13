@@ -15,7 +15,7 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
                     if (
-                        !new RegExp(context.schemaData.current.$ref[context.schemaData.current.key]).test(
+                        !new RegExp(context.schemaData.current.$ref[context.schemaData.current.key], "u").test(
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         )
                     ) {

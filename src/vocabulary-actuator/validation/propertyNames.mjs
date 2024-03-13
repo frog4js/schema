@@ -16,13 +16,13 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const instanceValue = context.instanceData.current.$ref[context.instanceData.current.key];
                     const errors = [];
                     for (const instanceKey of Object.keys(instanceValue)) {
                         contextManage.enterContext(context, undefined, vocabularyActuatorConstant.pathKeys.objectKey);
                         contextManage.enterContext(context, undefined, instanceKey);
-                        errors.push(...startRefOrSchemaExecute(context, true));
+                        errors.push(...startSubSchemaExecute(context, true));
                         contextManage.backContext(context, undefined, vocabularyActuatorConstant.pathKeys.objectKey);
                         contextManage.backContext(context, undefined, instanceKey);
                     }
@@ -34,9 +34,10 @@ const configs = [
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.boolean],
-                resolve: (context) => {
-                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+                instanceTypes: [typeConstant.typeofTypes.object],
+                resolve: (context, { startSubSchemaExecute }) => {
+                    if (Object.keys(context.instanceData.current.$ref[context.instanceData.current.key]).length > 0) {
+                        startSubSchemaExecute(context, false);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },

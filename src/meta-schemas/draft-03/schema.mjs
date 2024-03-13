@@ -152,7 +152,6 @@ export default {
 
         id: {
             type: "string",
-            format: "uri",
         },
 
         $ref: {

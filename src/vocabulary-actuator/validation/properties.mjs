@@ -15,12 +15,12 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const currentSchemaData = context.schemaData.current.$ref[context.schemaData.current.key];
                     const currentSchemaKeys = Object.keys(currentSchemaData);
                     for (const propertyKey of currentSchemaKeys) {
                         contextManage.enterContext(context, propertyKey, propertyKey);
-                        startRefOrSchemaExecute(context, false);
+                        startSubSchemaExecute(context, false);
                         contextManage.backContext(context, propertyKey, propertyKey);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;

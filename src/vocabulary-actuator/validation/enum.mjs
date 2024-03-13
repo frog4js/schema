@@ -1,5 +1,6 @@
 import { typeConstant, versionConstant, vocabularyActuatorConstant } from "../../constants/share.mjs";
 import { errorManage } from "../../error/share.mjs";
+import { dataOperateUtil } from "../../util/share.mjs";
 
 /**
  *
@@ -13,15 +14,18 @@ const configs = [
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.array],
-                instanceTypes: [typeConstant.typeofTypes.string],
+                instanceTypes: typeConstant.typeofTypeGroups.exist,
                 resolve: (context) => {
+                    const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
                     if (
-                        !context.schemaData.current.$ref[context.schemaData.current.key].includes(
+                        !dataOperateUtil.fastDeepIncludes(
+                            schemaValue,
                             context.instanceData.current.$ref[context.instanceData.current.key],
                         )
                     ) {
                         errorManage.pushError(context);
                     }
+
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },

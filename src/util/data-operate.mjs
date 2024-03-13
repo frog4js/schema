@@ -104,6 +104,63 @@ export function toString(data, depth = 2) {
     return v;
 }
 
+/**
+ *
+ * @param {array}array
+ * @param {*}value
+ * @return {boolean}
+ */
+export function fastDeepIncludes(array, value) {
+    for (const item of array) {
+        if (fastDeepEqual(item, value)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ *
+ * @param {*}data1
+ * @param {*}data2
+ * @return {boolean}
+ */
+export function fastDeepEqual(data1, data2) {
+    if (data1 === data2) {
+        return true;
+    }
+    const type1 = typeUtil.getTypeofType(data1);
+    const type2 = typeUtil.getTypeofType(data2);
+    if (type1 !== type2) {
+        return false;
+    }
+    if (type1 === typeConstant.typeofTypes.object) {
+        const keys1 = Object.keys(data1);
+        const keys2 = Object.keys(data2);
+        if (!fastDeepEqual(keys1, keys2)) {
+            return false;
+        }
+        for (const key of keys1) {
+            if (!fastDeepEqual(data1[key], data2[key])) {
+                return false;
+            }
+        }
+        return true;
+    } else if (type1 === typeConstant.typeofTypes.array) {
+        if (data1.length !== data2.length) {
+            return false;
+        }
+        for (let index = 0; index < data1.length; index++) {
+            if (!fastDeepEqual(data1[index], data2[index])) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export function fastDeepHasDuplicates(array) {
     if (!Array.isArray(array) || array.length <= 1) {
         return false;
@@ -112,18 +169,23 @@ export function fastDeepHasDuplicates(array) {
 
     const objectTypeItems = new Set();
     const objectTypeItemKeys = new Set();
+    let objectEmptyCount = 0;
 
     const arrayTypeItems = new Set();
     let arrayMaxLength = 0;
+    let arrayEmptyCount = 0;
 
     for (const item of array) {
         const type = typeUtil.getTypeofType(item);
         let set;
         if (typeConstant.typeofTypes.object === type) {
             set = objectTypeItems;
-            Object.keys(item).forEach((k) => objectTypeItemKeys.add(k));
+            const keys = Object.keys(item);
+            keys.length === 0 && objectEmptyCount++;
+            keys.forEach((k) => objectTypeItemKeys.add(k));
         } else if (typeConstant.typeofTypes.array === type) {
             set = arrayTypeItems;
+            item.length === 0 && arrayEmptyCount++;
             if (item.length > arrayMaxLength) {
                 arrayMaxLength = item.length;
             }
@@ -144,11 +206,14 @@ export function fastDeepHasDuplicates(array) {
         // [{a: 1, b: 2}, {a:1, b:1}]  true, false => false
         // [{a: 1, b: 1}, {a:1, b:1}]  true, true => false
         let objectHasDuplicate = null;
+        if (objectEmptyCount > 1) {
+            return true;
+        }
         for (let key of objectTypeItemKeys) {
             objectHasDuplicate = true;
             const objectValues = [];
             for (const obj of objectTypeItems) {
-                objectValues.push(obj[key]);
+                obj[key] !== undefined && objectValues.push(obj[key]);
             }
             if (!fastDeepHasDuplicates(objectValues)) {
                 objectHasDuplicate = false;
@@ -163,6 +228,9 @@ export function fastDeepHasDuplicates(array) {
         // array
         // [[1, 2], [1, 2]]  true, false => false
         let arrayHasDuplicate = null;
+        if (arrayEmptyCount > 1) {
+            return true;
+        }
         for (let index = 0; index < arrayMaxLength; index++) {
             arrayHasDuplicate = true;
             const arrayValues = [];
@@ -202,7 +270,7 @@ export function getValueByJsonPointer(obj, pointer) {
             return undefined;
         }
         if (typeof current !== typeConstant.typeofTypes.object) {
-            return current;
+            return undefined;
         }
         current = current[part];
     }
@@ -219,7 +287,7 @@ export function getPathsByJsonPointer(pointer) {
     const parts = pointer
         .substring(1)
         .split("/")
-        .map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~"));
+        .map((part) => part.replace(/~1/g, "/").replace(/~0/g, "~").replace(/%25/g, "%").replace(/%22/g, '"'));
     if (parts[0] === "") {
         parts.shift();
     }
@@ -228,15 +296,16 @@ export function getPathsByJsonPointer(pointer) {
 
 /**
  *
- * @param {{$ref: string}} ref
+ * @param {string} ref
  */
 export function getPathsByRef(ref) {
-    const index = ref.$ref.indexOf("#");
+    const index = ref.indexOf("#");
     if (index === -1) {
-        return [ref.$ref];
+        return [ref];
     }
-    return [ref.$ref.substring(0, index + 1), ...getPathsByJsonPointer(ref.$ref.substring(index))];
+    return [ref.substring(0, index + 1), ...getPathsByJsonPointer(ref.substring(index))];
 }
+
 export function merge(obj1, obj2) {
     const mergeItem = (item1, item2) => {
         if (item1 === null || item1 === undefined) {

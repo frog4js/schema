@@ -12,7 +12,8 @@ export type Context = {
         errors: Array<ExecuteError>;
     }>;
     caches: Array<{
-        paths: Array<string>;
+        schemaPaths: Array<string>;
+        instancePaths: Array<string>;
         data: Record<string, any>;
     }>;
     startTime: number;
@@ -45,5 +46,6 @@ type DefaultConfig = {
     baseURI?: string;
     errorMessages?: Record<string, Record<string, string>>;
     locale?: string;
+    strict?: boolean;
 };
 // function create(defaultConfig: DefaultConfig): Context;

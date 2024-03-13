@@ -3,6 +3,9 @@ import { describe, it, beforeEach } from "node:test";
 import * as assert from "assert";
 import { vocabularyActuatorConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
+import { contextManage } from "../../../src/context/share.mjs";
+import { schemaManage } from "../../../src/schema/share.mjs";
+import { vocabularyActuatorManage } from "../../../src/vocabulary-actuator/share.mjs";
 describe("test the executes.dependencies module", () => {
     describe("test the resolve(string) function", () => {
         it("should fail when 'age' dependency is missing for 'name' property", () => {
@@ -142,6 +145,30 @@ describe("test the executes.dependencies module", () => {
                 vocabularyActuatorConstant.ticks.nextExecute,
             );
             assert.equal(context.errors.length, 0);
+        });
+        it("should pass when properties with boolean schema", () => {
+            const context = execResolve(
+                {
+                    $schema: "http://json-schema.org/draft-06/schema#",
+                    type: "object",
+                    dependencies: {
+                        foo: true,
+                        bar: false,
+                    },
+                },
+                {
+                    bar: 2,
+                },
+                vocabularyActuatorConstant.keys.dependencies,
+                0,
+                0,
+                [vocabularyActuatorConstant.keys.dependencies],
+                undefined,
+                undefined,
+                vocabularyActuatorConstant.ticks.nextExecute,
+            );
+            assert.equal(context.errors.length, 1);
+            assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.dependencies);
         });
     });
 });

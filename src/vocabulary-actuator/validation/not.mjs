@@ -12,9 +12,13 @@ const configs = [
         matches: [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
-                resolve: (context, { startRefOrSchemaExecute }) => {
-                    if (Object.keys(context.schemaData.current.$ref[context.schemaData.current.key]).length > 0) {
-                        const errors = startRefOrSchemaExecute(context, true);
+                resolve: (context, { startSubSchemaExecute }) => {
+                    if (
+                        context.instanceData.current.$ref[context.instanceData.current.key] !== undefined
+                        // &&
+                        // Object.keys(context.schemaData.current.$ref[context.schemaData.current.key]).length === 0
+                    ) {
+                        const errors = startSubSchemaExecute(context, true);
                         if (errors.length === 0) {
                             errorManage.pushError(context);
                         }

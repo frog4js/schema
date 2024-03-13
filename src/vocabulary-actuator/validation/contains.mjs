@@ -2,6 +2,7 @@ import { contextConstant, typeConstant, versionConstant, vocabularyActuatorConst
 import { contextManage } from "../../context/share.mjs";
 import { pushError } from "../../error/manage.mjs";
 import { errorManage } from "../../error/share.mjs";
+import { typeUtil } from "../../util/share.mjs";
 
 /**
  *
@@ -16,12 +17,12 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.array],
-                resolve: (context, { startRefOrSchemaExecute }) => {
+                resolve: (context, { startSubSchemaExecute }) => {
                     const instanceValue = context.instanceData.current.$ref[context.instanceData.current.key];
                     let status = false;
                     for (let index = 0; index < instanceValue.length; index++) {
                         contextManage.enterContext(context, undefined, index);
-                        const errors = startRefOrSchemaExecute(context, true);
+                        const errors = startSubSchemaExecute(context, true);
                         if (errors.length === 0) {
                             status = true;
                         }
@@ -35,8 +36,13 @@ const configs = [
             },
             {
                 schemaTypes: [typeConstant.jsonTypes.boolean],
+                instanceTypes: [typeConstant.typeofTypes.array],
                 resolve: (context) => {
-                    if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
+                    if (context.schemaData.current.$ref[context.schemaData.current.key] === true) {
+                        if (context.instanceData.current.$ref[context.instanceData.current.key].length === 0) {
+                            pushError(context);
+                        }
+                    } else if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
                         errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
                     }
                     return vocabularyActuatorConstant.ticks.nextExecute;

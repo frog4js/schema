@@ -7,7 +7,7 @@ import { errorClass } from "../error/share.mjs";
 /**
  * @typedef {import("../../types/share")}
  */
-
+const SCHEMA_TYPES = [typeConstant.typeofTypes.object, typeConstant.typeofTypes.boolean];
 /**
  *
  * @param {Context} context
@@ -73,20 +73,23 @@ function compile(context) {
     if (context.state !== contextConstant.states.init) {
         throw new errorClass.SystemError(`state does not equal init. current state is ${context.state}`);
     }
-    if (!context.schemaData.main) {
+    if (context.schemaData.main === undefined || context.schemaData.main === null) {
         throw new errorClass.SystemError(`main schema not set`);
     }
     for (const waitValidateRef of context.waitValidateRefs) {
         let current;
-        if (waitValidateRef.$ref[0] === vocabularyActuatorConstant.pathKeys.self) {
-            current = dataOperateUtil.getValueByJsonPointer(waitValidateRef.schema, waitValidateRef.$ref);
+        if (context.referenceSchemas[waitValidateRef.$ref]) {
+            current = context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self];
         } else {
             const result = urlUtil.calculateIdAndPointer(waitValidateRef.$ref, context.defaultConfig.baseURI);
             if (result && context.referenceSchemas[result.id]) {
                 current = dataOperateUtil.getValueByJsonPointer(context.referenceSchemas[result.id], result.pointer);
             }
+            if (SCHEMA_TYPES.includes(typeUtil.getTypeofType(current))) {
+                context.referenceSchemas[waitValidateRef.$ref] = current;
+            }
         }
-        if (typeUtil.getTypeofType(current) !== typeConstant.typeofTypes.object) {
+        if (!SCHEMA_TYPES.includes(typeUtil.getTypeofType(current))) {
             throw new errorClass.SystemError(`${waitValidateRef.$ref} not found or is not a valid schema`);
         }
     }

@@ -5,7 +5,7 @@ import { vocabularyActuatorConstant } from "../../../src/constants/share.mjs";
 import { execResolve } from "./helper.mjs";
 import { contextManage } from "../../../src/context/share.mjs";
 
-describe.only("test the executes.then module", () => {
+describe("test the executes.then module", () => {
     describe("test the resolve(boolean) function", () => {
         it("should pass when then value is true", () => {
             const context = execResolve(
@@ -21,7 +21,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: true } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: true },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 0);
         });
@@ -40,7 +49,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: true } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: true },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 1);
             assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.then);
@@ -59,7 +77,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: false } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: false },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 0);
         });
@@ -77,7 +104,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: undefined } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: undefined },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 0);
         });
@@ -99,7 +135,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: true } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: true },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 0);
         });
@@ -119,7 +164,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: true } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: true },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 2);
             assert.equal(context.errors[0].currentSchemaKey, vocabularyActuatorConstant.keys.maximum);
@@ -141,7 +195,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: false } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: false },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 0);
         });
@@ -161,7 +224,16 @@ describe.only("test the executes.then module", () => {
                 undefined,
                 undefined,
                 undefined,
-                [{ paths: [], data: { if: undefined } }],
+                [
+                    {
+                        schemaPaths: [
+                            vocabularyActuatorConstant.pathKeys.ref,
+                            vocabularyActuatorConstant.pathKeys.self,
+                        ],
+                        instancePaths: [],
+                        data: { if: undefined },
+                    },
+                ],
             );
             assert.equal(context.errors.length, 0);
         });

@@ -15,9 +15,6 @@ describe("test the $ref module", () => {
                 age: {
                     $ref: "#/definitions/ref2",
                 },
-                $ref: {
-                    type: 1,
-                },
             },
         });
         assert.equal(context.waitValidateRefs.length, 2);

@@ -30,25 +30,17 @@ function validate(context, instance, locale) {
         errors: context.errors,
     };
 }
+
 /**
  *
  * @param {Context} context
  * @param {boolean} [isTryExecute]
  * @return {ExecuteError[] | boolean}
  */
-function startRefOrSchemaExecute(context, isTryExecute) {
-    const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
+function startSubSchemaExecute(context, isTryExecute) {
     isTryExecute === true && contextManage.lock(context);
     const errorCount = context.errors.length;
-    if (typeof schemaValue.$ref === typeConstant.typeofTypes.string) {
-        const paths = dataOperateUtil.getPathsByRef(schemaValue);
-        paths.unshift(vocabularyActuatorConstant.pathKeys.ref);
-        paths.forEach((pathItem) => contextManage.enterContext(context, pathItem));
-        startValidateValidation(context);
-        paths.forEach((pathItem) => contextManage.backContext(context, pathItem));
-    } else {
-        startValidateValidation(context);
-    }
+    startValidateValidation(context);
     if (isTryExecute) {
         return contextManage.unlock(context).errors;
     } else if (context.errors.length > errorCount) {
@@ -61,19 +53,42 @@ function startRefOrSchemaExecute(context, isTryExecute) {
 /**
  *
  * @param {Context} context
+ * @return {ExecuteError[] | boolean}
+ */
+function startRefExecute(context) {
+    const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
+    const paths = [vocabularyActuatorConstant.pathKeys.ref];
+    if (schemaValue.indexOf("#/") === 0) {
+        paths.push(...dataOperateUtil.getPathsByRef(schemaValue));
+    } else {
+        paths.push(schemaValue);
+    }
+    paths.forEach((pathItem) => contextManage.enterContext(context, pathItem));
+    startValidateValidation(context);
+    paths.forEach((pathItem) => contextManage.backContext(context, pathItem));
+}
+
+/**
+ *
+ * @param {Context} context
  */
 function startValidateValidation(context) {
     if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === true) {
         return;
     } else if (context.schemaData.current?.$ref?.[context.schemaData.current.key] === false) {
-        errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+        if (context.instanceData.current?.$ref?.[context.instanceData.current.key] !== undefined) {
+            errorManage.pushError(context, vocabularyActuatorConstant.errorMessageKeys.schemaIsFalse);
+        }
+        return;
+    } else if (typeUtil.getTypeofTypeByRefData(context.schemaData.current) !== typeConstant.typeofTypes.object) {
         return;
     }
     if (
         context.phase === contextConstant.phases.schemaValidate &&
         typeUtil.getTypeofType(context.instanceData.current.$ref?.[context.instanceData.current.key]) ===
             typeConstant.typeofTypes.object &&
-        context.schemaData.current.$ref === context.referenceSchemas
+        context.schemaData.current.$ref === context.referenceSchemas &&
+        !context.instanceData.current.$ref[context.instanceData.current.key][vocabularyActuatorConstant.flags.isSchema]
     ) {
         Object.defineProperty(
             context.instanceData.current.$ref[context.instanceData.current.key],
@@ -84,7 +99,11 @@ function startValidateValidation(context) {
             },
         );
     }
+    const schemaValue = context.schemaData.current.$ref[context.schemaData.current.key];
     executeLoop: for (let execute of validationConfigs) {
+        if (!(execute.key in schemaValue)) {
+            continue;
+        }
         if (!execute.versions.includes(context.version)) {
             continue;
         }
@@ -106,7 +125,8 @@ function startValidateValidation(context) {
 
             if (isExec) {
                 const tick = match.resolve(context, {
-                    startRefOrSchemaExecute,
+                    startSubSchemaExecute,
+                    startRefExecute,
                 });
                 if (tick === vocabularyActuatorConstant.ticks.nextExecute) {
                     break;
@@ -126,6 +146,9 @@ function startValidateValidation(context) {
  */
 function startValidateCore(context) {
     restoreStartState(context);
+    if (context.instanceData.origin === true || context.instanceData.origin === false) {
+        return;
+    }
     executeLoop: for (let execute of coreConfigs) {
         if (!execute.versions.includes(context.version)) {
             continue;
@@ -141,7 +164,8 @@ function startValidateCore(context) {
             }
             if (isExec) {
                 const tick = match.resolve(context, {
-                    startRefOrSchemaExecute,
+                    startSubSchemaExecute,
+                    startRefExecute,
                 });
                 if (tick === vocabularyActuatorConstant.ticks.nextExecute) {
                     break;
@@ -153,24 +177,12 @@ function startValidateCore(context) {
         }
         contextManage.backContext(context, undefined, execute.key);
     }
-    context.endTime = Date.now();
 }
 
 function startValidateSchemaSpecialValue(context) {
     restoreStartState(context);
-    const each = (keyOrIndex, item, isSchema) => {
+    const each = (keyOrIndex, item) => {
         const itemType = typeUtil.getTypeofType(item);
-        if (isSchema === true) {
-            specialConfigs.forEach((config) => {
-                if (config.versions.includes(context.version) && keyOrIndex === config.key) {
-                    config.matches.forEach((match) => {
-                        if (!match.instanceTypes || match.instanceTypes.includes(itemType)) {
-                            match.resolve(context);
-                        }
-                    });
-                }
-            });
-        }
         if (itemType === typeConstant.typeofTypes.array) {
             item.map((subItem, index) => {
                 contextManage.enterContext(context, undefined, index);
@@ -179,9 +191,25 @@ function startValidateSchemaSpecialValue(context) {
             });
         } else if (itemType === typeConstant.typeofTypes.object) {
             const isSchemaInItem = item[vocabularyActuatorConstant.flags.isSchema];
+            if (isSchemaInItem) {
+                specialConfigs.forEach((config) => {
+                    if (config.versions.includes(context.version) && config.key in item) {
+                        config.matches.forEach((match) => {
+                            if (
+                                !match.instanceTypes ||
+                                match.instanceTypes.includes(typeUtil.getTypeofType(item[config.key]))
+                            ) {
+                                contextManage.enterContext(context, undefined, config.key);
+                                match.resolve(context);
+                                contextManage.backContext(context, undefined, config.key);
+                            }
+                        });
+                    }
+                });
+            }
             for (const key of Object.keys(item)) {
                 contextManage.enterContext(context, undefined, key);
-                each(key, item[key], item[vocabularyActuatorConstant.flags.isSchema], isSchemaInItem);
+                each(key, item[key]);
                 contextManage.backContext(context, undefined, key);
             }
         }
@@ -220,4 +248,5 @@ function restoreStartState(context) {
     context.instancePaths = [];
     context.locks = [];
 }
-export { validate, startValidate, startRefOrSchemaExecute };
+
+export { validate, startValidate, startSubSchemaExecute };

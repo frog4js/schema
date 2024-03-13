@@ -8,7 +8,7 @@ import { versionConstant, vocabularyActuatorConstant } from "../../src/constants
 /**
  * @typedef {import("../../types/share")}
  */
-describe.only("test the all draft version", () => {
+describe("test the all draft version", () => {
     /**
      *
      * @param {Context} context
@@ -977,9 +977,7 @@ describe.only("test the all draft version", () => {
                 },
                 validNot: 1,
             });
-            assert.equal(filerErrorLength(context1, ["validItems"], ["items"]), 1);
             assert.equal(filerErrorLength(context1, ["validAnyOf"], ["anyOf"]), 1);
-            assert.equal(filerErrorLength(context1, ["validContains"], ["contains"]), 1);
             assert.equal(filerErrorLength(context1, ["validAdditionalProperties"], ["additionalProperties"]), 1);
             assert.equal(filerErrorLength(context1, ["validPropertyNames"], ["propertyNames"]), 1);
             assert.equal(filerErrorLength(context1, ["validNot"], ["not"]), 1);

@@ -5,7 +5,7 @@ import { contextManage } from "../../src/context/share.mjs";
 import { urlUtil } from "../../src/util/share.mjs";
 import { defaultConfigManage } from "../../src/default-config/share.mjs";
 import { contextConstant, versionConstant } from "../../src/constants/share.mjs";
-import { getLast$schemaDraft } from "../../src/schema/manage.mjs";
+import { vocabularyActuatorManage } from "../../src/vocabulary-actuator/share.mjs";
 
 /**
  * @typedef {import("../types/share")}
@@ -72,7 +72,7 @@ describe("test the schema manage module", () => {
             assert.equal(context.schemaData.main, undefined);
         });
     });
-    describe("test the addReferenceSchema function", () => {
+    describe("test the setMainSchema function", () => {
         /**
          * @type {Context}
          */
@@ -103,6 +103,17 @@ describe("test the schema manage module", () => {
                 versionConstant.jsonSchema$schemaDraftMap[versionConstant.jsonSchemaVersions.draft03],
             );
             assert.ok(context.schemaData.main);
+        });
+
+        it("should pass when schema is true", () => {
+            const schema = true;
+            schemaManage.setMainSchema(context, schema);
+            schemaManage.compile(context);
+        });
+        it("should pass when schema is false", () => {
+            const schema = false;
+            schemaManage.setMainSchema(context, schema);
+            schemaManage.compile(context);
         });
     });
 
@@ -154,7 +165,7 @@ describe("test the schema manage module", () => {
                 },
                 {
                     name: "SystemError",
-                    message: "system error: UserGroup not found or is not a valid schema",
+                    message: "system error: https://github.com/frog4js/UserGroup not found or is not a valid schema",
                 },
             );
         });
@@ -209,6 +220,68 @@ describe("test the schema manage module", () => {
             );
             assert.equal(context.state, contextConstant.states.compile);
             assert.ok(context.schemaData.main);
+        });
+        it("should pass when id is uuid", () => {
+            schemaManage.setMainSchema(context, {
+                $comment: "URIs do not have to have HTTP(s) schemes",
+                $id: "urn:uuid:deadbeef-1234-00ff-ff00-4321feebdaed",
+                properties: {
+                    foo: { $ref: "#/definitions/bar" },
+                },
+                definitions: {
+                    bar: { type: "string" },
+                },
+            });
+            schemaManage.compile(context);
+            assert.equal(Object.keys(context.referenceSchemas).length, 4);
+            assert.equal(context.referenceSchemas["#"].$id, "urn:uuid:deadbeef-1234-00ff-ff00-4321feebdaed");
+            assert.equal(context.state, contextConstant.states.compile);
+            assert.ok(context.schemaData.main);
+        });
+        it("should pass when id is file", () => {
+            schemaManage.setMainSchema(context, {
+                $id: "file:///folder/file.json",
+                definitions: {
+                    foo: {
+                        type: "number",
+                    },
+                },
+                allOf: [
+                    {
+                        $ref: "#/definitions/foo",
+                    },
+                ],
+            });
+            schemaManage.compile(context);
+            assert.equal(Object.keys(context.referenceSchemas).length, 4);
+            assert.equal(context.referenceSchemas["#"].$id, "file:///folder/file.json");
+            assert.equal(context.state, contextConstant.states.compile);
+            assert.ok(context.schemaData.main);
+        });
+        it("should pass when have $id and ref", () => {
+            schemaManage.setMainSchema(context, {
+                $id: "http://localhost:1234/sibling_id/base/",
+                definitions: {
+                    foo: {
+                        $id: "http://localhost:1234/sibling_id/foo.json",
+                        type: "string",
+                    },
+                    base_foo: {
+                        $comment: "this canonical uri is http://localhost:1234/sibling_id/base/foo.json",
+                        $id: "foo.json",
+                        type: "number",
+                    },
+                },
+                allOf: [
+                    {
+                        $comment:
+                            "$ref resolves to http://localhost:1234/sibling_id/base/foo.json, not http://localhost:1234/sibling_id/foo.json",
+                        $id: "http://localhost:1234/sibling_id/",
+                        $ref: "foo.json",
+                    },
+                ],
+            });
+            schemaManage.compile(context);
         });
     });
     describe("test the switchVersion function", () => {

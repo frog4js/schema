@@ -177,7 +177,7 @@
 //         resolve: (
 //             context: Context,
 //             hooks: {
-//                 startRefOrSchemaExecute: (context: Context) => ExecuteError[];
+//                 startSubSchemaExecute: (context: Context) => ExecuteError[];
 //                 startChildExecute: (context: Context, schemaKey: string, instanceKey: string) => void;
 //                 enterContext: (context: Context, schemaKey: string, instanceKey: string) => void;
 //                 backContext: (context: Context, schemaKey: string, instanceKey: string) => void;

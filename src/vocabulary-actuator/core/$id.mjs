@@ -10,8 +10,14 @@ import { getPseudoRandomString } from "../../util/random.mjs";
  */
 export default [
     {
-        key: vocabularyActuatorConstant.keys.$id,
-        versions: versionConstant.jsonSchemaVersionGroups.draft06ByAdd,
+        key: vocabularyActuatorConstant.keys.id,
+        versions: [
+            versionConstant.jsonSchemaVersions.draft01,
+            versionConstant.jsonSchemaVersions.draft02,
+            versionConstant.jsonSchemaVersions.draft03,
+            versionConstant.jsonSchemaVersions.draft04,
+            versionConstant.jsonSchemaVersions.draft05,
+        ],
         index: -19.1,
         matches: [
             {
@@ -22,27 +28,19 @@ export default [
                     return vocabularyActuatorConstant.ticks.nextMatch;
                 },
             },
+        ],
+    },
+    {
+        key: vocabularyActuatorConstant.keys.$id,
+        versions: versionConstant.jsonSchemaVersionGroups.draft06ByAdd,
+        index: -19.2,
+        matches: [
             {
-                instanceTypes: [typeConstant.typeofTypes.string],
+                instanceTypes: typeConstant.typeofTypeGroups.empty,
                 resolve: (context) => {
-                    const originId = context.instanceData.current.$ref[context.instanceData.current.key];
-
-                    Object.defineProperty(
-                        context.instanceData.current.$ref,
-                        vocabularyActuatorConstant.flags.originId,
-                        {
-                            value: originId,
-                            enumerable: false,
-                        },
-                    );
-                    const id = urlUtil.calculateId(originId, context.defaultConfig.baseURI);
-                    if (!id) {
-                        errorManage.pushError(context);
-                    } else {
-                        context.instanceData.current.$ref[context.instanceData.current.key] = id;
-                        context.referenceSchemas[id] = context.instanceData.origin;
-                    }
-                    return vocabularyActuatorConstant.ticks.nextExecute;
+                    context.instanceData.current.$ref[context.instanceData.current.key] =
+                        randomUtil.getPseudoRandomString();
+                    return vocabularyActuatorConstant.ticks.nextMatch;
                 },
             },
         ],
