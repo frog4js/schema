@@ -1,6 +1,6 @@
 {
     "name": "@frog4js/schema",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "types": "types/index.d.ts",
     "description": "Fast and hook-base web framework, for Node.js schema package",
     "engines": {
@@ -10,14 +10,13 @@
         "lint:eslint": "eslint --fix --ext .mjs,.ts \"src\" \"test\"",
         "lint:prettier": "prettier --write  --loglevel warn \"src\" \"test\"",
         "lint:lint-staged": "lint-staged",
-        "release": "standard-version",
         "commit": "git -cz",
         "test": "node --test test/all-test.mjs",
         "test:only": "node --test --test-only test/all-test.mjs",
         "test:coverage": "rimraf ./coverage && NODE_V8_COVERAGE=coverage node --experimental-test-coverage test/all-test.mjs",
         "test:suite": "node --test json-schema-test-suite/suite-runner.test.mjs",
         "build": "rimraf ./built && frog build",
-        "publish": "npm run build && frog publish"
+        "release": "npm run build && frog release"
     },
     "repository": {
         "type": "git",
