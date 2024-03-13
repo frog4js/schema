@@ -20,7 +20,7 @@ function findTestFiles(dir, ext) {
     return testFiles;
 }
 
-const testFiles = findTestFiles(process.cwd(), ".test.mjs");
+const testFiles = findTestFiles(path.join(process.cwd(), "./test"), ".test.mjs");
 const srcFiles = findTestFiles(path.join(process.cwd(), "./src"), ".mjs");
 for (const file of srcFiles) {
     import(file);

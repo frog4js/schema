@@ -27,7 +27,7 @@ const configs = [
                             parentSchemaInfo[vocabularyActuatorConstant.keys.properties] || {},
                         );
                         const patternKeys =
-                            contextManage.getCache(context, vocabularyActuatorConstant.keys.patternProperties) || [];
+                            contextManage.getCache(context, vocabularyActuatorConstant.keys.patternProperties, 1) || [];
                         const matchKeySet = new Set([...propertyKeys, ...patternKeys]);
                         const diffProperties = Object.keys(
                             context.instanceData.current.$ref[context.instanceData.current.key],
@@ -49,7 +49,7 @@ const configs = [
                         parentSchemaInfo[vocabularyActuatorConstant.keys.properties] || {},
                     );
                     const patternKeys =
-                        contextManage.getCache(context, vocabularyActuatorConstant.keys.patternProperties) || [];
+                        contextManage.getCache(context, vocabularyActuatorConstant.keys.patternProperties, 1) || [];
                     const matchKeySet = new Set([...propertyKeys, ...patternKeys]);
                     const diffProperties = Object.keys(
                         context.instanceData.current.$ref[context.instanceData.current.key],

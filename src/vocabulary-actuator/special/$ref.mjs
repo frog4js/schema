@@ -16,22 +16,26 @@ export default [
             {
                 instanceTypes: [typeConstant.typeofTypes.string],
                 resolve: (context) => {
-                    const paths = [...context.instancePaths];
-                    paths.pop();
-                    paths.pop();
                     /**
                      * @type {string}
                      */
                     let parentId;
+                    let level = 2;
+                    let max = context.instancePaths.length;
                     while (true) {
-                        parentId = contextManage.getCache(context, vocabularyActuatorConstant.keys.$id, paths);
+                        parentId = contextManage.getCache(
+                            context,
+                            vocabularyActuatorConstant.keys.$id,
+                            undefined,
+                            level,
+                        );
                         if (parentId) {
                             break;
                         }
-                        if (paths.length === 0) {
+                        if (level >= max) {
                             break;
                         }
-                        paths.pop();
+                        level++;
                     }
                     if (!parentId) {
                         parentId = context.defaultConfig.baseURI;

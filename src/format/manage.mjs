@@ -72,7 +72,7 @@ const draftFormats = {
                 matches[2] >= 1 &&
                 matches[2] <= 12 &&
                 matches[3] >= 1 &&
-                matches[3] <= (matches[1] === 2 && isLeapYear(matches, 1) ? 29 : DAYS[matches[2]])
+                matches[3] <= (matches[2] === 2 && isLeapYear(matches, 1) ? 29 : DAYS[matches[2]])
             );
         },
     },
@@ -80,17 +80,44 @@ const draftFormats = {
     time: {
         validate: (refData) => {
             let matches = refData.$ref[refData.key].match(TIME);
-            if (!matches) return false;
+            if (!matches || !matches[5]) return false;
+            if (!(matches[1] <= 23 && matches[2] <= 59)) {
+                return false;
+            }
             matches = matches.map((item, i) => (i > 0 && i <= 3 ? +item : item));
             if (matches[5] && matches[5] !== "z" && matches[5] !== "Z") {
                 const offsets = matches[5].match(OFFSET)?.map((item, i) => (i >= 2 && i <= 3 ? +item : item));
                 if (!offsets) return false;
+                if (offsets[2] > 12 || offsets[3] >= 60) {
+                    return false;
+                }
                 if (offsets[1] === "-") {
-                    matches[1] = matches[1] + offsets[2];
                     matches[2] = matches[2] + offsets[3];
+                    if (matches[2] > 60) {
+                        matches[1] = matches[1] + offsets[2] + 1;
+                    } else {
+                        matches[1] = matches[1] + offsets[2];
+                    }
+                    if (matches[1] > 23) {
+                        matches[1] = 0;
+                    }
                 } else {
-                    matches[1] = matches[1] - offsets[2];
-                    matches[2] = matches[2] - offsets[3];
+                    if (matches[2] < offsets[3]) {
+                        if (matches[1] === 0) {
+                            matches[1] = 23;
+                        } else {
+                            matches[1] = matches[1] - 1;
+                        }
+                        matches[2] = matches[2] + 60 - offsets[3];
+                    } else {
+                        matches[2] = matches[2] - offsets[3];
+                    }
+                    if (matches[1] < offsets[2]) {
+                        matches[1] = matches[1] + 24 - offsets[2];
+                    } else {
+                        matches[1] = matches[1] - offsets[2];
+                    }
+                    if (matches[1] === 24) matches[1] = 0;
                 }
             }
             // [other, hour, minute, second, ".", "timeZone"]
@@ -173,6 +200,9 @@ const draftFormats = {
     },
     "json-pointer": {
         regex: /^(?:\/(?:[^~/]|~0|~1)*)*$/,
+    },
+    "relative-json-pointer": {
+        regex: /^(?:0|[1-9][0-9]*)(?:#|(?:\/(?:[^~/]|~0|~1)*)*)$/,
     },
 };
 

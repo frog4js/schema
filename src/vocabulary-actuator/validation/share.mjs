@@ -38,6 +38,8 @@ import exclusiveMinimumConfigs from "./exclusiveMinimum.mjs";
 import ifConfigs from "./if.mjs";
 import thenConfigs from "./then.mjs";
 import elseConfigs from "./else.mjs";
+import contentEncodingConfigs from "./contentEncoding.mjs";
+import contentMediaTypeConfigs from "./contentMediaType.mjs";
 export default [
     ...$refConfigs,
     ...optionalConfigs,
@@ -79,4 +81,6 @@ export default [
     ...ifConfigs,
     ...thenConfigs,
     ...elseConfigs,
+    ...contentEncodingConfigs,
+    ...contentMediaTypeConfigs,
 ].sort((item1, item2) => item1.index - item2.index);

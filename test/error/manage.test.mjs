@@ -4,10 +4,15 @@ import { errorManage } from "../../src/error/share.mjs";
 import { contextManage } from "../../src/context/share.mjs";
 import { schemaManage } from "../../src/schema/share.mjs";
 
-describe("test the error manage module", () => {
+describe.only("test the error manage module", () => {
     describe("test the pushError function", () => {
+        function setSchema(context) {
+            schemaManage.setMainSchema(context, { enum: ["test"] });
+            schemaManage.compile(context);
+        }
         it("should pass when locale is en-gb and schemaKey is enum", () => {
             const context = contextManage.create();
+            setSchema(context);
             context.instanceData.locale = "en-gb";
             contextManage.enterContext(context, "enum");
             errorManage.pushError(context);
@@ -15,6 +20,7 @@ describe("test the error manage module", () => {
         });
         it("should pass when locale is zh-cn and schemaKey is enum", () => {
             const context = contextManage.create();
+            setSchema(context);
             context.instanceData.locale = "zh-cn";
             contextManage.enterContext(context, "enum");
             errorManage.pushError(context);
@@ -29,6 +35,7 @@ describe("test the error manage module", () => {
                     },
                 },
             });
+            setSchema(context);
             context.instanceData.locale = "zh-cn";
             contextManage.enterContext(context, "enum");
             errorManage.pushError(context);

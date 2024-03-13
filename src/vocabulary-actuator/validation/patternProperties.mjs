@@ -45,6 +45,7 @@ const configs = [
                         context,
                         vocabularyActuatorConstant.keys.patternProperties,
                         Array.from(matchKeys.values()),
+                        1,
                     );
 
                     return vocabularyActuatorConstant.ticks.nextExecute;

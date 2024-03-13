@@ -64,6 +64,7 @@ const v7FormatKeys = [
     "regex",
     "date",
     "time",
+    "relative-json-pointer",
 ];
 
 /**

@@ -157,6 +157,7 @@ export default function jsonSchemaTest(configs) {
                                             JSON.stringify(suiteItem.schema),
                                             JSON.stringify(test.data),
                                             errors,
+                                            test.valid,
                                         );
                                     }
                                     assert.equal(valid, test.valid);
@@ -172,39 +173,18 @@ export default function jsonSchemaTest(configs) {
 
 jsonSchemaTest({
     suiteAbsolutePath: path.join(__filename, "../src"),
-    drafts: ["draft4", "draft6"],
-    skipPaths: ["/optional/zeroTerminatedFloats.json", "/optional/cross-draft.json"],
-    skipTestDescriptions: ["none of the properties mentioned"],
+    drafts: ["draft4", "draft6", "draft7"],
+    skipPaths: [
+        "/optional/zeroTerminatedFloats.json",
+        "/optional/cross-draft.json",
+        "/optional/format/iri.json",
+        "/optional/format/iri-reference.json",
+        "/optional/format/idn-email.json",
+        "/optional/format/idn-hostname.json",
+    ],
+    skipTestDescriptions: [
+        "none of the properties mentioned",
+        "valid leap second, large positive time-offset",
+        "valid leap second, large negative time-offset",
+    ],
 });
-
-//
-// path.join(__filename, "../tests")
-//
-//
-// const draftList = ["draft3"];
-// draftList.forEach(draft => {
-//     if (tests[draft]) {
-//
-//         for (const fileName of Object.keys(tests[draft])) {
-//             // tests[draft][fileName]
-//         }
-//         console.log(tests[draft])
-//     }
-// })
-// for (let i =0; i<10; i++) {
-//
-// }
-// describe("test JSON Schema Test suite", () => {
-//     describe("draft-03", () => {
-//
-//     });
-//
-//     it("draft-03", () => {
-//         console.log(tests)
-//         const context = contextManage.create({
-//             baseURI: "http://localhost:1234/",
-//             $schema: "http://json-schema.org/draft-04/schema#"
-//         });
-//         // schemaManage.setMainSchema()
-//     })
-// })

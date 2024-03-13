@@ -53,6 +53,8 @@ export const keys = {
     if: "if",
     then: "then",
     else: "else",
+    contentEncoding: "contentEncoding",
+    contentMediaType: "contentMediaType",
 };
 export const errorMessageKeys = {
     schemaIsFalse: "schemaIsFalse",
@@ -193,8 +195,22 @@ export const defaultErrorMessages = {
         "zh-cn": "约束的值为false",
         "en-gb": "boolean schema is false",
     },
+    [keys.contentEncoding]: {
+        "zh-cn": "必须是有效的${currentSchemaValue}字符串",
+        "en-gb": "must be valid ${currentSchemaValue} character",
+    },
+    [keys.contentMediaType]: {
+        "zh-cn": "必须是有效的${currentSchemaValue}字符串",
+        "en-gb": "must be valid ${currentSchemaValue} character",
+    },
 };
 export const flags = {
     isSchema: "$_frog4js_is_schema",
     originId: "$_frog4js_origin_id",
+};
+export const contentEncodings = {
+    base64: "base64",
+};
+export const contentMediaTypes = {
+    applicationJson: "application/json",
 };

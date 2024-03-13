@@ -213,7 +213,7 @@ export function fastDeepHasDuplicates(array) {
             objectHasDuplicate = true;
             const objectValues = [];
             for (const obj of objectTypeItems) {
-                objectValues.push(obj[key]);
+                obj[key] !== undefined && objectValues.push(obj[key]);
             }
             if (!fastDeepHasDuplicates(objectValues)) {
                 objectHasDuplicate = false;

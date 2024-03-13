@@ -87,7 +87,7 @@ describe("test the executes.format module", () => {
                     type: "string",
                     format: "time",
                 },
-                "11:00",
+                "11:00:00Z",
                 vocabularyActuatorConstant.keys.format,
                 0,
                 0,

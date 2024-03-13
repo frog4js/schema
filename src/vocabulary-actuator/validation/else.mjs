@@ -17,7 +17,7 @@ const configs = [
                 resolve: (context) => {
                     if (
                         context.schemaData.current.$ref[context.schemaData.current.key] === false &&
-                        contextManage.getCache(context, vocabularyActuatorConstant.keys.if) === false
+                        contextManage.getCache(context, vocabularyActuatorConstant.keys.if, 1) === false
                     ) {
                         errorManage.pushError(context);
                     }
@@ -27,7 +27,7 @@ const configs = [
             {
                 schemaTypes: [typeConstant.jsonTypes.object],
                 resolve: (context, { startSubSchemaExecute }) => {
-                    if (contextManage.getCache(context, vocabularyActuatorConstant.keys.if) === false) {
+                    if (contextManage.getCache(context, vocabularyActuatorConstant.keys.if, 1) === false) {
                         const result = startSubSchemaExecute(context, false);
                         if (result === true) {
                             errorManage.pushError(context);

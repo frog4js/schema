@@ -33,7 +33,10 @@ const configs = [
 
                     defaultContext.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = schema;
                     defaultContext.state = contextConstant.states.compile;
-
+                    defaultContext.schemaData.current = {
+                        $ref: defaultContext.referenceSchemas,
+                        key: vocabularyActuatorConstant.pathKeys.self,
+                    };
                     defaultContext.instanceData.origin =
                         context.instanceData.current.$ref[context.instanceData.current.key];
                     defaultContext.instanceData.locale = context.instanceData.locale;

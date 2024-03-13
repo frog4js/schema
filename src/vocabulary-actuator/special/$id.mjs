@@ -20,20 +20,21 @@ function resolveId(context) {
         });
     }
 
-    const paths = [...context.instancePaths];
     /**
      * @type {string}
      */
     let parentId;
+    let level = 0;
+    let max = context.instancePaths.length;
     while (true) {
-        parentId = contextManage.getCache(context, vocabularyActuatorConstant.keys.$id, paths);
+        parentId = contextManage.getCache(context, vocabularyActuatorConstant.keys.$id, undefined, level);
         if (parentId) {
             break;
         }
-        if (paths.length === 0) {
+        if (level >= max) {
             break;
         }
-        paths.pop();
+        level++;
     }
     if (!parentId) {
         parentId = context.defaultConfig.baseURI;
@@ -44,9 +45,7 @@ function resolveId(context) {
     } else {
         context.instanceData.current.$ref[context.instanceData.current.key] = id;
         context.referenceSchemas[id] = context.instanceData.current.$ref;
-        const setPaths = [...context.instancePaths];
-        setPaths.pop();
-        contextManage.setCache(context, vocabularyActuatorConstant.keys.$id, id, setPaths);
+        contextManage.setCache(context, vocabularyActuatorConstant.keys.$id, id, undefined, 1);
     }
 }
 /**

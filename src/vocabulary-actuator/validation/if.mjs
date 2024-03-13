@@ -18,6 +18,7 @@ const configs = [
                         context,
                         vocabularyActuatorConstant.keys.if,
                         context.schemaData.current.$ref[context.schemaData.current.key],
+                        1,
                     );
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
@@ -27,7 +28,7 @@ const configs = [
                 schemaTypes: [typeConstant.jsonTypes.object],
                 resolve: (context, { startSubSchemaExecute }) => {
                     const errors = startSubSchemaExecute(context, true);
-                    contextManage.setCache(context, vocabularyActuatorConstant.keys.if, errors.length === 0);
+                    contextManage.setCache(context, vocabularyActuatorConstant.keys.if, errors.length === 0, 1);
                     return vocabularyActuatorConstant.ticks.nextExecute;
                 },
             },

@@ -290,18 +290,32 @@ function unlock(context) {
  * @param {Context}context
  * @param {string}key
  * @param {*}value
- * @param {Array<string| number>} [paths]
+ * @param {number} [backSchemaLevel]
+ * @param {number} [backInstanceLevel]
  */
-function setCache(context, key, value, paths) {
+function setCache(context, key, value, backSchemaLevel = 0, backInstanceLevel = 0) {
+    const schemaPaths = dataOperateUtil.deepClone(context.schemaPaths) || [];
+    for (let i = 0; i < backSchemaLevel; i++) {
+        schemaPaths.pop();
+    }
+    const instancePaths = dataOperateUtil.deepClone(context.instancePaths) || [];
+    for (let i = 0; i < backInstanceLevel; i++) {
+        instancePaths.pop();
+    }
     for (const cache of context.caches) {
-        const result = dataOperateUtil.compareToArray(paths || context.instancePaths, cache.paths);
+        let result = dataOperateUtil.compareToArray(schemaPaths, cache.schemaPaths);
+        if (result !== 0) {
+            continue;
+        }
+        result = dataOperateUtil.compareToArray(context.instancePaths, instancePaths);
         if (result === 0) {
             cache.data[key] = value;
             return;
         }
     }
     context.caches.push({
-        paths: dataOperateUtil.deepClone(paths || context.instancePaths),
+        schemaPaths: schemaPaths,
+        instancePaths: instancePaths,
         data: {
             [key]: value,
         },
@@ -312,12 +326,25 @@ function setCache(context, key, value, paths) {
  *
  * @param {Context} context
  * @param {string} key
- * @param {Array<string| number>} paths
+ * @param {number} [backSchemaLevel]
+ * @param {number} [backInstanceLevel]
  * @return {* | undefined}
  */
-function getCache(context, key, paths) {
+function getCache(context, key, backSchemaLevel = 0, backInstanceLevel = 0) {
+    const schemaPaths = dataOperateUtil.deepClone(context.schemaPaths) || [];
+    for (let i = 0; i < backSchemaLevel; i++) {
+        schemaPaths.pop();
+    }
+    const instancePaths = dataOperateUtil.deepClone(context.instancePaths) || [];
+    for (let i = 0; i < backInstanceLevel; i++) {
+        instancePaths.pop();
+    }
     for (const cache of context.caches) {
-        const result = dataOperateUtil.compareToArray(paths || context.instancePaths, cache.paths);
+        let result = dataOperateUtil.compareToArray(schemaPaths, cache.schemaPaths);
+        if (result !== 0) {
+            continue;
+        }
+        result = dataOperateUtil.compareToArray(instancePaths, cache.instancePaths);
         if (result === 0) {
             return cache.data[key];
         }
@@ -331,8 +358,9 @@ function getCache(context, key, paths) {
  */
 function clearCache(context) {
     const index = context.caches.findIndex((cache) => {
-        const result = dataOperateUtil.compareToArray(context.instancePaths, cache.paths);
-        return result === 0;
+        const result1 = dataOperateUtil.compareToArray(context.schemaPaths, cache.schemaPaths);
+        const result2 = dataOperateUtil.compareToArray(context.instancePaths, cache.instancePaths);
+        return result1 === 0 && result2 === 0;
     });
     if (index !== -1) {
         context.caches.splice(index, 1);

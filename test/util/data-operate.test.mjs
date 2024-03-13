@@ -210,6 +210,23 @@ describe("test the data operate module", () => {
             const result = dataOperateUtil.fastDeepHasDuplicates([[], []]);
             assert.equal(result, true);
         });
+        it("should handle complex array with two empty array", () => {
+            const result = dataOperateUtil.fastDeepHasDuplicates([
+                {
+                    type: "string",
+                    maxLength: 2,
+                },
+                {
+                    type: "number",
+                    maximum: 10,
+                },
+                {
+                    type: "string",
+                    minLength: 5,
+                },
+            ]);
+            assert.equal(result, false);
+        });
     });
 
     describe("test the merge function", () => {

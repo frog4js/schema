@@ -9,7 +9,8 @@ describe("test the executes.disallow module", () => {
         it("should pass when disallow not equal instance type", () => {
             const context = execResolve(
                 {
-                    type: ["string", "null", "boolean", { type: "object", properties: { name: "string" } }],
+                    $schema: "http://json-schema.org/draft-03/schema#",
+                    type: ["string", "null", "boolean", { type: "object", properties: { name: { type: "string" } } }],
                     disallow: "object",
                 },
                 "test",
@@ -25,7 +26,8 @@ describe("test the executes.disallow module", () => {
         it("should fail when disallow  equal instance type", () => {
             const context = execResolve(
                 {
-                    type: ["string", "null", "boolean", { type: "object", properties: { name: "string" } }],
+                    $schema: "http://json-schema.org/draft-03/schema#",
+                    type: ["string", "null", "boolean", { type: "object", properties: { name: { type: "string" } } }],
                     disallow: "object",
                 },
                 { name: "test" },
@@ -44,7 +46,9 @@ describe("test the executes.disallow module", () => {
         it("should pass when disallow not equal instance type", () => {
             const context = execResolve(
                 {
-                    type: ["string", "null", "boolean", { type: "object", properties: { name: "string" } }],
+                    $schema: "http://json-schema.org/draft-03/schema#",
+
+                    type: ["string", "null", "boolean", { type: "object", properties: { name: { type: "string" } } }],
                     disallow: ["object", "string"],
                 },
                 true,
@@ -60,7 +64,8 @@ describe("test the executes.disallow module", () => {
         it("should fail when disallow  equal instance type", () => {
             const context = execResolve(
                 {
-                    type: ["string", "null", "boolean", { type: "object", properties: { name: "string" } }],
+                    $schema: "http://json-schema.org/draft-03/schema#",
+                    type: ["string", "null", "boolean", { type: "object", properties: { name: { type: "string" } } }],
                     disallow: ["object", "string"],
                 },
                 "test",

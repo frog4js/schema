@@ -258,6 +258,31 @@ describe("test the schema manage module", () => {
             assert.equal(context.state, contextConstant.states.compile);
             assert.ok(context.schemaData.main);
         });
+        it("should pass when have $id and ref", () => {
+            schemaManage.setMainSchema(context, {
+                $id: "http://localhost:1234/sibling_id/base/",
+                definitions: {
+                    foo: {
+                        $id: "http://localhost:1234/sibling_id/foo.json",
+                        type: "string",
+                    },
+                    base_foo: {
+                        $comment: "this canonical uri is http://localhost:1234/sibling_id/base/foo.json",
+                        $id: "foo.json",
+                        type: "number",
+                    },
+                },
+                allOf: [
+                    {
+                        $comment:
+                            "$ref resolves to http://localhost:1234/sibling_id/base/foo.json, not http://localhost:1234/sibling_id/foo.json",
+                        $id: "http://localhost:1234/sibling_id/",
+                        $ref: "foo.json",
+                    },
+                ],
+            });
+            schemaManage.compile(context);
+        });
     });
     describe("test the switchVersion function", () => {
         /**
