@@ -3,25 +3,25 @@
 -   [中文](README-zh_CN.md)
 -   [English](README.md)
 
-JSON schema suitable for Node.js and browsers. We will soon support all drafts (currently supporting drafts 01, 02, 03, 04, 05, 06, 07).
+适用于 Node.js 和浏览器的 JSON Schema。即将支持所有的 draft(目前支持 draft-01,draft-02,draft-03,draft-04,draft-05,draft-06,draft-07)。
 
-## Feature
+## 功能
 
--   using functional programming(esm + jsDoc + Function)
--   will precompile the schema, which will occupy additional memory and will not generate additional code (fundamentally different from AJV)
+-   使用函数式编程(esm + jsDoc + Function)
+-   会对 schema 进行预编译, 会占用额外的内存，单不会产生额外代码(和 ajv 有本质的区别)
 -   0 dependencies
--   [x] pass JSON Schema test suite，include optional(partially skipped as follows)
-    -   (optional)none of the properties mentioned
-    -   (optional)valid leap second, large positive time-offset
-    -   (optional)valid leap second, large negative time-offset
-    -   (optional)a float is not an integer even without fractional part
-    -   (optional)refs to future drafts are processed as future drafts
-    -   (optional)format is iri, iri-reference, idn-email.json,idn-hostname
--   [x] vocabulary based validation
+-   [x] 通过 JSON Schema test suite，包括可选的(部分跳过的如下)
+    -   (可选)none of the properties mentioned
+    -   (可选)valid leap second, large positive time-offset
+    -   (可选)valid leap second, large negative time-offset
+    -   (可选)a float is not an integer even without fractional part
+    -   (可选)refs to future drafts are processed as future drafts
+    -   (可选)format is iri, iri-reference, idn-email.json,idn-hostname
+-   [x] 基于词汇的验证
 -   [x] format assertions
     -   [x] flag to enable in draft <= 7
-    -   [ ] custom format
-    -   [ ] built-in format
+    -   [ ] 自定义 format
+    -   [ ] 内置 format
         -   [x] regex, uuid
         -   [x] ipv4, ipv6
         -   [x] hostname, email
@@ -35,14 +35,14 @@ JSON schema suitable for Node.js and browsers. We will soon support all drafts (
     -   [x] flag to enable in draft <= 7
     -   [x] contentEncoding
         -   [x] base64
-        -   [ ] custom
+        -   [ ] 自定义
     -   [x] contentMediaType
         -   [x] application/json
-        -   [ ] custom
+        -   [ ] 自定义
     -   [ ] contentSchema
 -   [ ] custom vocabulary
--   [x] the referenced schema can have different drafts
--   [x] more stringent checks on schema
+-   [x] 引用的 schema 的可以是不同的 draft
+-   [x] 对 schema 更严格的检查
     -   [x] default
     -   [x] examples
     -   [x] ref
@@ -69,39 +69,49 @@ schemaManage.compile(context);
 console.log(vocabularyActuatorManage.validate(context, 1));
 ```
 
+## 后续
+
+-   进行性能测试并优化性能
+-   支持 draft-2019-09, draft-2020-12
+-   完善 error
+-   支持剩余的 format
+-   检测无限循环陷阱
+-   自定义 format, vocabulary-actuator
+-   完善文档
+
 ## API Reference
 
 ### contextManage
 
-it is mainly used to create Context, which is used to mount various data (such as schema, instance, errors, etc.) and is the context data for the execution process.
+主要是用来创建 Context, Context 是用来挂载各种数据(如 schema,instance,errors 等等), 是执行过程的上下文数据。
 
 #### contextManage.create(defaultConfig?: DefaultConfig) => Context
 
-create a context where defaultConfiguration is the default configuration.
+创建上下文, defaultConfig 是默认的一些配置。
 
 ### schemaManage
 
-You can set the main schema and ref schema.
+可以设置 main schema 和 ref schema。
 
 #### schemaManage.addReferenceSchema: (context: Context, schema: Schema) => void;
 
-add referenced schema
+添加被引用的 schema
 
 #### schemaManage.setMainSchema: (context: Context, schema: Schema) => void;
 
-set main schema
+设置 main schema
 
 #### schemaManage.compile: () => void;
 
-complete the setup, here we will check if the schema specified by $ref exists, and prohibit any further modification of schema related data
+完成设置, 这里会检查$ref 指定的 schema 是否存在, 同时将禁止再修改 schema 相关的数据了
 
 ### vocabularyActuatorManage
 
-verify if the instance meets the requirements of the schema
+验证 instance 是否符合 schema 的要求
 
 #### vocabularyActuatorManage.validate: (context: Context,instance: any,locale?: string) => {errors: ExecuteError[];valid: boolean;};
 
-verify that the valid value is true, otherwise it is false, and the errors field indicates the specific reason for the failure
+验证通过 valid 为 true, 否则为 false, 同时 errors 中为具体失败的原因
 
 ## Struct Definition
 
