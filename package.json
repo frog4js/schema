@@ -1,6 +1,6 @@
 {
     "name": "@frog4js/schema",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "types": "types/index.d.ts",
     "type": "module",
     "description": "Fast and hook-base web framework, for Node.js schema package",
