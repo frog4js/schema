@@ -1,10 +1,10 @@
 import { before, describe, it } from "node:test";
-import { contextManage } from "../src/context/share.mjs";
-import { schemaManage } from "../src/schema/share.mjs";
+import { contextManage } from "../src/context/share.js";
+import { schemaManage } from "../src/schema/share.js";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";
-import { vocabularyActuatorManage } from "../src/vocabulary-actuator/share.mjs";
+import { vocabularyActuatorManage } from "../src/vocabulary-actuator/share.js";
 import * as assert from "assert";
 
 const __filename = fileURLToPath(import.meta.url);
