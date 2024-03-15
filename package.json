@@ -2,6 +2,7 @@
     "name": "@frog4js/schema",
     "version": "1.0.1",
     "types": "types/index.d.ts",
+    "type": "module",
     "description": "Fast and hook-base web framework, for Node.js schema package",
     "engines": {
         "node": ">= 16.0.0"
@@ -11,10 +12,10 @@
         "lint:prettier": "prettier --write  --loglevel warn \"src\" \"test\"",
         "lint:lint-staged": "lint-staged",
         "commit": "git -cz",
-        "test": "node --test test/all-test.mjs",
-        "test:only": "node --test --test-only test/all-test.mjs",
-        "test:coverage": "rimraf ./coverage && NODE_V8_COVERAGE=coverage node --experimental-test-coverage test/all-test.mjs",
-        "test:suite": "node --test json-schema-test-suite/suite-runner.test.mjs",
+        "test": "node --test test/all-test.js",
+        "test:only": "node --test --test-only test/all-test.js",
+        "test:coverage": "rimraf ./coverage && NODE_V8_COVERAGE=coverage node --experimental-test-coverage test/all-test.js",
+        "test:suite": "node --test json-schema-test-suite/suite-runner.test.js",
         "build": "rimraf ./built && frog build",
         "release": "npm run build && frog release"
     },
@@ -49,13 +50,13 @@
     "dependencies": {},
     "exports": {
         "./context": {
-            "import": "./src/context/index.mjs"
+            "import": "./src/context/index.js"
         },
         "./vocabulary-actuator": {
-            "import": "./src/vocabulary-actuator/index.mjs"
+            "import": "./src/vocabulary-actuator/index.js"
         },
         "./schema": {
-            "import": "./src/schema/index.mjs"
+            "import": "./src/schema/index.js"
         }
     }
 }
