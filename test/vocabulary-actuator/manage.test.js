@@ -30,6 +30,7 @@ describe("test the vocabulary actuator manage module", () => {
             context.instanceData.origin = {
                 isStringRef: "str",
             };
+            context.instanceData.current = undefined;
             contextManage.enterContext(context, "properties");
             contextManage.enterContext(context, "isStringRef", "isStringRef");
             const errors = startSubSchemaExecute(context, true);
@@ -58,6 +59,7 @@ describe("test the vocabulary actuator manage module", () => {
                     isStringRef: 1,
                 },
             };
+            context.instanceData.current = undefined;
             contextManage.enterContext(context, "properties");
             contextManage.enterContext(context, "isRootRef", "isRootRef");
             const errors = startSubSchemaExecute(context, true);

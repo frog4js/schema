@@ -6,6 +6,7 @@ export type RefData = {
     key: string | number;
 };
 export type Context = {
+    schemaParamId?: string;
     errors: Array<ExecuteError>;
     locks: Array<{
         paths: Array<string>;
@@ -39,7 +40,8 @@ export type Context = {
         $ref: string;
         schema: Schema;
     }[];
-    // cache: Record<string, Record<string, any>>
+    schemaHistory: Array<any>;
+    instanceHistory: Array<any>;
 };
 export type DefaultConfig = {
     $schema?: string;
@@ -47,5 +49,6 @@ export type DefaultConfig = {
     errorMessages?: Record<string, Record<string, string>>;
     locale?: string;
     strict?: boolean;
+    useDefaults?: boolean;
 };
 // function create(defaultConfig: DefaultConfig): Context;

@@ -22,7 +22,10 @@ const configs = [
             {
                 instanceTypes: [typeConstant.typeofTypes.undefined],
                 resolve: (context) => {
-                    if (context.phase === contextConstant.phases.schemaValidate) {
+                    if (
+                        context.phase === contextConstant.phases.schemaValidate ||
+                        context.defaultConfig.useDefaults === false
+                    ) {
                         return vocabularyActuatorConstant.ticks.endExecute;
                     } else {
                         return vocabularyActuatorConstant.ticks.nextMatch;

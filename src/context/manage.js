@@ -1,10 +1,7 @@
 import { contextConstant, vocabularyActuatorConstant, typeConstant, versionConstant } from "../constants/share.js";
 import { schemaManage } from "../schema/share.js";
 import { dataOperateUtil } from "../util/share.js";
-import { jsonSchema$schemaVersionMap } from "../constants/version.js";
 import { defaultConfigManage } from "../default-config/share.js";
-import { deepClone } from "../util/data-operate.js";
-import { switchVersion } from "../schema/manage.js";
 
 /**
  * @typedef {import("../../types/share")}
@@ -41,6 +38,8 @@ function create(defaultConfig) {
         phase: contextConstant.phases.schemaValidate,
         waitValidateRefs: [],
         locks: [],
+        schemaHistory: [],
+        instanceHistory: [],
     };
     schemaManage.switchVersion(context, defaultConfig.$schema);
     return context;
@@ -68,6 +67,8 @@ function clone(context) {
         waitValidateRefs: [],
         locks: [],
         caches: [],
+        schemaHistory: [],
+        instanceHistory: [],
     };
 }
 
@@ -76,6 +77,7 @@ function clone(context) {
  * @param {Context} context
  */
 function refererCurrentInstance(context) {
+    context.instanceHistory = [];
     if (context.instancePaths.length === 0) {
         context.instanceData.current = {
             $ref: { root: context.instanceData.origin },
@@ -83,8 +85,7 @@ function refererCurrentInstance(context) {
         };
         return;
     }
-    const current = getParentInstance(context);
-
+    const current = getParentInstance(context, true);
     if (!context.instanceData.current) {
         context.instanceData.current = { $ref: current, key: context.instancePaths[context.instancePaths.length - 1] };
     } else {
@@ -98,7 +99,10 @@ function refererCurrentInstance(context) {
  * @param {Context} context
  */
 function refererCurrentSchema(context) {
+    context.schemaHistory = [];
+    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.origin;
     const current = getParentSchema(context, true);
+    schemaManage.switchVersion(context, context.schemaData.origin.$schema || context.defaultConfig.$schema);
     if (!context.schemaData.current) {
         context.schemaData.current = { $ref: current, key: context.schemaPaths[context.schemaPaths.length - 1] };
     } else {
@@ -120,8 +124,7 @@ function getSiblingInstanceRefData(context, key) {
             key: "root",
         };
     }
-    const current = getParentInstance(context);
-    return { $ref: current, key };
+    return { $ref: context.instanceData.current.$ref, key };
 }
 
 /**
@@ -131,34 +134,25 @@ function getSiblingInstanceRefData(context, key) {
  * @return {RefData}
  */
 function getSiblingSchemaRefData(context, key) {
-    const current = getParentSchema(context);
-    return { $ref: current, key };
+    return { $ref: context.schemaData.current.$ref, key };
 }
 
 /**
  *
  * @param {Context}context
+ * @param {boolean}recordHistory
  * @return {*}
  */
-function getParentSchema(context) {
+function getParentSchema(context, recordHistory) {
     let current;
-    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.origin;
-    schemaManage.switchVersion(context, context.schemaData.origin.$schema || context.defaultConfig.$schema);
     for (let i = 0; i < context.schemaPaths.length - 1; i++) {
         const keyOrIndex = context.schemaPaths[i];
         if (keyOrIndex === vocabularyActuatorConstant.pathKeys.ref) {
             current = context.referenceSchemas;
         } else {
-            if (!current) {
-                console.log(
-                    "3333",
-                    context.schemaPaths,
-                    i,
-                    context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self],
-                );
-            }
             current = current[keyOrIndex];
         }
+        recordHistory && context.schemaHistory.push(current);
         if (context.schemaPaths[i - 1] === vocabularyActuatorConstant.pathKeys.ref) {
             context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = current;
             schemaManage.switchVersion(context, current.$schema || context.defaultConfig.$schema);
@@ -167,7 +161,7 @@ function getParentSchema(context) {
     return current;
 }
 
-function getParentInstance(context) {
+function getParentInstance(context, recordHistory) {
     let current = context.instanceData.origin;
     for (let i = 0; i < context.instancePaths.length - 1; i++) {
         const keyOrIndex = context.instancePaths[i];
@@ -179,6 +173,7 @@ function getParentInstance(context) {
         } else {
             current = current[keyOrIndex];
         }
+        recordHistory && context.instanceHistory.push(current);
     }
     return current;
 }
@@ -190,31 +185,91 @@ function getParentInstance(context) {
  * @param {string | number} [instanceKey]
  */
 function enterContext(context, schemaKey, instanceKey) {
-    {
-        if (instanceKey !== undefined) {
-            context.instancePaths.push(instanceKey);
-        }
+    if (!context.instanceData.current) {
         refererCurrentInstance(context);
     }
-    {
-        if (schemaKey !== undefined) {
-            context.schemaPaths.push(schemaKey);
+    if (!context.schemaData.current) {
+        refererCurrentSchema(context);
+    }
+    if (instanceKey !== undefined) {
+        context.instancePaths.push(instanceKey);
+        if (vocabularyActuatorConstant.pathKeys.objectKey === instanceKey) {
+            context.instanceData.current.$ref = {
+                root: Object.keys(context.instanceData.current.$ref[context.instanceData.current.key]).reduce(
+                    (acc, key) => {
+                        acc[key] = key;
+                        return acc;
+                    },
+                    {},
+                ),
+            };
+            context.instanceData.current.key = "root";
+        } else {
+            context.instanceData.current.$ref = context.instanceData.current.$ref[context.instanceData.current.key];
+            context.instanceData.current.key = instanceKey;
         }
-        if (schemaKey !== vocabularyActuatorConstant.pathKeys.ref) {
+        context.instanceHistory.push(context.instanceData.current.$ref);
+    }
+    if (schemaKey !== undefined) {
+        context.schemaPaths.push(schemaKey);
+        if (vocabularyActuatorConstant.pathKeys.ref === schemaKey) {
+            // context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.current.$ref[context.schemaData.current.key];
+            // schemaManage.switchVersion(context, context.schemaData.current.$ref[context.schemaData.current.key].$schema || context.defaultConfig.$schema);
+        } else if (context.schemaPaths[context.schemaPaths.length - 2] === vocabularyActuatorConstant.pathKeys.ref) {
             refererCurrentSchema(context);
+
+            // context.schemaData.current.$ref = context.referenceSchemas;
+            // context.schemaData.current.key = schemaKey;
+            // context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.current.$ref[context.schemaData.current.key];
+            // schemaManage.switchVersion(context, context.schemaData.current.$ref[context.schemaData.current.key].$schema || context.defaultConfig.$schema);
+        } else {
+            context.schemaData.current.$ref = context.schemaData.current.$ref[context.schemaData.current.key];
+            context.schemaData.current.key = schemaKey;
         }
+        context.schemaHistory.push(context.schemaData.current.$ref);
     }
 }
-
+/**
+ *
+ * @param {Context} context
+ * @param schemaKey
+ * @param instanceKey
+ */
 function backContext(context, schemaKey, instanceKey) {
     if (instanceKey !== undefined) {
         clearCache(context);
         context.instancePaths.pop();
-        refererCurrentInstance(context);
+        context.instanceHistory.pop();
+        if (context.instanceHistory.length === 0) {
+            context.instanceData.current.$ref = { root: context.instanceData.origin };
+            context.instanceData.current.key = "root";
+        } else {
+            context.instanceData.current.$ref = context.instanceHistory[context.instanceHistory.length - 1];
+            context.instanceData.current.key = context.instancePaths[context.instancePaths.length - 1];
+        }
     }
     if (schemaKey !== undefined) {
         context.schemaPaths.pop();
-        refererCurrentSchema(context);
+        context.schemaHistory.pop();
+
+        if (context.schemaHistory.length === 0) {
+            context.schemaData.current.$ref = context.referenceSchemas;
+            context.schemaData.current.key = vocabularyActuatorConstant.pathKeys.self;
+        } else {
+            context.schemaData.current.$ref = context.schemaHistory[context.schemaHistory.length - 1];
+            if (vocabularyActuatorConstant.pathKeys.ref === schemaKey) {
+            } else if (
+                context.schemaPaths[context.schemaPaths.length - 2] === vocabularyActuatorConstant.pathKeys.ref
+            ) {
+                refererCurrentSchema(context);
+
+                // context.schemaData.current.key = context.schemaPaths[context.schemaPaths.length - 1];
+                // context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.current.$ref[context.schemaData.current.key];
+                // schemaManage.switchVersion(context, context.schemaData.current.$ref[context.schemaData.current.key].$schema || context.defaultConfig.$schema);
+            } else {
+                context.schemaData.current.key = context.schemaPaths[context.schemaPaths.length - 1];
+            }
+        }
     }
 }
 

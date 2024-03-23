@@ -40,6 +40,8 @@ export function execResolve(
     schemaManage.setMainSchema(context, schema);
     schemaManage.compile(context);
     context.instanceData.origin = instance;
+    context.instanceData.current = undefined;
+    contextManage.enterContext(context, undefined, undefined);
     if (schemaKeys) {
         schemaKeys.forEach((key) => contextManage.enterContext(context, key));
     }

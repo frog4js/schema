@@ -179,6 +179,7 @@ describe("test the context manage module", () => {
             schemaManage.setMainSchema(context, schema);
             schemaManage.compile(context);
             context.instanceData.origin = { array: [{ name: true, age: 1 }] };
+            context.instanceData.current = undefined;
         });
         it("should return the parent instance", () => {
             contextManage.enterContext(context, undefined, "array");
@@ -229,6 +230,7 @@ describe("test the context manage module", () => {
             context.instanceData.origin = { array: [{ name: true, age: 1 }] };
         });
         it("should return correct sibling schema ref data for schema paths is empty array", () => {
+            contextManage.enterContext(context);
             let data = getSiblingSchemaRefData(context, "test");
             assert.deepEqual(data.$ref, context.referenceSchemas);
         });
@@ -250,6 +252,7 @@ describe("test the context manage module", () => {
             schemaManage.setMainSchema(context, schema);
             schemaManage.compile(context);
             context.instanceData.origin = { array: [{ name: true, age: 1 }] };
+            context.instanceData.current = undefined;
         });
         it("should return correct sibling instance ref data for instance paths is empty array", () => {
             let data = getSiblingInstanceRefData(context, "test");

@@ -23,6 +23,7 @@ function validate(context, instance, locale) {
     }
     context.phase = contextConstant.phases.instanceValidate;
     context.instanceData.origin = instance;
+    context.instanceData.current = undefined;
     context.instanceData.locale = locale || context.defaultConfig.locale;
     startValidate(context);
     return {
@@ -244,9 +245,14 @@ function startValidate(context) {
  * @param {Context}context
  */
 function restoreStartState(context) {
-    context.instanceData.current = { $ref: { root: context.instanceData.origin }, key: "root" };
+    context.schemaData.current = undefined;
+    context.instanceData.current = undefined;
+    context.schemaHistory = [];
+    context.instanceHistory = [];
     context.instancePaths = [];
     context.locks = [];
+    context.caches = [];
+    contextManage.enterContext(context, undefined, undefined);
 }
 
 export { validate, startValidate, startSubSchemaExecute };

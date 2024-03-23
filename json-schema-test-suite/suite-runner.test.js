@@ -61,13 +61,6 @@ export default function jsonSchemaTest(configs) {
         draft6: "http://json-schema.org/draft-06/schema#",
         draft7: "http://json-schema.org/draft-07/schema#",
     };
-    const idKeyMap = {
-        draft3: "id",
-        draft4: "id",
-        draft5: "id",
-        draft6: "$id",
-        draft7: "$id",
-    };
     const remoterFilePaths = {
         draft3: [/^\/integer\.json$/, /^\/subSchemas\.json$/],
         draft4: [
@@ -129,11 +122,8 @@ export default function jsonSchemaTest(configs) {
                             try {
                                 eachFile(remoterJson, "/", (path, schema) => {
                                     if (remoterFilePaths[draft].some((re) => re.test(path))) {
-                                        if (!schema[idKeyMap[draft]]) {
-                                            schema[idKeyMap[draft]] = path;
-                                        }
                                         try {
-                                            schemaManage.addReferenceSchema(context, schema);
+                                            schemaManage.addReferenceSchema(context, schema, path);
                                         } catch (e) {
                                             console.log(e);
                                         }

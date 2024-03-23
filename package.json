@@ -23,7 +23,7 @@
         "type": "git",
         "url": "git@github.com:frog4js/core.git"
     },
-    "author": "frogjs@126.com1",
+    "author": "frogjs@126.com",
     "license": "ISC",
     "devDependencies": {
         "@frog4js/devkit-cli": "^1.0.0",

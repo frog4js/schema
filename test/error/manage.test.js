@@ -4,7 +4,7 @@ import { errorManage } from "../../src/error/share.js";
 import { contextManage } from "../../src/context/share.js";
 import { schemaManage } from "../../src/schema/share.js";
 
-describe.only("test the error manage module", () => {
+describe("test the error manage module", () => {
     describe("test the pushError function", () => {
         function setSchema(context) {
             schemaManage.setMainSchema(context, { enum: ["test"] });

@@ -24,6 +24,7 @@ export default [
 
                     context.schemaData.origin =
                         context.referenceSchemas[context.instanceData.current.$ref[context.instanceData.current.key]];
+                    // TODO
                     context.schemaData.current = {
                         $ref: context.referenceSchemas,
                         key: context.instanceData.current.$ref[context.instanceData.current.key],

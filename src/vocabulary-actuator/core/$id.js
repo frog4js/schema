@@ -24,7 +24,7 @@ export default [
                 instanceTypes: typeConstant.typeofTypeGroups.empty,
                 resolve: (context) => {
                     context.instanceData.current.$ref[context.instanceData.current.key] =
-                        randomUtil.getPseudoRandomString();
+                        context.schemaParamId || randomUtil.getPseudoRandomString();
                     return vocabularyActuatorConstant.ticks.nextMatch;
                 },
             },
@@ -39,7 +39,7 @@ export default [
                 instanceTypes: typeConstant.typeofTypeGroups.empty,
                 resolve: (context) => {
                     context.instanceData.current.$ref[context.instanceData.current.key] =
-                        randomUtil.getPseudoRandomString();
+                        context.schemaParamId || randomUtil.getPseudoRandomString();
                     return vocabularyActuatorConstant.ticks.nextMatch;
                 },
             },

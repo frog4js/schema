@@ -16,6 +16,7 @@ const systemDefault = {
     errorMessages: vocabularyActuatorConstant.defaultErrorMessages,
     locale: "en-gb",
     strict: true,
+    useDefaults: true,
 };
 /**
  *
@@ -46,6 +47,9 @@ const defaultConfigSchema = {
             type: "string",
         },
         strict: {
+            type: "boolean",
+        },
+        useDefaults: {
             type: "boolean",
         },
     },

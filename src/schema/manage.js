@@ -30,20 +30,23 @@ function switchVersion(context, draft$schema) {
  *
  * @param {Context}context
  * @param {Schema}schema
+ * @param {string}[id]
  */
-function addReferenceSchema(context, schema) {
-    validateSchema(context, dataOperateUtil.deepClone(schema));
+function addReferenceSchema(context, schema, id) {
+    validateSchema(context, dataOperateUtil.deepClone(schema), id);
 }
 
 /**
  *
  * @param {Context}context
  * @param {Schema}schema
+ * @param {string}[id]
  */
-function validateSchema(context, schema) {
+function validateSchema(context, schema, id) {
     if (!context.referenceSchemas[context.defaultConfig.$schema]) {
         throw new errorClass.SystemError(`not found ${context.defaultConfig.$schema} in referenceSchemas`);
     }
+    context.schemaParamId = id;
     context.schemaData.origin = context.referenceSchemas[context.defaultConfig.$schema];
     context.schemaPaths = [vocabularyActuatorConstant.pathKeys.ref, vocabularyActuatorConstant.pathKeys.self];
     context.instanceData.origin = schema;
@@ -95,6 +98,7 @@ function compile(context) {
     }
     context.state = contextConstant.states.compile;
     context.schemaData.origin = context.schemaData.main;
+    context.schemaData.current = undefined;
     context.schemaPaths = [vocabularyActuatorConstant.pathKeys.ref, vocabularyActuatorConstant.pathKeys.self];
     context.referenceSchemas[vocabularyActuatorConstant.pathKeys.self] = context.schemaData.origin;
 }

@@ -17,7 +17,8 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.object],
                 resolve: (context, { startSubSchemaExecute }) => {
                     const currentSchemaData = context.schemaData.current.$ref[context.schemaData.current.key];
-                    const currentSchemaKeys = Object.keys(currentSchemaData);
+                    const currentInstanceData = context.instanceData.current.$ref[context.instanceData.current.key];
+                    const currentSchemaKeys = Object.keys(currentInstanceData).filter((x) => x in currentSchemaData);
                     for (const propertyKey of currentSchemaKeys) {
                         contextManage.enterContext(context, propertyKey, propertyKey);
                         startSubSchemaExecute(context, false);

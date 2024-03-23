@@ -129,44 +129,27 @@ describe.only("test the ajv", () => {
         const validate = ajv.compile(schema);
     });
     it("diff-current", () => {
-        const json = {
-            $schema: "http://json-schema.org/draft-04/schema#",
-            type: "object",
-            $id: "User",
-            title: "user properties definition",
-            description: "user properties definition",
-            additionalProperties: false,
-            definitions: {
-                a: {
-                    type: "string",
-                },
-            },
-            properties: {
-                name: {
-                    type: "number",
-                    default: 22,
-                },
-                age: {
-                    type: "object",
-                    properties: {
-                        a: {
-                            $ref: "#/definitions/a",
-                        },
-                    },
-                    default: {
-                        a: "222",
-                    },
-                },
-            },
-        };
+        const json = { $ref: "http://json-schema.org/draft-07/schema#" };
 
         const data = {
-            name: 1,
+            minLength: 1,
         };
-
-        const context = contextManage.create();
+        // const json = {
+        //     type: "object",
+        //     properties: {
+        //         name: {
+        //             type: "string"
+        //         }
+        //     }
+        // }
+        // const data = {
+        //     name: "1"
+        // }
+        const context = contextManage.create({ useDefaults: false });
         schemaManage.setMainSchema(context, json);
-        console.log(context.instanceData.origin[vocabularyActuatorConstant.flags.isSchema]);
+        schemaManage.compile(context);
+        const res = vocabularyActuatorManage.validate(context, data);
+        console.log(res);
     });
 
     it("diff-ajv", () => {

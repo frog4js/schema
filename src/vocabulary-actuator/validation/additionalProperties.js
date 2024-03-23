@@ -22,10 +22,11 @@ const configs = [
                 instanceTypes: [typeConstant.typeofTypes.object],
                 resolve: (context) => {
                     if (context.schemaData.current.$ref[context.schemaData.current.key] === false) {
-                        const parentSchemaInfo = contextManage.getParentSchema(context);
-                        const propertyKeys = Object.keys(
-                            parentSchemaInfo[vocabularyActuatorConstant.keys.properties] || {},
+                        const propertiesRefData = contextManage.getSiblingSchemaRefData(
+                            context,
+                            vocabularyActuatorConstant.keys.properties,
                         );
+                        const propertyKeys = Object.keys(propertiesRefData.$ref?.[propertiesRefData.key] || {});
                         const patternKeys =
                             contextManage.getCache(context, vocabularyActuatorConstant.keys.patternProperties, 1) || [];
                         const matchKeySet = new Set([...propertyKeys, ...patternKeys]);
@@ -44,10 +45,11 @@ const configs = [
                 schemaTypes: [typeConstant.jsonTypes.object],
                 instanceTypes: [typeConstant.typeofTypes.object],
                 resolve: (context, { startSubSchemaExecute }) => {
-                    const parentSchemaInfo = contextManage.getParentSchema(context);
-                    const propertyKeys = Object.keys(
-                        parentSchemaInfo[vocabularyActuatorConstant.keys.properties] || {},
+                    const propertiesRefData = contextManage.getSiblingSchemaRefData(
+                        context,
+                        vocabularyActuatorConstant.keys.properties,
                     );
+                    const propertyKeys = Object.keys(propertiesRefData.$ref?.[propertiesRefData.key] || {});
                     const patternKeys =
                         contextManage.getCache(context, vocabularyActuatorConstant.keys.patternProperties, 1) || [];
                     const matchKeySet = new Set([...propertyKeys, ...patternKeys]);
